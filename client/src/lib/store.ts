@@ -83,29 +83,142 @@ export const useConfigStore = create<ConfigState>()(
       importConfig: (files: ConfigFile[], isMapeo: boolean) => {
         // Parse necessary files to construct a configuration object
         let metadata = {} as CoMapeoConfig['metadata'];
-        let presets = [] as CoMapeoPreset[];
-        let fields = [] as CoMapeoField[];
+        let presets: CoMapeoPreset[] = [];
+        let fields: CoMapeoField[] = [];
         let translations = {} as Record<string, Record<string, string>>;
         let icons = {} as Record<string, unknown>;
         
-        for (const file of files) {
-          const content = typeof file.content === 'string' ? file.content : '';
-          
-          if (file.path.endsWith('metadata.json')) {
-            metadata = JSON.parse(content);
-          } else if (file.path.endsWith('presets.json')) {
-            presets = JSON.parse(content);
-          } else if (file.path.endsWith('fields.json')) {
-            fields = JSON.parse(content);
-          } else if (file.path.endsWith('translations.json')) {
-            translations = JSON.parse(content);
-          } else if (file.path.endsWith('icons.json')) {
-            icons = JSON.parse(content);
+        // For Comapeo format, check if there's a main config file first
+        const configFile = files.find(file => file.path.endsWith('config.json'));
+        
+        if (configFile && !isMapeo) {
+          // Parse the main config file
+          const content = typeof configFile.content === 'string' ? configFile.content : '';
+          try {
+            const parsedConfig = JSON.parse(content);
+            console.log('Parsed config:', parsedConfig);
+            
+            // Extract fields (could be an array or object map)
+            if (parsedConfig.fields) {
+              if (Array.isArray(parsedConfig.fields)) {
+                fields = parsedConfig.fields;
+              } else {
+                // Convert object map to array
+                fields = Object.entries(parsedConfig.fields).map(([id, fieldData]: [string, any]) => ({
+                  id,
+                  name: fieldData.label || id,
+                  tagKey: fieldData.tagKey,
+                  type: fieldData.type,
+                  universal: !!fieldData.universal,
+                  helperText: fieldData.helperText || '',
+                  options: Array.isArray(fieldData.options) ? fieldData.options : []
+                }));
+              }
+            }
+            
+            // Extract presets (could be an array or object map)
+            if (parsedConfig.presets) {
+              if (Array.isArray(parsedConfig.presets)) {
+                presets = parsedConfig.presets;
+              } else {
+                // Convert object map to array
+                presets = Object.entries(parsedConfig.presets).map(([id, presetData]: [string, any]) => ({
+                  id,
+                  name: presetData.name || id,
+                  tags: presetData.tags || {},
+                  color: presetData.color || '#000000',
+                  icon: presetData.icon || 'default',
+                  fieldRefs: presetData.fields || presetData.fieldRefs || [],
+                  removeTags: presetData.removeTags || {},
+                  addTags: presetData.addTags || {},
+                  geometry: presetData.geometry || ['point']
+                }));
+              }
+            }
+            
+            // Extract translations if available
+            if (parsedConfig.translations) {
+              translations = parsedConfig.translations;
+            }
+            
+            // Extract metadata if available
+            if (parsedConfig.metadata) {
+              metadata = parsedConfig.metadata;
+            }
+            
+            // Extract icons if available
+            if (parsedConfig.icons) {
+              icons = parsedConfig.icons;
+            }
+          } catch (error) {
+            console.error('Error parsing config.json:', error);
+          }
+        } else {
+          // Parse individual files
+          for (const file of files) {
+            const content = typeof file.content === 'string' ? file.content : '';
+            
+            try {
+              if (file.path.endsWith('metadata.json')) {
+                metadata = JSON.parse(content);
+              } else if (file.path.endsWith('presets.json')) {
+                const parsedPresets = JSON.parse(content);
+                
+                // Check if it's already an array or an object map
+                if (Array.isArray(parsedPresets)) {
+                  presets = parsedPresets;
+                } else {
+                  // Convert object map to array
+                  presets = Object.entries(parsedPresets).map(([id, presetData]: [string, any]) => ({
+                    id,
+                    name: presetData.name || id,
+                    tags: presetData.tags || {},
+                    color: presetData.color || '#000000',
+                    icon: presetData.icon || 'default',
+                    fieldRefs: presetData.fields || presetData.fieldRefs || [],
+                    removeTags: presetData.removeTags || {},
+                    addTags: presetData.addTags || {},
+                    geometry: presetData.geometry || ['point']
+                  }));
+                }
+              } else if (file.path.endsWith('fields.json')) {
+                const parsedFields = JSON.parse(content);
+                
+                // Check if it's already an array or an object map
+                if (Array.isArray(parsedFields)) {
+                  fields = parsedFields;
+                } else {
+                  // Convert object map to array
+                  fields = Object.entries(parsedFields).map(([id, fieldData]: [string, any]) => ({
+                    id,
+                    name: fieldData.label || id,
+                    tagKey: fieldData.tagKey || fieldData.key || id,
+                    type: fieldData.type,
+                    universal: !!fieldData.universal,
+                    helperText: fieldData.helperText || fieldData.placeholder || '',
+                    options: Array.isArray(fieldData.options) ? fieldData.options : []
+                  }));
+                }
+              } else if (file.path.endsWith('translations.json')) {
+                translations = JSON.parse(content);
+              } else if (file.path.endsWith('icons.json')) {
+                icons = JSON.parse(content);
+              }
+            } catch (error) {
+              console.error(`Error parsing ${file.path}:`, error);
+            }
           }
         }
         
+        // Ensure all properties have proper default values
         let config: CoMapeoConfig = {
-          metadata,
+          metadata: metadata || {
+            name: 'New Configuration',
+            version: '1.0.0',
+            fileVersion: '1',
+            buildDate: new Date().toISOString(),
+            description: ''
+          },
           presets: Array.isArray(presets) ? presets : [],
           fields: Array.isArray(fields) ? fields : [],
           translations: translations || {},

@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "name": "Sample CoMapeo Config",
+    "version": "1.0.0",
+    "fileVersion": "1",
+    "description": "A sample configuration for testing",
+    "buildDate": "2023-10-25T12:00:00.000Z"
+  },
+  "fields": {
+    "building-type": {
+      "tagKey": "building-type",
+      "type": "selectOne",
+      "label": "Building type",
+      "helperText": "School/hospital/etc",
+      "options": [
+        {
+          "label": "School",
+          "value": "School"
+        },
+        {
+          "label": "Hospital",
+          "value": "Hospital"
+        },
+        {
+          "label": "Community Center",
+          "value": "Community"
+        }
+      ],
+      "universal": false
+    },
+    "name": {
+      "tagKey": "name",
+      "type": "text",
+      "label": "Name",
+      "helperText": "The name of this place",
+      "universal": true
+    }
+  },
+  "presets": {
+    "building": {
+      "fieldRefs": ["building-type", "name"],
+      "removeTags": {},
+      "addTags": {},
+      "color": "#B209B2",
+      "icon": "building",
+      "geometry": ["point"],
+      "tags": {
+        "type": "building"
+      },
+      "name": "Building"
+    },
+    "school": {
+      "fieldRefs": ["name"],
+      "removeTags": {},
+      "addTags": {
+        "building-type": "School"
+      },
+      "color": "#0033CC",
+      "icon": "school",
+      "geometry": ["point"],
+      "tags": {
+        "type": "building",
+        "building": "school"
+      },
+      "name": "School"
+    }
+  },
+  "translations": {
+    "en": {
+      "fields": {
+        "building-type": {
+          "label": "Building type",
+          "helperText": "School/hospital/etc",
+          "options": {
+            "School": {
+              "label": "School"
+            },
+            "Hospital": {
+              "label": "Hospital"
+            },
+            "Community": {
+              "label": "Community Center"
+            }
+          }
+        },
+        "name": {
+          "label": "Name",
+          "helperText": "The name of this place"
+        }
+      },
+      "presets": {
+        "building": {
+          "name": "Building"
+        },
+        "school": {
+          "name": "School"
+        }
+      }
+    },
+    "es": {
+      "fields": {
+        "building-type": {
+          "label": "Tipo de edificio",
+          "helperText": "Escuela/hospital/etc",
+          "options": {
+            "School": {
+              "label": "Escuela"
+            },
+            "Hospital": {
+              "label": "Hospital"
+            },
+            "Community": {
+              "label": "Centro Comunitario"
+            }
+          }
+        },
+        "name": {
+          "label": "Nombre",
+          "helperText": "El nombre de este lugar"
+        }
+      },
+      "presets": {
+        "building": {
+          "name": "Edificio"
+        },
+        "school": {
+          "name": "Escuela"
+        }
+      }
+    }
+  },
+  "icons": {
+    "building": {
+      "src": "icons/building.svg"
+    },
+    "school": {
+      "src": "icons/school.svg"
+    }
+  }
+}

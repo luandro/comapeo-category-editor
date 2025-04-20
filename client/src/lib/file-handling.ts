@@ -10,15 +10,40 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
   const zipContents = await zip.loadAsync(file);
   const files: ConfigFile[] = [];
 
+  // First, check if there's a single config.json file
+  if (zipContents.files['config.json']) {
+    const configContent = await zipContents.files['config.json'].async('string');
+    files.push({
+      name: 'config.json',
+      content: configContent,
+      path: 'config.json'
+    });
+    
+    console.log('Found config.json in zip file:', configContent.substring(0, 200) + '...');
+  }
+
+  // Process all other files
   for (const path in zipContents.files) {
     const zipEntry = zipContents.files[path];
-    if (!zipEntry.dir) {
+    if (!zipEntry.dir && path !== 'config.json') {
       const content = await zipEntry.async('string');
-      files.push({
-        name: zipEntry.name.split('/').pop() || '',
-        content,
-        path
-      });
+      
+      try {
+        // Try to parse JSON files to verify their format
+        if (path.endsWith('.json')) {
+          JSON.parse(content);
+        }
+        
+        files.push({
+          name: zipEntry.name.split('/').pop() || '',
+          content,
+          path
+        });
+        
+        console.log(`Extracted file: ${path}, size: ${content.length}`);
+      } catch (error) {
+        console.error(`Error parsing file ${path}:`, error);
+      }
     }
   }
 
@@ -91,7 +116,49 @@ export async function extractTarFile(file: File): Promise<ConfigFile[]> {
 export async function createZipFile(config: CoMapeoConfig, rawFiles: ConfigFile[]): Promise<Blob> {
   const zip = new JSZip();
   
-  // Add JSON configuration files
+  // Create a single config.json file for CoMapeo format
+  const combinedConfig = {
+    metadata: config.metadata,
+    fields: {},
+    presets: {},
+    translations: config.translations,
+    icons: config.icons
+  };
+  
+  // Convert fields array to object map
+  if (Array.isArray(config.fields)) {
+    config.fields.forEach(field => {
+      combinedConfig.fields[field.id] = {
+        tagKey: field.tagKey,
+        type: field.type,
+        label: field.name,
+        helperText: field.helperText || '',
+        universal: field.universal || false,
+        options: field.options || []
+      };
+    });
+  }
+  
+  // Convert presets array to object map
+  if (Array.isArray(config.presets)) {
+    config.presets.forEach(preset => {
+      combinedConfig.presets[preset.id] = {
+        name: preset.name,
+        tags: preset.tags || {},
+        color: preset.color || '#000000',
+        icon: preset.icon || 'default',
+        fields: preset.fieldRefs || [],
+        removeTags: preset.removeTags || {},
+        addTags: preset.addTags || {},
+        geometry: preset.geometry || ['point']
+      };
+    });
+  }
+  
+  // Add the combined config
+  zip.file('config.json', JSON.stringify(combinedConfig, null, 2));
+  
+  // Also add individual files for compatibility
   zip.file('metadata.json', JSON.stringify(config.metadata, null, 2));
   zip.file('presets.json', JSON.stringify(config.presets, null, 2));
   zip.file('fields.json', JSON.stringify(config.fields, null, 2));
