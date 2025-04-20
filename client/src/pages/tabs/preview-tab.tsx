@@ -87,20 +87,55 @@ export default function PreviewTab() {
       const svgBase64 = btoa(iconMap[preset.icon]);
       return (
         <div 
-          className="w-10 h-10 flex items-center justify-center"
+          className="w-full h-full flex items-center justify-center"
           style={{ 
             backgroundImage: `url(data:image/svg+xml;base64,${svgBase64})`,
-            backgroundSize: 'contain',
+            backgroundSize: '60%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
         />
       );
+    } else if (preset.icon && preset.icon.endsWith('.png')) {
+      // Handle PNG icons
+      const iconName = preset.icon.replace('.png', '');
+      // Check if we have PNG files in the raw files
+      const pngFiles = rawFiles.filter(file => 
+        file.path.includes(iconName) && file.path.endsWith('.png')
+      );
+      
+      if (pngFiles.length > 0) {
+        const pngFile = pngFiles[0]; // Use the first match
+        const content = typeof pngFile.content === 'string' ? pngFile.content : '';
+        const base64Data = btoa(content);
+        
+        return (
+          <div 
+            className="w-full h-full flex items-center justify-center"
+            style={{ 
+              backgroundImage: `url(data:image/png;base64,${base64Data})`,
+              backgroundSize: '60%',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        );
+      }
+      
+      // Fallback for material icons
+      return (
+        <span 
+          className="material-icons text-3xl"
+          style={{ color: preset.color || '#000' }}
+        >
+          {preset.icon.replace('.png', '')}
+        </span>
+      );
     } else if (preset.icon) {
       // Fall back to material icon if we have an icon name but no SVG content
       return (
         <span 
-          className="material-icons" 
+          className="material-icons text-3xl" 
           style={{ color: preset.color || '#000' }}
         >
           {preset.icon}
@@ -110,7 +145,7 @@ export default function PreviewTab() {
       // If no icon, use first letter of preset name as fallback
       return (
         <div 
-          className="w-8 h-8 rounded-full flex items-center justify-center"
+          className="w-10 h-10 rounded-full flex items-center justify-center"
           style={{ backgroundColor: preset.color || '#808080' }}
         >
           <span className="text-white text-sm font-bold">
@@ -156,7 +191,9 @@ export default function PreviewTab() {
                         {filteredPresetsByCategory[category].map((preset, index) => (
                           <div key={index} className="flex flex-col items-center">
                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md mb-2 overflow-hidden border border-gray-100">
-                              {renderPresetIcon(preset)}
+                              <div className="w-12 h-12 flex items-center justify-center">
+                                {renderPresetIcon(preset)}
+                              </div>
                             </div>
                             <span className="text-sm text-center">{preset.name}</span>
                           </div>
