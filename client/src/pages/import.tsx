@@ -8,7 +8,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { extractZipFile, extractTarFile } from '@/lib/file-handling';
+import { createSampleConfig, createSampleIconFiles } from '@/lib/createSampleConfig';
 
 export default function ImportPage() {
   const [, setLocation] = useLocation();
@@ -64,6 +66,43 @@ export default function ImportPage() {
     }
   };
 
+  const handleUseSampleConfig = () => {
+    try {
+      setProcessingState('processing');
+      setProgress(30);
+      setStatusText('Creating sample configuration...');
+      
+      // Create sample config
+      const sampleConfig = createSampleConfig();
+      const sampleIconFiles = createSampleIconFiles();
+      
+      setProgress(60);
+      setStatusText('Processing sample configuration...');
+      
+      // Import the configuration
+      importConfig([
+        { 
+          name: 'config.json', 
+          path: 'config.json', 
+          content: JSON.stringify(sampleConfig)
+        },
+        ...sampleIconFiles
+      ], false);
+      
+      setProgress(100);
+      setStatusText('Completed!');
+      
+      // Navigate to the editor after a short delay
+      setTimeout(() => {
+        setLocation('/editor');
+      }, 500);
+    } catch (error) {
+      console.error('Sample config creation error:', error);
+      setProcessingState('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error creating sample config.');
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -79,11 +118,26 @@ export default function ImportPage() {
             </div>
             
             {processingState === 'idle' ? (
-              <FileDropZone
-                onFileDrop={handleFileDrop}
-                acceptedFileTypes={['.comapeocat', '.mapeosettings']}
-                fileTypesText=".comapeocat, .mapeosettings"
-              />
+              <>
+                <FileDropZone
+                  onFileDrop={handleFileDrop}
+                  acceptedFileTypes={['.comapeocat', '.mapeosettings']}
+                  fileTypesText=".comapeocat, .mapeosettings"
+                />
+                
+                <div className="mt-8 text-center">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="text-gray-500 mb-2">- OR -</div>
+                    <Button 
+                      onClick={handleUseSampleConfig} 
+                      variant="outline"
+                      className="w-full max-w-xs"
+                    >
+                      Use Sample Configuration
+                    </Button>
+                  </div>
+                </div>
+              </>
             ) : (
               <div className="mt-8">
                 <div className="flex flex-col items-center">
@@ -94,7 +148,7 @@ export default function ImportPage() {
             )}
             
             {isMapeoFile && processingState === 'processing' && (
-              <Alert variant="warning" className="mt-8">
+              <Alert className="mt-8 bg-amber-50 border-amber-500 text-amber-800">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Converting Mapeo Settings</AlertTitle>
                 <AlertDescription>

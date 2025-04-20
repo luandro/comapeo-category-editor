@@ -80,41 +80,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Build .comapeocat file
+  // Build .comapeocat file (simple implementation that renames the file)
   app.post("/api/build", upload.single('file'), async (req: Request, res: Response) => {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
     try {
-      // Get API endpoint from environment variable
-      const apiUrl = process.env.COMAPEO_CONFIG_BUILDER_API || 'http://localhost:8080';
+      // For now, we'll just rename the .zip file to .comapeocat and send it back
+      const outputPath = path.join('temp_uploads', `${req.file.filename}.comapeocat`);
       
-      // Create form data for the API request
-      const form = new FormData();
-      const fileStream = fs.createReadStream(req.file.path);
-      form.append('file', fileStream, { filename: 'config.zip' });
+      // Rename/copy the file
+      fs.copyFileSync(req.file.path, outputPath);
       
-      // Call the comapeo-config-builder-api
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        body: form,
-        headers: form.getHeaders()
-      });
+      // Set the headers for file download
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', 'attachment; filename="config.comapeocat"');
       
-      // Check if the API call was successful
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API returned ${response.status}: ${errorText}`);
-      }
+      // Stream the file back to the client
+      const fileStream = fs.createReadStream(outputPath);
+      fileStream.pipe(res);
       
-      // Stream the file response back to the client
-      response.body!.pipe(res);
-      
-      // Clean up the temp file after request is completed
+      // Clean up the temp files after request is completed
       res.on('finish', () => {
+        // Delete both original and renamed files
         fs.unlink(req.file!.path, (err) => {
           if (err) console.error(`Error deleting temp file: ${err}`);
+        });
+        fs.unlink(outputPath, (err) => {
+          if (err) console.error(`Error deleting temp output file: ${err}`);
         });
       });
     } catch (error) {

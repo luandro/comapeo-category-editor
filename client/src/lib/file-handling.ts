@@ -117,41 +117,53 @@ export async function createZipFile(config: CoMapeoConfig, rawFiles: ConfigFile[
   const zip = new JSZip();
   
   // Create a single config.json file for CoMapeo format
-  const combinedConfig = {
+  const combinedConfig: {
+    metadata: CoMapeoConfig['metadata'],
+    fields: Record<string, any>,
+    presets: Record<string, any>,
+    translations: Record<string, Record<string, string>>,
+    icons: Record<string, unknown>
+  } = {
     metadata: config.metadata,
     fields: {},
     presets: {},
-    translations: config.translations,
-    icons: config.icons
+    translations: config.translations || {},
+    icons: config.icons || {}
   };
   
   // Convert fields array to object map
   if (Array.isArray(config.fields)) {
     config.fields.forEach(field => {
-      combinedConfig.fields[field.id] = {
-        tagKey: field.tagKey,
-        type: field.type,
-        label: field.name,
-        helperText: field.helperText || '',
-        universal: field.universal || false,
-        options: field.options || []
-      };
+      if (field.id) {
+        // Using type assertion to avoid TypeScript error
+        (combinedConfig.fields as Record<string, any>)[field.id] = {
+          tagKey: field.tagKey,
+          type: field.type,
+          label: field.name,
+          helperText: field.helperText || '',
+          universal: field.universal || false,
+          options: field.options || []
+        };
+      }
     });
   }
   
   // Convert presets array to object map
   if (Array.isArray(config.presets)) {
     config.presets.forEach(preset => {
-      combinedConfig.presets[preset.id] = {
-        name: preset.name,
-        tags: preset.tags || {},
-        color: preset.color || '#000000',
-        icon: preset.icon || 'default',
-        fields: preset.fieldRefs || [],
-        removeTags: preset.removeTags || {},
-        addTags: preset.addTags || {},
-        geometry: preset.geometry || ['point']
-      };
+      if (preset.id) {
+        // Using type assertion to avoid TypeScript error
+        (combinedConfig.presets as Record<string, any>)[preset.id] = {
+          name: preset.name,
+          tags: preset.tags || {},
+          color: preset.color || '#000000',
+          icon: preset.icon || 'default',
+          fields: preset.fieldRefs || [],
+          removeTags: preset.removeTags || {},
+          addTags: preset.addTags || {},
+          geometry: preset.geometry || ['point']
+        };
+      }
     });
   }
   
