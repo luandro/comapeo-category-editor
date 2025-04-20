@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useConfigStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +10,7 @@ export default function PreviewTab() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [presetsByCategory, setPresetsByCategory] = useState<{[key: string]: any[]}>({});
+  const [iconMap, setIconMap] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     if (!config) return;
@@ -43,7 +45,19 @@ export default function PreviewTab() {
     });
 
     setPresetsByCategory(grouped);
-  }, [config]);
+
+    // Extract icon SVGs from raw files
+    const extractedIcons: {[key: string]: string} = {};
+    rawFiles.forEach(file => {
+      if (file.path.startsWith('icons/') && file.path.endsWith('.svg')) {
+        const iconName = file.path.split('/').pop()?.replace('.svg', '') || '';
+        if (typeof file.content === 'string') {
+          extractedIcons[iconName] = file.content;
+        }
+      }
+    });
+    setIconMap(extractedIcons);
+  }, [config, rawFiles]);
 
   // Filter presets based on search query
   const filterPresets = () => {
@@ -65,6 +79,47 @@ export default function PreviewTab() {
   };
 
   const filteredPresetsByCategory = filterPresets();
+
+  // Function to render icon for a preset
+  const renderPresetIcon = (preset: any) => {
+    if (preset.icon && iconMap[preset.icon]) {
+      // Convert SVG string to base64 for display
+      const svgBase64 = btoa(iconMap[preset.icon]);
+      return (
+        <div 
+          className="w-10 h-10 flex items-center justify-center"
+          style={{ 
+            backgroundImage: `url(data:image/svg+xml;base64,${svgBase64})`,
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+      );
+    } else if (preset.icon) {
+      // Fall back to material icon if we have an icon name but no SVG content
+      return (
+        <span 
+          className="material-icons" 
+          style={{ color: preset.color || '#000' }}
+        >
+          {preset.icon}
+        </span>
+      );
+    } else {
+      // If no icon, use first letter of preset name as fallback
+      return (
+        <div 
+          className="w-8 h-8 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: preset.color || '#808080' }}
+        >
+          <span className="text-white text-sm font-bold">
+            {preset.name.charAt(0).toUpperCase()}
+          </span>
+        </div>
+      );
+    }
+  };
 
   if (!config) return null;
 
@@ -101,28 +156,7 @@ export default function PreviewTab() {
                         {filteredPresetsByCategory[category].map((preset, index) => (
                           <div key={index} className="flex flex-col items-center">
                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md mb-2 overflow-hidden border border-gray-100">
-                              <div 
-                                className="w-10 h-10 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: 'white' }}
-                              >
-                                {preset.icon ? (
-                                  <span 
-                                    className="material-icons" 
-                                    style={{ color: preset.color || '#808080' }}
-                                  >
-                                    {preset.icon}
-                                  </span>
-                                ) : (
-                                  <div 
-                                    className="w-8 h-8 rounded-full flex items-center justify-center"
-                                    style={{ backgroundColor: preset.color || '#808080' }}
-                                  >
-                                    <span className="text-white text-sm font-bold">
-                                      {preset.name.charAt(0).toUpperCase()}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
+                              {renderPresetIcon(preset)}
                             </div>
                             <span className="text-sm text-center">{preset.name}</span>
                           </div>
