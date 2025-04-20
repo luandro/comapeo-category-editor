@@ -1,0 +1,24 @@
+[
+  {
+    "id": "p1",
+    "name": "Tree",
+    "tags": {
+      "natural": "tree"
+    },
+    "color": "#2CA02C",
+    "icon": "park",
+    "fieldRefs": ["f1", "f2"],
+    "geometry": ["point"]
+  },
+  {
+    "id": "p2",
+    "name": "River",
+    "tags": {
+      "waterway": "river"
+    },
+    "color": "#1F77B4",
+    "icon": "water",
+    "fieldRefs": ["f1"],
+    "geometry": ["line"]
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "f1",
+    "name": "Notes",
+    "tagKey": "notes",
+    "type": "textarea",
+    "universal": true,
+    "helperText": "Enter any additional notes"
+  },
+  {
+    "id": "f2",
+    "name": "Condition",
+    "tagKey": "condition",
+    "type": "selectOne",
+    "universal": false,
+    "options": [
+      {
+        "label": "Good",
+        "value": "good"
+      },
+      {
+        "label": "Fair",
+        "value": "fair"
+      },
+      {
+        "label": "Poor",
+        "value": "poor"
+      }
+    ]
+  }
+]

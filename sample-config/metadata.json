@@ -1,0 +1,7 @@
+{
+  "name": "sample-config",
+  "version": "1.0.0",
+  "fileVersion": "1",
+  "description": "A sample CoMapeo configuration for testing",
+  "buildDate": "2023-04-19T12:00:00Z"
+}

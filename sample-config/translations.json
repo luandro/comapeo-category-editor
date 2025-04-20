@@ -1,0 +1,20 @@
+{
+  "en": {
+    "presets/p1": "Tree",
+    "presets/p2": "River",
+    "fields/f1": "Notes",
+    "fields/f2": "Condition",
+    "fields/f2/options/good": "Good",
+    "fields/f2/options/fair": "Fair",
+    "fields/f2/options/poor": "Poor"
+  },
+  "es": {
+    "presets/p1": "Árbol",
+    "presets/p2": "Río",
+    "fields/f1": "Notas",
+    "fields/f2": "Condición",
+    "fields/f2/options/good": "Bueno",
+    "fields/f2/options/fair": "Regular",
+    "fields/f2/options/poor": "Malo"
+  }
+}
