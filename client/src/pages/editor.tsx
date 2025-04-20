@@ -11,7 +11,8 @@ import {
   FormInput, 
   Globe, 
   Image, 
-  Code 
+  Code,
+  Eye
 } from 'lucide-react';
 
 import MetadataTab from './tabs/metadata-tab';
@@ -20,6 +21,7 @@ import FieldsTab from './tabs/fields-tab';
 import TranslationsTab from './tabs/translations-tab';
 import IconsTab from './tabs/icons-tab';
 import AdvancedTab from './tabs/advanced-tab';
+import PreviewTab from './tabs/preview-tab';
 
 export default function EditorPage() {
   const { config, setActiveTab, activeTab } = useConfigStore();
@@ -50,48 +52,58 @@ export default function EditorPage() {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <TabsList className="mb-6 border-b border-gray-200 w-full justify-start rounded-none pb-0 h-auto">
+          <TabsList className="mb-6 border-b border-gray-200 w-full justify-start rounded-none pb-0 h-auto overflow-x-auto flex flex-nowrap">
             <TabsTrigger 
               value="metadata" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <InfoIcon className="mr-2 h-4 w-4" />
-              Metadata
+              <InfoIcon className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Metadata</span>
+              <span className="sm:hidden">Meta</span>
             </TabsTrigger>
             <TabsTrigger 
               value="presets" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <TagIcon className="mr-2 h-4 w-4" />
+              <TagIcon className="mr-1 md:mr-2 h-4 w-4" />
               Presets
             </TabsTrigger>
             <TabsTrigger 
               value="fields" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <FormInput className="mr-2 h-4 w-4" />
+              <FormInput className="mr-1 md:mr-2 h-4 w-4" />
               Fields
             </TabsTrigger>
             <TabsTrigger 
               value="translations" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <Globe className="mr-2 h-4 w-4" />
-              Translations
+              <Globe className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Translations</span>
+              <span className="sm:hidden">Trans</span>
             </TabsTrigger>
             <TabsTrigger 
               value="icons" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <Image className="mr-2 h-4 w-4" />
+              <Image className="mr-1 md:mr-2 h-4 w-4" />
               Icons
             </TabsTrigger>
             <TabsTrigger 
               value="advanced" 
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
-              <Code className="mr-2 h-4 w-4" />
-              Advanced
+              <Code className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Advanced</span>
+              <span className="sm:hidden">Adv</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="preview" 
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
+            >
+              <Eye className="mr-1 md:mr-2 h-4 w-4" />
+              Preview
             </TabsTrigger>
           </TabsList>
           
@@ -117,6 +129,10 @@ export default function EditorPage() {
           
           <TabsContent value="advanced">
             <AdvancedTab />
+          </TabsContent>
+          
+          <TabsContent value="preview">
+            <PreviewTab />
           </TabsContent>
         </Tabs>
       </PageContainer>
