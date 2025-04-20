@@ -45,7 +45,7 @@ export default function EditorPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      
+
       <PageContainer>
         <Tabs 
           defaultValue="preview" 
@@ -53,6 +53,13 @@ export default function EditorPage() {
           className="w-full"
         >
           <TabsList className="mb-6 border-b border-gray-200 w-full justify-start rounded-none pb-0 h-auto overflow-x-auto flex flex-nowrap">
+            <TabsTrigger 
+              value="preview" 
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
+            >
+              <Eye className="mr-1 md:mr-2 h-4 w-4" />
+              Preview
+            </TabsTrigger>
             <TabsTrigger 
               value="metadata" 
               className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
@@ -98,39 +105,32 @@ export default function EditorPage() {
               <span className="hidden sm:inline">Advanced</span>
               <span className="sm:hidden">Adv</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="preview" 
-              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
-            >
-              <Eye className="mr-1 md:mr-2 h-4 w-4" />
-              Preview
-            </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="metadata">
             <MetadataTab />
           </TabsContent>
-          
+
           <TabsContent value="presets">
             <PresetsTab />
           </TabsContent>
-          
+
           <TabsContent value="fields">
             <FieldsTab />
           </TabsContent>
-          
+
           <TabsContent value="translations">
             <TranslationsTab />
           </TabsContent>
-          
+
           <TabsContent value="icons">
             <IconsTab />
           </TabsContent>
-          
+
           <TabsContent value="advanced">
             <AdvancedTab />
           </TabsContent>
-          
+
           <TabsContent value="preview">
             <PreviewTab />
           </TabsContent>

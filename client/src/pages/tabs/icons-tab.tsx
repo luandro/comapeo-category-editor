@@ -108,7 +108,19 @@ export default function IconsTab() {
                           onClick={() => handleViewIcon(file)}
                         >
                           <div className="w-8 h-8 flex items-center justify-center">
-                            <span className="material-icons text-gray-800">{name}</span>
+                            {typeof file.content === 'string' ? (
+                              <img 
+                                src={`data:image/svg+xml;base64,${btoa(file.content)}`}
+                                alt={name}
+                                className="w-full h-full object-contain"
+                                onError={() => {
+                                  // Fallback to material icon if SVG fails to load
+                                  return <span className="material-icons text-gray-800">{name}</span>;
+                                }}
+                              />
+                            ) : (
+                              <span className="material-icons text-gray-800">{name}</span>
+                            )}
                           </div>
                           <span className="text-xs text-gray-600 mt-1 truncate w-full text-center">
                             {name}.svg

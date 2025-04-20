@@ -95,10 +95,24 @@ export default function PresetsTab() {
                     <TableRow key={preset.id}>
                       <TableCell>
                         <div 
-                          className="w-8 h-8 rounded-md flex items-center justify-center text-white"
+                          className="w-8 h-8 rounded-md flex items-center justify-center text-white overflow-hidden"
                           style={{ backgroundColor: preset.color || '#808080' }}
                         >
-                          <span className="material-icons text-sm">{preset.icon}</span>
+                          {preset.icon ? (
+                            <img 
+                              src={`data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(Buffer.from(preset.icon))))}`}
+                              alt={preset.name}
+                              className="w-3/4 h-3/4 object-contain"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.parentElement.innerHTML = `<span class="material-icons text-sm">${preset.icon}</span>`;
+                              }}
+                            />
+                          ) : (
+                            <span className="text-white text-sm font-bold">
+                              {preset.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">{preset.name}</TableCell>
