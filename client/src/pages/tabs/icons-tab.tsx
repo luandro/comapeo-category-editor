@@ -109,16 +109,20 @@ export default function IconsTab() {
                         >
                           <div className="w-8 h-8 flex items-center justify-center">
                             {typeof file.content === 'string' ? (
-                              <img 
-                                src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(file.content)}`}
-                                alt={name}
-                                className="w-full h-full object-contain"
-                                onError={(e) => {
-                                  console.error(`Failed to load icon: ${name}`);
-                                  // Fallback to material icon if SVG fails to load
-                                  e.currentTarget.outerHTML = `<span class="material-icons text-gray-800">${name}</span>`;
-                                }}
-                              />
+                              {typeof file.content === 'string' && file.content.trim().startsWith('<svg') ? (
+                                <img 
+                                  src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(file.content)}`}
+                                  alt={name}
+                                  className="w-full h-full object-contain"
+                                  onError={(e) => {
+                                    console.error(`Failed to load icon: ${name}`);
+                                    // Fallback to material icon if SVG fails to load
+                                    e.currentTarget.outerHTML = `<span class="material-icons text-gray-800">${name}</span>`;
+                                  }}
+                                />
+                              ) : (
+                                <span className="material-icons text-gray-800">{name}</span>
+                              )}
                             ) : (
                               <span className="material-icons text-gray-800">{name}</span>
                             )}

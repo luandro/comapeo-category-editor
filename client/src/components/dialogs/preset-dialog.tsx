@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Search, Loader2 } from 'lucide-react';
 import { CoMapeoPreset, CoMapeoField } from '@shared/schema';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface PresetDialogProps {
   preset: CoMapeoPreset | null;
@@ -28,6 +29,14 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
   
   const [newTagKey, setNewTagKey] = useState('');
   const [newTagValue, setNewTagValue] = useState('');
+  const [iconSearchTerm, setIconSearchTerm] = useState('');
+  const [iconSearchResults, setIconSearchResults] = useState<string[]>([]);
+  const [isSearchingIcons, setIsSearchingIcons] = useState(false);
+  const [iconSearchPage, setIconSearchPage] = useState(1);
+  const [iconSearchLanguage, setIconSearchLanguage] = useState('en');
+  const [showIconPicker, setShowIconPicker] = useState(false);
+  const [hasMoreIcons, setHasMoreIcons] = useState(true);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (preset) {
@@ -90,6 +99,64 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
     }));
   };
 
+  const searchIcons = async (term: string, page: number = 1, language: string = 'en', append: boolean = false) => {
+    if (!term.trim()) {
+      setIconSearchResults([]);
+      return;
+    }
+    
+    setIsSearchingIcons(true);
+    try {
+      const response = await fetch(`https://icons.earthdefenderstoolkit.com/api/search?s=${encodeURIComponent(term)}&l=${language}&p=${page}`);
+      if (!response.ok) throw new Error('Failed to fetch icons');
+      
+      const icons = await response.json();
+      
+      if (icons.length === 0) {
+        setHasMoreIcons(false);
+      } else {
+        setHasMoreIcons(true);
+      }
+      
+      setIconSearchResults(prev => append ? [...prev, ...icons] : icons);
+      setIconSearchPage(page);
+    } catch (error) {
+      console.error('Error searching icons:', error);
+    } finally {
+      setIsSearchingIcons(false);
+    }
+  };
+  
+  const handleIconSearch = (term: string) => {
+    setIconSearchTerm(term);
+    
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout to debounce search
+    searchTimeoutRef.current = setTimeout(() => {
+      searchIcons(term, 1, iconSearchLanguage);
+    }, 500);
+  };
+  
+  const handleLoadMoreIcons = () => {
+    searchIcons(iconSearchTerm, iconSearchPage + 1, iconSearchLanguage, true);
+  };
+  
+  const handleIconSelect = (iconUrl: string) => {
+    // Extract icon name from URL
+    const iconName = iconUrl.split('/').pop()?.split('-')[0] || 'icon';
+    
+    setFormData(prev => ({
+      ...prev,
+      icon: iconName
+    }));
+    
+    setShowIconPicker(false);
+  };
+  
   const handleSubmit = () => {
     onSave(formData);
   };
@@ -166,13 +233,99 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
               >
                 <span className="material-icons">{formData.icon}</span>
               </div>
-              <Input 
-                id="icon" 
-                value={formData.icon} 
-                onChange={handleChange} 
-                className="w-full"
-                placeholder="e.g. place, park, spa"
-              />
+              <div className="flex-1 flex space-x-2">
+                <Input 
+                  id="icon" 
+                  value={formData.icon} 
+                  onChange={handleChange} 
+                  className="w-full"
+                  placeholder="e.g. place, park, spa"
+                />
+                <Popover open={showIconPicker} onOpenChange={setShowIconPicker}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="p-4 border-b">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Input
+                          placeholder="Search icons..."
+                          value={iconSearchTerm}
+                          onChange={(e) => handleIconSearch(e.target.value)}
+                          className="flex-1"
+                        />
+                        <Select
+                          value={iconSearchLanguage}
+                          onValueChange={setIconSearchLanguage}
+                        >
+                          <SelectTrigger className="w-20">
+                            <SelectValue placeholder="Lang" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="en">EN</SelectItem>
+                            <SelectItem value="es">ES</SelectItem>
+                            <SelectItem value="pt">PT</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <div className="max-h-60 overflow-y-auto p-2">
+                      {isSearchingIcons && iconSearchResults.length === 0 ? (
+                        <div className="flex justify-center items-center py-8">
+                          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                        </div>
+                      ) : iconSearchResults.length === 0 ? (
+                        <div className="text-center py-8 text-gray-500">
+                          {iconSearchTerm ? 'No icons found' : 'Type to search icons'}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-4 gap-2">
+                          {iconSearchResults.map((icon, idx) => (
+                            <div
+                              key={`${icon}-${idx}`}
+                              className="p-2 border rounded-md hover:bg-gray-50 cursor-pointer flex items-center justify-center"
+                              onClick={() => handleIconSelect(icon)}
+                            >
+                              <img 
+                                src={icon} 
+                                alt="icon" 
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {iconSearchResults.length > 0 && hasMoreIcons && (
+                      <div className="p-2 border-t text-center">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleLoadMoreIcons}
+                          disabled={isSearchingIcons}
+                          className="w-full"
+                        >
+                          {isSearchingIcons ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Loading...
+                            </>
+                          ) : (
+                            'Load more'
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
           
