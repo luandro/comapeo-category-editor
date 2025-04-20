@@ -1,0 +1,177 @@
+{
+  "animal-route-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 0,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "beach-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 100,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "beehive-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 0,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "bird-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 100,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "camera-trap-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 200,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "cave-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 300,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "edible-plant-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 200,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "endangered-specie-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 300,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "fungi-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 0,
+    "y": 200,
+    "pixelRatio": 1
+  },
+  "invasive-specie-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 100,
+    "y": 200,
+    "pixelRatio": 1
+  },
+  "lake-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 200,
+    "y": 200,
+    "pixelRatio": 1
+  },
+  "medicinal-plant-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 300,
+    "y": 200,
+    "pixelRatio": 1
+  },
+  "mountain-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 0,
+    "y": 300,
+    "pixelRatio": 1
+  },
+  "plant-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 100,
+    "y": 300,
+    "pixelRatio": 1
+  },
+  "plant-for-construction-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 200,
+    "y": 300,
+    "pixelRatio": 1
+  },
+  "plant-for-crafts-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 300,
+    "y": 300,
+    "pixelRatio": 1
+  },
+  "river-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 400,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "salt-lick-site-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 500,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "soil-regeneration-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 600,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "terrestrial-animal-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 700,
+    "y": 0,
+    "pixelRatio": 1
+  },
+  "testing-site-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 400,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "tree-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 500,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "water-animal-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 600,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "water-source-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 700,
+    "y": 100,
+    "pixelRatio": 1
+  },
+  "waterfall-100px": {
+    "width": 100,
+    "height": 100,
+    "x": 400,
+    "y": 200,
+    "pixelRatio": 1
+  }
+}
