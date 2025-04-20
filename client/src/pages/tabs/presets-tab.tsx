@@ -16,9 +16,11 @@ export default function PresetsTab() {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<CoMapeoPreset | null>(null);
 
-  const filteredPresets = config?.presets.filter(preset => 
+  // Ensure presets is an array before filtering
+  const presets = Array.isArray(config?.presets) ? config.presets : [];
+  const filteredPresets = presets.filter(preset => 
     preset.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  );
 
   const handleAddPreset = () => {
     setSelectedPreset(null);

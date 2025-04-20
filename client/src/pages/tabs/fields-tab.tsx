@@ -15,10 +15,12 @@ export default function FieldsTab() {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedField, setSelectedField] = useState<CoMapeoField | null>(null);
 
-  const filteredFields = config?.fields.filter(field => 
+  // Ensure fields is an array before filtering
+  const fields = Array.isArray(config?.fields) ? config.fields : [];
+  const filteredFields = fields.filter(field => 
     field.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     field.tagKey.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  );
 
   const handleAddField = () => {
     setSelectedField(null);

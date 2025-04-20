@@ -106,10 +106,10 @@ export const useConfigStore = create<ConfigState>()(
         
         let config: CoMapeoConfig = {
           metadata,
-          presets,
-          fields,
-          translations,
-          icons
+          presets: Array.isArray(presets) ? presets : [],
+          fields: Array.isArray(fields) ? fields : [],
+          translations: translations || {},
+          icons: icons || {}
         };
         
         // Convert if it's a Mapeo configuration
@@ -154,10 +154,13 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
+          // Ensure presets is an array
+          const currentPresets = Array.isArray(state.config.presets) ? state.config.presets : [];
+          
           return {
             config: {
               ...state.config,
-              presets: [...state.config.presets, preset]
+              presets: [...currentPresets, preset]
             }
           };
         });
@@ -167,7 +170,10 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
-          const presets = state.config.presets.map(preset => 
+          // Ensure presets is an array
+          const currentPresets = Array.isArray(state.config.presets) ? state.config.presets : [];
+          
+          const presets = currentPresets.map(preset => 
             preset.id === id ? { ...preset, ...updates } : preset
           );
           
@@ -184,10 +190,13 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
+          // Ensure presets is an array
+          const currentPresets = Array.isArray(state.config.presets) ? state.config.presets : [];
+          
           return {
             config: {
               ...state.config,
-              presets: state.config.presets.filter(preset => preset.id !== id)
+              presets: currentPresets.filter(preset => preset.id !== id)
             }
           };
         });
@@ -197,10 +206,13 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
+          // Ensure fields is an array
+          const currentFields = Array.isArray(state.config.fields) ? state.config.fields : [];
+          
           return {
             config: {
               ...state.config,
-              fields: [...state.config.fields, field]
+              fields: [...currentFields, field]
             }
           };
         });
@@ -210,7 +222,10 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
-          const fields = state.config.fields.map(field => 
+          // Ensure fields is an array
+          const currentFields = Array.isArray(state.config.fields) ? state.config.fields : [];
+          
+          const fields = currentFields.map(field => 
             field.id === id ? { ...field, ...updates } : field
           );
           
@@ -227,10 +242,13 @@ export const useConfigStore = create<ConfigState>()(
         set((state) => {
           if (!state.config) return state;
           
+          // Ensure fields is an array
+          const currentFields = Array.isArray(state.config.fields) ? state.config.fields : [];
+          
           return {
             config: {
               ...state.config,
-              fields: state.config.fields.filter(field => field.id !== id)
+              fields: currentFields.filter(field => field.id !== id)
             }
           };
         });
