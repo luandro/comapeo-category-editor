@@ -48,7 +48,7 @@ export default function EditorPage() {
       
       <PageContainer>
         <Tabs 
-          defaultValue={activeTab} 
+          defaultValue="preview" 
           onValueChange={setActiveTab}
           className="w-full"
         >
