@@ -24,7 +24,7 @@ export default function IconsTab() {
   const handleIconSave = (name: string, content: string) => {
     addIcon(name, content);
     setShowIconDialog(false);
-
+    
     toast({
       title: "Icon uploaded",
       description: `${name}.svg has been added to your configuration.`
@@ -34,7 +34,7 @@ export default function IconsTab() {
   const handleDeleteIcon = (name: string) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       deleteIcon(name);
-
+      
       toast({
         title: "Icon deleted",
         description: `${name} has been removed from your configuration.`
@@ -53,9 +53,9 @@ export default function IconsTab() {
     const content = typeof iconFile.content === 'string' ? iconFile.content : '';
     const blob = new Blob([content], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
-
+    
     window.open(url, '_blank');
-
+    
     // Clean up URL object after a delay
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
@@ -84,13 +84,13 @@ export default function IconsTab() {
               </Button>
             </div>
           </div>
-
+          
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="md:w-1/2">
               <div className="bg-gray-50 p-4 rounded-md mb-4">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Individual Icon Files</h3>
                 <p className="text-xs text-gray-500 mb-3">Upload or replace individual icon SVGs in the icons directory</p>
-
+                
                 {iconFiles.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>No icon files found.</p>
@@ -100,7 +100,7 @@ export default function IconsTab() {
                   <div className="flex flex-wrap gap-3">
                     {iconFiles.map((file, index) => {
                       const name = file.path.split('/').pop()?.replace('.svg', '') || '';
-
+                      
                       return (
                         <div 
                           key={index}
@@ -126,12 +126,12 @@ export default function IconsTab() {
                 )}
               </div>
             </div>
-
+            
             <div className="md:w-1/2">
               <div className="bg-gray-50 p-4 rounded-md mb-4">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Icon Sprites</h3>
                 <p className="text-xs text-gray-500 mb-3">The sprite files will be automatically generated from individual icons</p>
-
+                
                 <div className="space-y-3">
                   {['icons.svg', 'icons.png', 'icons.json'].map((filename, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-white rounded-md shadow-sm border border-gray-200">
@@ -159,7 +159,7 @@ export default function IconsTab() {
           </div>
         </CardContent>
       </Card>
-
+      
       {showIconDialog && (
         <IconDialog
           onSave={handleIconSave}
