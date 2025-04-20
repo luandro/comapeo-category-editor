@@ -82,70 +82,88 @@ export default function PreviewTab() {
 
   // Function to render icon for a preset
   const renderPresetIcon = (preset: any) => {
-    if (preset.icon && iconMap[preset.icon]) {
-      // Convert SVG string to base64 for display
-      const svgBase64 = btoa(iconMap[preset.icon]);
-      return (
-        <div 
-          className="w-full h-full flex items-center justify-center"
-          style={{ 
-            backgroundImage: `url(data:image/svg+xml;base64,${svgBase64})`,
-            backgroundSize: '60%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
-      );
-    } else if (preset.icon && preset.icon.endsWith('.png')) {
-      // Handle PNG icons
-      const iconName = preset.icon.replace('.png', '');
-      // Check if we have PNG files in the raw files
-      const pngFiles = rawFiles.filter(file => 
-        file.path.includes(iconName) && file.path.endsWith('.png')
+    // Find appropriate icon file - check for PNG files first
+    const findMatchingIconFile = (iconName: string) => {
+      // Looking for medium size icons as they fit best in our design
+      const mediumSizePattern = `-medium@`;
+      const preferredFiles = rawFiles.filter(file => 
+        file.path.startsWith('icons/') && 
+        file.path.includes(iconName) && 
+        file.path.includes(mediumSizePattern) &&
+        file.path.endsWith('.png')
       );
       
-      if (pngFiles.length > 0) {
-        const pngFile = pngFiles[0]; // Use the first match
-        const content = typeof pngFile.content === 'string' ? pngFile.content : '';
+      // If medium size exists, use the first one (usually @1x)
+      if (preferredFiles.length > 0) {
+        return preferredFiles[0];
+      }
+      
+      // Otherwise look for any PNG with this icon name
+      const anyPngFiles = rawFiles.filter(file => 
+        file.path.startsWith('icons/') && 
+        file.path.includes(iconName) && 
+        file.path.endsWith('.png')
+      );
+      
+      return anyPngFiles.length > 0 ? anyPngFiles[0] : null;
+    };
+
+    if (preset.icon) {
+      const iconName = preset.icon.replace('.png', '');
+      
+      // First check if we have a PNG file for this icon
+      const iconFile = findMatchingIconFile(iconName);
+      
+      if (iconFile) {
+        // Get raw content and convert to base64
+        const content = typeof iconFile.content === 'string' ? iconFile.content : '';
+        // For binary content, we need to decode to proper base64
         const base64Data = btoa(content);
         
         return (
-          <div 
-            className="w-full h-full flex items-center justify-center"
-            style={{ 
-              backgroundImage: `url(data:image/png;base64,${base64Data})`,
-              backgroundSize: '60%',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
+          <div className="w-full h-full flex items-center justify-center">
+            <img 
+              src={`data:image/png;base64,${base64Data}`}
+              alt={preset.name}
+              className="w-3/4 h-3/4 object-contain"
+            />
+          </div>
         );
       }
       
-      // Fallback for material icons
+      // If no PNG, check for SVG in iconMap
+      if (iconMap[preset.icon]) {
+        const svgBase64 = btoa(iconMap[preset.icon]);
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+            <img 
+              src={`data:image/svg+xml;base64,${svgBase64}`}
+              alt={preset.name}
+              className="w-3/4 h-3/4 object-contain"
+            />
+          </div>
+        );
+      }
+      
+      // Fall back to material icon
       return (
-        <span 
-          className="material-icons text-3xl"
-          style={{ color: preset.color || '#000' }}
-        >
-          {preset.icon.replace('.png', '')}
-        </span>
-      );
-    } else if (preset.icon) {
-      // Fall back to material icon if we have an icon name but no SVG content
-      return (
-        <span 
-          className="material-icons text-3xl" 
-          style={{ color: preset.color || '#000' }}
-        >
-          {preset.icon}
-        </span>
+        <div className="w-full h-full flex items-center justify-center">
+          <span 
+            className="material-icons"
+            style={{ 
+              color: preset.color || '#000',
+              fontSize: '24px' 
+            }}
+          >
+            {iconName}
+          </span>
+        </div>
       );
     } else {
       // If no icon, use first letter of preset name as fallback
       return (
         <div 
-          className="w-10 h-10 rounded-full flex items-center justify-center"
+          className="w-full h-full rounded-full flex items-center justify-center"
           style={{ backgroundColor: preset.color || '#808080' }}
         >
           <span className="text-white text-sm font-bold">
@@ -190,10 +208,8 @@ export default function PreviewTab() {
                       <div className="grid grid-cols-3 gap-6">
                         {filteredPresetsByCategory[category].map((preset, index) => (
                           <div key={index} className="flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md mb-2 overflow-hidden border border-gray-100">
-                              <div className="w-12 h-12 flex items-center justify-center">
-                                {renderPresetIcon(preset)}
-                              </div>
+                            <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
+                              {renderPresetIcon(preset)}
                             </div>
                             <span className="text-sm text-center">{preset.name}</span>
                           </div>
