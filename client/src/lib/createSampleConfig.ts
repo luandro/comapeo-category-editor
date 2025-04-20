@@ -1,12 +1,17 @@
 import { CoMapeoConfig, CoMapeoField, CoMapeoPreset, ConfigFile } from '@shared/schema';
 // We need to use a more flexible type for translations since they're nested
 type DeepRecord = Record<string, any>;
+
+// Update the config type to allow for complex nested translations
+interface ExtendedCoMapeoConfig extends Omit<CoMapeoConfig, 'translations'> {
+  translations: DeepRecord;
+}
 import { nanoid } from 'nanoid';
 
 /**
  * Creates a sample configuration for testing
  */
-export function createSampleConfig(): CoMapeoConfig {
+export function createSampleConfig(): ExtendedCoMapeoConfig {
   // Create sample fields
   const fields: CoMapeoField[] = [
     {

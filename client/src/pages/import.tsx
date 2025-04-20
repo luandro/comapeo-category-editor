@@ -84,7 +84,7 @@ export default function ImportPage() {
         { 
           name: 'config.json', 
           path: 'config.json', 
-          content: JSON.stringify(sampleConfig)
+          content: JSON.stringify(sampleConfig) 
         },
         ...sampleIconFiles
       ], false);
