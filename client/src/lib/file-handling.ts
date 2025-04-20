@@ -78,6 +78,13 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
           
           if (path.endsWith('.svg')) {
             content = await zipEntry.async('string');
+            // Ensure SVG content is properly formatted
+            if (typeof content === 'string' && content.trim().startsWith('<svg')) {
+              // SVG content is valid
+              console.log(`Valid SVG content extracted for ${path}`);
+            } else {
+              console.warn(`Possibly invalid SVG content in ${path}`);
+            }
           } else if (path.endsWith('.png')) {
             content = await zipEntry.async('arraybuffer');
           } else {
@@ -93,6 +100,7 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
           
           console.log(`Extracted icon file: ${path}`);
         }
+</old_str>
         // Handle VERSION file and other non-icon, non-JSON files
         else {
           const content = await zipEntry.async('string');

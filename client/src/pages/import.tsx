@@ -7,7 +7,7 @@ import { PageContainer } from '@/components/ui/page-container';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, AlertCircle } from 'lucide-react';
+import { AlertTriangle, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { extractZipFile, extractTarFile } from '@/lib/file-handling';
 import { createSampleConfig, createSampleIconFiles } from '@/lib/createSampleConfig';
@@ -103,6 +103,14 @@ export default function ImportPage() {
     }
   };
 
+  const resetProcess = () => {
+    setProcessingState('idle');
+    setProgress(0);
+    setStatusText('');
+    setIsMapeoFile(false);
+    setErrorMessage('');
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -110,7 +118,19 @@ export default function ImportPage() {
       <PageContainer>
         <Card className="max-w-3xl mx-auto">
           <CardContent className="pt-6 pb-6">
-            <h1 className="text-2xl font-semibold mb-6 text-center">Import Configuration</h1>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-semibold text-center flex-grow">Import Configuration</h1>
+              {processingState !== 'idle' && (
+                <Button 
+                  variant="outline" 
+                  onClick={resetProcess}
+                  className="flex items-center"
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Reset
+                </Button>
+              )}
+            </div>
             
             <div className="text-center mb-8">
               <p className="text-gray-600 mb-2">Upload a .comapeocat (zip) or .mapeosettings (tar) file to begin editing</p>
