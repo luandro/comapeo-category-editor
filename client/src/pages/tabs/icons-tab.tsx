@@ -108,12 +108,8 @@ export default function IconsTab() {
                           onClick={() => handleViewIcon(file)}
                         >
                           <div className="w-8 h-8 flex items-center justify-center">
-                            {typeof file.content === 'string' ? (
-                              file.content.trim().startsWith('<svg') ? (
-                                <div dangerouslySetInnerHTML={{ __html: file.content }} />
-                              ) : (
-                                <span className="material-icons text-gray-800">{name}</span>
-                              )
+                            {typeof file.content === 'string' && file.content.trim().startsWith('<svg') ? (
+                              <div dangerouslySetInnerHTML={{ __html: file.content }} />
                             ) : (
                               <span className="material-icons text-gray-800">{name}</span>
                             )}
