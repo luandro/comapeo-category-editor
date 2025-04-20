@@ -10,8 +10,17 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
   const zipContents = await zip.loadAsync(file);
   const files: ConfigFile[] = [];
 
+  // The component files we need to look for
+  const configComponents: Record<string, any> = {};
+  const componentFileNames = ['metadata.json', 'presets.json', 'fields.json', 'translations.json', 'icons.json'];
+  
+  // Flag to determine if we need to extract and combine components
+  let hasConfigJson = false;
+  let hasComponentFiles = false;
+
   // First, check if there's a single config.json file
   if (zipContents.files['config.json']) {
+    hasConfigJson = true;
     const configContent = await zipContents.files['config.json'].async('string');
     files.push({
       name: 'config.json',
@@ -22,29 +31,198 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
     console.log('Found config.json in zip file:', configContent.substring(0, 200) + '...');
   }
 
-  // Process all other files
+  // Process all files in the ZIP
   for (const path in zipContents.files) {
     const zipEntry = zipContents.files[path];
-    if (!zipEntry.dir && path !== 'config.json') {
-      const content = await zipEntry.async('string');
+    if (!zipEntry.dir) {
+      // Check if this is a component file we're interested in
+      const fileName = zipEntry.name.split('/').pop() || '';
       
+      // Process all files to extract them
       try {
-        // Try to parse JSON files to verify their format
+        // For JSON files, we validate them and optionally store for combining
         if (path.endsWith('.json')) {
-          JSON.parse(content);
+          if (!hasConfigJson && componentFileNames.includes(fileName)) {
+            // This is a component file we need to track
+            hasComponentFiles = true;
+            const content = await zipEntry.async('string');
+            const parsedData = JSON.parse(content);
+            configComponents[fileName.replace('.json', '')] = parsedData;
+            
+            // Also add the raw file to our list
+            files.push({
+              name: fileName,
+              content,
+              path
+            });
+            
+            console.log(`Extracted component file: ${path}, size: ${content.length}`);
+          } else if (!hasConfigJson || path !== 'config.json') {
+            // Any other JSON file that's not already processed config.json
+            const content = await zipEntry.async('string');
+            JSON.parse(content); // Validate but don't store the result
+            
+            files.push({
+              name: fileName,
+              content,
+              path
+            });
+            
+            console.log(`Extracted file: ${path}, size: ${content.length}`);
+          }
+        } 
+        // For icons and other binary files, we determine the appropriate method
+        else if (path.startsWith('icons/')) {
+          // We need to handle both text-based SVG files and binary PNG files
+          let content: string | ArrayBuffer;
+          
+          if (path.endsWith('.svg')) {
+            content = await zipEntry.async('string');
+          } else if (path.endsWith('.png')) {
+            content = await zipEntry.async('arraybuffer');
+          } else {
+            // Default to string for other files
+            content = await zipEntry.async('string');
+          }
+          
+          files.push({
+            name: fileName,
+            content,
+            path
+          });
+          
+          console.log(`Extracted icon file: ${path}`);
         }
-        
-        files.push({
-          name: zipEntry.name.split('/').pop() || '',
-          content,
-          path
-        });
-        
-        console.log(`Extracted file: ${path}, size: ${content.length}`);
+        // Handle VERSION file and other non-icon, non-JSON files
+        else {
+          const content = await zipEntry.async('string');
+          
+          files.push({
+            name: fileName,
+            content,
+            path
+          });
+          
+          console.log(`Extracted file: ${path}, size: ${content.length}`);
+        }
       } catch (error) {
-        console.error(`Error parsing file ${path}:`, error);
+        console.error(`Error processing file ${path}:`, error);
       }
     }
+  }
+
+  // If we have component files but no config.json, create one
+  if (!hasConfigJson && hasComponentFiles) {
+    console.log('No config.json found, reconstructing from component files...');
+    
+    // Attempt to build a unified config
+    const unifiedConfig = {
+      metadata: configComponents.metadata || {},
+      presets: [],
+      fields: [],
+      translations: configComponents.translations || {},
+      icons: configComponents.icons || {}
+    };
+    
+    // Extract fields from presets.json if present and there's no fields.json
+    if (configComponents.presets && !configComponents.fields) {
+      const extractedFields: Record<string, any> = {};
+      
+      // In some formats, fields are defined within the presets.json file
+      if (configComponents.presets.fields) {
+        // Fields are nested under the "fields" key in presets.json
+        for (const fieldId in configComponents.presets.fields) {
+          if (Object.prototype.hasOwnProperty.call(configComponents.presets.fields, fieldId)) {
+            const field = configComponents.presets.fields[fieldId];
+            
+            // Convert to our field format
+            extractedFields[fieldId] = {
+              id: fieldId,
+              ...field
+            };
+          }
+        }
+        
+        // Add fields to our component tracking
+        configComponents.fields = extractedFields;
+      }
+    }
+    
+    // Check and convert presets if present
+    if (configComponents.presets) {
+      let presetsArray: any[] = [];
+      
+      // Handle case when presets.json contains actual presets (not under a 'presets' key)
+      if (typeof configComponents.presets === 'object' && !Array.isArray(configComponents.presets)) {
+        // Check if it has a "presets" key or is a direct object map of presets
+        const presetsMap = configComponents.presets.presets || configComponents.presets;
+        
+        // Filter out the fields and other special entries
+        const excludedKeys = ['fields', 'categories'];
+        
+        for (const presetId in presetsMap) {
+          if (Object.prototype.hasOwnProperty.call(presetsMap, presetId) 
+              && !excludedKeys.includes(presetId)) {
+            const preset = presetsMap[presetId];
+            
+            // Convert to our preset format
+            presetsArray.push({
+              id: presetId,
+              name: preset.name,
+              tags: preset.tags || {},
+              color: preset.color || '#000000',
+              icon: preset.icon || 'default',
+              geometry: preset.geometry || ['point'],
+              fieldRefs: preset.fields || []
+            });
+          }
+        }
+      } else if (Array.isArray(configComponents.presets)) {
+        // Presets are already in an array format
+        presetsArray = configComponents.presets;
+      }
+      
+      unifiedConfig.presets = presetsArray;
+    }
+    
+    // Check and convert fields if present
+    if (configComponents.fields) {
+      let fieldsArray: any[] = [];
+      
+      if (typeof configComponents.fields === 'object' && !Array.isArray(configComponents.fields)) {
+        for (const fieldId in configComponents.fields) {
+          if (Object.prototype.hasOwnProperty.call(configComponents.fields, fieldId)) {
+            const field = configComponents.fields[fieldId];
+            
+            // Convert to our field format
+            fieldsArray.push({
+              id: fieldId,
+              name: field.label || fieldId,
+              tagKey: field.tagKey || field.key || fieldId,
+              type: field.type || 'text',
+              universal: field.universal || false,
+              helperText: field.helperText || field.placeholder || '',
+              options: field.options || []
+            });
+          }
+        }
+      } else if (Array.isArray(configComponents.fields)) {
+        // Fields are already in an array format
+        fieldsArray = configComponents.fields;
+      }
+      
+      unifiedConfig.fields = fieldsArray;
+    }
+    
+    // Create a unified config.json file
+    const configContent = JSON.stringify(unifiedConfig, null, 2);
+    files.push({
+      name: 'config.json',
+      content: configContent,
+      path: 'config.json'
+    });
+    
+    console.log('Created unified config.json from component files');
   }
 
   return files;
