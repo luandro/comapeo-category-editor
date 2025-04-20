@@ -110,12 +110,12 @@ export default function IconsTab() {
                           <div className="w-8 h-8 flex items-center justify-center">
                             {typeof file.content === 'string' ? (
                               <img 
-                                src={`data:image/svg+xml;base64,${btoa(file.content)}`}
+                                src={`data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(file.content)))}`}
                                 alt={name}
                                 className="w-full h-full object-contain"
-                                onError={() => {
+                                onError={(e) => {
                                   // Fallback to material icon if SVG fails to load
-                                  return <span className="material-icons text-gray-800">{name}</span>;
+                                  e.currentTarget.outerHTML = `<span class="material-icons text-gray-800">${name}</span>`;
                                 }}
                               />
                             ) : (
