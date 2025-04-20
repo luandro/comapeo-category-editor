@@ -16,6 +16,8 @@ export default function IconsTab() {
   const iconFiles = rawFiles.filter(file => 
     file.path.startsWith('icons/') && file.path.endsWith('.svg')
   );
+  
+  console.log('Icon files found:', iconFiles.length, iconFiles.map(f => f.path));
 
   const handleUploadIcon = () => {
     setShowIconDialog(true);
@@ -108,8 +110,14 @@ export default function IconsTab() {
                           onClick={() => handleViewIcon(file)}
                         >
                           <div className="w-8 h-8 flex items-center justify-center">
-                            {typeof file.content === 'string' && file.content.trim().startsWith('<svg') ? (
-                              <div dangerouslySetInnerHTML={{ __html: file.content }} />
+                            {typeof file.content === 'string' ? (
+                              file.content.trim().startsWith('<svg') ? (
+                                <div dangerouslySetInnerHTML={{ __html: file.content }} />
+                              ) : (
+                                <span className="material-icons text-gray-800">{name}</span>
+                              )
+                            ) : file.content instanceof ArrayBuffer ? (
+                              <span className="material-icons text-blue-500">insert_drive_file</span>
                             ) : (
                               <span className="material-icons text-gray-800">{name}</span>
                             )}
