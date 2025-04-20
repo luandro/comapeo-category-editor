@@ -115,20 +115,51 @@ export default function PreviewTab() {
       const iconFile = findMatchingIconFile(iconName);
       
       if (iconFile) {
-        // Get raw content and convert to base64
-        const content = typeof iconFile.content === 'string' ? iconFile.content : '';
-        // For binary content, we need to decode to proper base64
-        const base64Data = btoa(content);
-        
-        return (
-          <div className="w-full h-full flex items-center justify-center">
-            <img 
-              src={`data:image/png;base64,${base64Data}`}
-              alt={preset.name}
-              className="w-3/4 h-3/4 object-contain"
-            />
-          </div>
-        );
+        // For PNG files, we need to create a proper URL
+        // This approach works for both string and binary content
+        try {
+          // Convert the content to a blob
+          const content = iconFile.content;
+          let blob;
+          
+          if (typeof content === 'string') {
+            // Create a Uint8Array from the string content
+            const binaryString = window.atob(content);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            blob = new Blob([bytes], { type: 'image/png' });
+          } else if (content instanceof ArrayBuffer) {
+            blob = new Blob([new Uint8Array(content)], { type: 'image/png' });
+          } else {
+            // Fallback for other content types
+            blob = new Blob([content], { type: 'image/png' });
+          }
+          
+          // Create a URL for the blob
+          const imageUrl = URL.createObjectURL(blob);
+          
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <img 
+                src={imageUrl}
+                alt={preset.name}
+                className="w-3/4 h-3/4 object-contain"
+                onLoad={() => URL.revokeObjectURL(imageUrl)} // Clean up the URL on load
+              />
+            </div>
+          );
+        } catch (error) {
+          console.error("Error displaying icon:", error);
+          // Fallback display if image fails to load
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="material-icons text-gray-400">image_not_supported</span>
+            </div>
+          );
+        }
       }
       
       // If no PNG, check for SVG in iconMap
