@@ -100,7 +100,7 @@ export default function PresetsTab() {
                         >
                           {preset.icon ? (
                             <img 
-                              src={`data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(Buffer.from(preset.icon))))}`}
+                              src={typeof preset.icon === 'string' ? preset.icon : `data:image/svg+xml;base64,${btoa(preset.icon)}`}
                               alt={preset.name}
                               className="w-3/4 h-3/4 object-contain"
                               onError={(e) => {
