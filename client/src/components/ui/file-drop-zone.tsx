@@ -45,12 +45,13 @@ export function FileDropZone({ onFileDrop, acceptedFileTypes, fileTypesText, cla
   };
 
   const validateAndProcessFile = (file: File) => {
-    const fileExtension = file.name.toLowerCase().split('.').pop() || '';
-    const mimeTypeMatch = acceptedFileTypes.some(type => 
-      type.includes(fileExtension) || file.type.includes(type.replace('.', ''))
+    const fileName = file.name.toLowerCase();
+    // Check if the file name ends with any of the accepted file extensions
+    const extensionMatch = acceptedFileTypes.some(type => 
+      fileName.endsWith(type)
     );
 
-    if (mimeTypeMatch) {
+    if (extensionMatch) {
       onFileDrop(file);
     } else {
       alert(`Invalid file type. Please upload a ${fileTypesText} file.`);
@@ -88,7 +89,6 @@ export function FileDropZone({ onFileDrop, acceptedFileTypes, fileTypesText, cla
       <input
         type="file"
         ref={fileInputRef}
-        accept={acceptedFileTypes.join(',')}
         className="hidden"
         onChange={handleFileInputChange}
       />
