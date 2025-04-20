@@ -5,6 +5,7 @@ import { PageContainer } from '@/components/ui/page-container';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { 
   InfoIcon, 
   TagIcon, 
