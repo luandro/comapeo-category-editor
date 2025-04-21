@@ -98,8 +98,16 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
         coMapeoField.options = Object.entries(field.options).map(([value, label]) => {
           // Handle quoted keys in Mapeo format
           const cleanValue = value.replace(/^\"|\"$/g, '');
+          // Handle case where label is an object with a label property
+          let labelText = cleanValue;
+          if (typeof label === 'string') {
+            labelText = label;
+          } else if (label && typeof label === 'object' && 'label' in label && typeof label.label === 'string') {
+            labelText = label.label;
+          }
+
           return {
-            label: typeof label === 'string' ? label : cleanValue,
+            label: labelText,
             value: cleanValue.toLowerCase().replace(/\s+/g, '_')
           };
         });
@@ -174,7 +182,15 @@ function convertTranslations(mapeoTranslations: Record<string, any>): Record<str
               for (const optKey in field.options) {
                 // Remove quotes from keys
                 const cleanKey = optKey.replace(/^\"|\"/g, '');
-                cleanOptions[cleanKey] = field.options[optKey];
+                // Handle case where option value is an object with a label property
+                const optValue = field.options[optKey];
+                if (typeof optValue === 'string') {
+                  cleanOptions[cleanKey] = optValue;
+                } else if (optValue && typeof optValue === 'object' && 'label' in optValue) {
+                  cleanOptions[cleanKey] = { label: optValue.label };
+                } else {
+                  cleanOptions[cleanKey] = optValue;
+                }
               }
               field.options = cleanOptions;
             }

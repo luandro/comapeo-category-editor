@@ -53,6 +53,14 @@ export default function TranslationsTab() {
       } else if (typeof obj[key] === 'string') {
         // It's a simple string value
         result[newKey] = obj[key];
+      } else if (obj[key] !== null && typeof obj[key] !== 'undefined') {
+        // For any other non-null value, stringify it
+        try {
+          result[newKey] = JSON.stringify(obj[key]);
+        } catch (e) {
+          console.warn(`Could not stringify value for key ${newKey}:`, e);
+          result[newKey] = String(obj[key]);
+        }
       }
     }
 
@@ -205,7 +213,7 @@ export default function TranslationsTab() {
                       {locales.map(locale => (
                         <TableCell key={`${locale}-${key}`}>
                           <Input
-                            value={flatTranslations[locale]?.[key] || ''}
+                            value={typeof flatTranslations[locale]?.[key] === 'string' ? flatTranslations[locale]?.[key] : JSON.stringify(flatTranslations[locale]?.[key]) || ''}
                             onChange={(e) => handleTranslationChange(locale, key, e.target.value)}
                             className="w-full"
                           />
