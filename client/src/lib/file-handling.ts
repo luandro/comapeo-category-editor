@@ -410,7 +410,27 @@ export async function createZipFile(
   for (const file of rawFiles) {
     if (file.path.startsWith("icons/")) {
       // Create icons directory if needed
-      zip.file(file.path, file.content);
+      if (file.path.endsWith('.png') && file.content instanceof ArrayBuffer) {
+        // Handle ArrayBuffer content for PNG files
+        zip.file(file.path, file.content);
+      } else if (file.path.endsWith('.png') && typeof file.content === 'string') {
+        // Handle base64 string content for PNG files
+        try {
+          // Convert base64 string to ArrayBuffer
+          const binary = atob(file.content);
+          const array = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            array[i] = binary.charCodeAt(i);
+          }
+          zip.file(file.path, array.buffer);
+        } catch (error) {
+          console.error(`Error processing PNG file ${file.path}:`, error);
+          // Skip this file if it can't be processed
+        }
+      } else {
+        // Handle SVG and other text-based files
+        zip.file(file.path, file.content);
+      }
     }
   }
 

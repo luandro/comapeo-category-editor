@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Image, Upload } from 'lucide-react';
 
 interface IconDialogProps {
-  onSave: (name: string, content: string) => void;
+  onSave: (name: string, content: string, fileType?: string) => void;
   onCancel: () => void;
 }
 
@@ -48,14 +48,17 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
   };
 
   const processFile = (file: File) => {
-    // Only accept SVG files
-    if (file.type !== 'image/svg+xml' && !file.name.toLowerCase().endsWith('.svg')) {
-      alert('Please upload an SVG file.');
+    // Accept SVG and PNG files
+    const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+    const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+
+    if (!isSvg && !isPng) {
+      alert('Please upload an SVG or PNG file.');
       return;
     }
 
     // Set the icon name from file name (remove extension)
-    const fileName = file.name.replace(/\.svg$/i, '');
+    const fileName = file.name.replace(/\.(svg|png)$/i, '');
     setIconName(fileName);
     setIconFile(file);
 
@@ -80,9 +83,25 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
     }
 
     try {
-      // Read the file as text
-      const content = await iconFile.text();
-      onSave(iconName, content);
+      const isSvg = iconFile.type === 'image/svg+xml' || iconFile.name.toLowerCase().endsWith('.svg');
+      const fileType = isSvg ? 'svg' : 'png';
+
+      if (isSvg) {
+        // For SVG, read as text
+        const content = await iconFile.text();
+        onSave(iconName, content, fileType);
+      } else {
+        // For PNG, read as base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            // Convert to base64 string without the data URL prefix
+            const base64Content = (e.target.result as string).split(',')[1];
+            onSave(iconName, base64Content, fileType);
+          }
+        };
+        reader.readAsDataURL(iconFile);
+      }
     } catch (error) {
       console.error('Error reading icon file:', error);
       alert('Failed to process the icon file.');
@@ -95,7 +114,7 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
         <DialogHeader>
           <DialogTitle>Upload Icon</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
@@ -108,10 +127,10 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
           >
             {iconPreview ? (
               <div className="flex flex-col items-center">
-                <img 
-                  src={iconPreview} 
-                  alt="Icon preview" 
-                  className="w-16 h-16 mb-2" 
+                <img
+                  src={iconPreview}
+                  alt="Icon preview"
+                  className="w-16 h-16 mb-2"
                 />
                 <p className="text-sm font-medium text-gray-700">{iconFile?.name}</p>
                 <p className="text-xs text-gray-500 mt-1">Click or drag to replace</p>
@@ -119,25 +138,25 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
             ) : (
               <>
                 <Image className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm font-medium text-gray-700 mb-2">Drag and drop an SVG icon here</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">Drag and drop an icon here</p>
                 <p className="text-gray-500 text-xs mb-4">or</p>
                 <Button size="sm" variant="outline">
                   <Upload className="mr-2 h-4 w-4" />
                   Browse Files
                 </Button>
-                <p className="mt-2 text-xs text-gray-500">SVG format recommended</p>
+                <p className="mt-2 text-xs text-gray-500">SVG or PNG formats accepted (SVG recommended)</p>
               </>
             )}
-            
+
             <input
               type="file"
               ref={fileInputRef}
-              accept=".svg,image/svg+xml"
+              accept=".svg,.png,image/svg+xml,image/png"
               className="hidden"
               onChange={handleFileInputChange}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="iconName">Icon Name</Label>
             <Input
@@ -147,10 +166,10 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
               placeholder="E.g., park, tree, river (no spaces, no extension)"
               className="w-full"
             />
-            <p className="mt-1 text-xs text-gray-500">Will be saved as [name].svg in the icons directory</p>
+            <p className="mt-1 text-xs text-gray-500">Will be saved in the icons directory with the appropriate extension</p>
           </div>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>
             Cancel
