@@ -511,69 +511,93 @@ export async function createZipFile(
 ): Promise<Blob> {
   const zip = new JSZip();
 
-  // Create a single config.json file for CoMapeo format
-  const combinedConfig: {
-    metadata: CoMapeoConfig["metadata"];
-    fields: Record<string, any>;
-    presets: Record<string, any>;
-    translations: Record<string, Record<string, string>>;
-    icons: Record<string, unknown>;
-  } = {
-    metadata: config.metadata,
-    fields: {},
-    presets: {},
-    translations: config.translations || {},
-    icons: config.icons || {},
-  };
+  // Prepare to collect presets by geometry type
 
-  // Convert fields array to object map
-  if (Array.isArray(config.fields)) {
-    config.fields.forEach((field) => {
-      if (field.id) {
-        // Using type assertion to avoid TypeScript error
-        (combinedConfig.fields as Record<string, any>)[field.id] = {
-          tagKey: field.tagKey,
-          type: field.type,
-          label: field.name,
-          helperText: field.helperText || "",
-          universal: field.universal || false,
-          options: field.options || [],
-        };
-      }
-    });
-  }
+  // Populate defaults based on presets
+  const pointPresets: string[] = [];
+  const linePresets: string[] = [];
+  const areaPresets: string[] = [];
 
-  // Convert presets array to object map
+  // Process presets to populate defaults
   if (Array.isArray(config.presets)) {
     config.presets.forEach((preset) => {
       if (preset.id) {
-        // Using type assertion to avoid TypeScript error
-        (combinedConfig.presets as Record<string, any>)[preset.id] = {
-          name: preset.name,
-          tags: preset.tags || {},
-          color: preset.color || "#000000",
-          icon: preset.icon || "default",
-          fields: preset.fieldRefs || [],
-          removeTags: preset.removeTags || {},
-          addTags: preset.addTags || {},
-          geometry: preset.geometry || ["point"],
-        };
+        // Add to appropriate geometry arrays
+        if (preset.geometry.includes('point')) {
+          pointPresets.push(preset.id);
+        }
+        if (preset.geometry.includes('line')) {
+          linePresets.push(preset.id);
+        }
+        if (preset.geometry.includes('area')) {
+          areaPresets.push(preset.id);
+        }
+
+        // We don't need to add presets to the presets.json file
+        // as they're handled separately in the Mapeo format
       }
     });
   }
 
-  // Add the combined config
-  zip.file("config.json", JSON.stringify(combinedConfig, null, 2));
+  // These will be used in the generatePresetsJson function
 
-  // Also add individual files for compatibility
+  // Generate presets.json content in the correct format
+  const generatePresetsJson = () => {
+    // Start with the basic structure
+    const result = {
+      categories: {},
+      fields: {},
+      defaults: {
+        area: areaPresets,
+        line: linePresets,
+        point: pointPresets,
+        vertex: [],
+        relation: []
+      }
+    };
+
+    // Add fields in the correct format
+    if (Array.isArray(config.fields)) {
+      config.fields.forEach((field) => {
+        if (field.id) {
+          result.fields[field.id] = {
+            tagKey: field.tagKey,
+            type: field.type,
+            label: field.name,
+            helperText: field.helperText || "",
+            universal: field.universal || false
+          };
+
+          // Add options if they exist
+          if (field.options && field.options.length > 0) {
+            result.fields[field.id].options = field.options;
+          }
+        }
+      });
+    }
+
+    return result;
+  };
+
+  // Add the required files
   zip.file("metadata.json", JSON.stringify(config.metadata, null, 2));
-  zip.file("presets.json", JSON.stringify(config.presets, null, 2));
-  zip.file("fields.json", JSON.stringify(config.fields, null, 2));
+  zip.file("presets.json", JSON.stringify(generatePresetsJson(), null, 2));
   zip.file("translations.json", JSON.stringify(config.translations, null, 2));
   zip.file("icons.json", JSON.stringify(config.icons, null, 2));
 
   // Add VERSION file
   zip.file("VERSION", "1");
+
+  // Add style.css file (empty or with default styles)
+  zip.file("style.css", "/* CoMapeo configuration styles */");
+
+  // Create icons directory
+  zip.folder("icons");
+
+  // Add icons.png and icons.svg placeholder files
+  // These would normally be sprite sheets generated from individual icons
+  zip.file("icons.png", new Uint8Array([]));
+  zip.file("icons.svg", '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>');
 
   // Add any raw files (like icons)
   for (const file of rawFiles) {
