@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { useConfigStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { X, ArrowLeft, Check, Circle } from 'lucide-react';
+import { X, ArrowLeft, Circle } from 'lucide-react';
 import { sanitizeSvgForReact } from '@/lib/svg-utils';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function PreviewTab() {
   const { config, rawFiles } = useConfigStore();
@@ -15,6 +16,40 @@ export default function PreviewTab() {
   const [iconMap, setIconMap] = useState<{[key: string]: string}>({});
   const [selectedPreset, setSelectedPreset] = useState<any | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [selectedField, setSelectedField] = useState<any | null>(null);
+  const [showFieldDetails, setShowFieldDetails] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+
+  // Function to get translated text based on the selected language
+  const getTranslatedText = (defaultText: string, section: string, id: string, field: string, language: string): string => {
+    if (!config || !config.translations || !language || language === 'en') {
+      return defaultText || '';
+    }
+
+    try {
+      const langTranslations = config.translations[language];
+      if (!langTranslations) return defaultText || '';
+
+      // Handle nested paths like 'options.value1'
+      if (field.includes('.')) {
+        const [parent, child] = field.split('.');
+        if (langTranslations[section] &&
+            langTranslations[section][id] &&
+            langTranslations[section][id][parent] &&
+            langTranslations[section][id][parent][child]) {
+          return langTranslations[section][id][parent][child];
+        }
+      } else if (langTranslations[section] &&
+                 langTranslations[section][id] &&
+                 langTranslations[section][id][field]) {
+        return langTranslations[section][id][field];
+      }
+    } catch (error) {
+      console.error('Error getting translation:', error);
+    }
+
+    return defaultText || '';
+  };
 
   useEffect(() => {
     if (!config) return;
@@ -241,27 +276,62 @@ export default function PreviewTab() {
     <>
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4 mb-6 items-start md:items-center">
-            <div className="w-full">
+          <div className="flex flex-col md:flex-row gap-4 mb-6 items-start md:items-center justify-between">
+            <div className="flex gap-2 items-center">
               <Input
                 placeholder="Search presets..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="max-w-sm"
               />
+              <Select
+                value={selectedLanguage}
+                onValueChange={setSelectedLanguage}
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="es">Español</SelectItem>
+                  <SelectItem value="pt">Português</SelectItem>
+                  {config && config.translations &&
+                    Object.keys(config.translations)
+                      .filter(lang => !['en', 'es', 'pt'].includes(lang))
+                      .map(lang => (
+                        <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                      ))
+                  }
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           <div className="mx-auto max-w-[375px]">
             <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
               {/* Mobile-like header */}
-              <div className="p-4 border-b border-gray-200 flex items-center">
-                {showDetails ? (
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                {showFieldDetails ? (
                   <>
-                    <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} className="mr-2">
-                      <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <div className="text-xl font-semibold">Details</div>
+                    <div className="flex items-center">
+                      <Button variant="ghost" size="icon" onClick={() => {
+                        setShowFieldDetails(false);
+                        setSelectedField(null);
+                      }} className="mr-2">
+                        <ArrowLeft className="h-5 w-5" />
+                      </Button>
+                      <div className="text-xl font-semibold">Question {selectedField?.questionNumber || 1} of {selectedPreset?.fieldRefs?.length || 1}</div>
+                    </div>
+                    <div className="text-blue-500 font-medium">Done</div>
+                  </>
+                ) : showDetails ? (
+                  <>
+                    <div className="flex items-center">
+                      <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} className="mr-2">
+                        <ArrowLeft className="h-5 w-5" />
+                      </Button>
+                      <div className="text-xl font-semibold">Details</div>
+                    </div>
                   </>
                 ) : (
                   <>
@@ -271,7 +341,43 @@ export default function PreviewTab() {
                 )}
               </div>
 
-              {showDetails && selectedPreset ? (
+              {showFieldDetails && selectedField ? (
+                <div className="p-4 overflow-y-auto max-h-[70vh]">
+                  {/* Field details view */}
+                  <div className="border-b pb-4 mb-4">
+                    <h2 className="text-xl font-bold mb-1">{getTranslatedText(selectedField.name, 'fields', selectedField.id, 'label', selectedLanguage)}</h2>
+                    <p className="text-gray-700">{getTranslatedText(selectedField.helperText, 'fields', selectedField.id, 'helperText', selectedLanguage)}</p>
+                  </div>
+
+                  {/* Field input */}
+                  <div className="space-y-4">
+                    {selectedField.type === 'select' && selectedField.options && (
+                      <div className="space-y-4">
+                        {selectedField.options.map((option: any, idx: number) => {
+                          const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
+                          return (
+                            <div key={idx} className="flex items-center">
+                              <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
+                              </div>
+                              <span className="text-lg">{optionLabel}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {selectedField.type === 'text' && (
+                      <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>
+                    )}
+                    {selectedField.type === 'textarea' && (
+                      <div className="h-24 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>
+                    )}
+                    {selectedField.type === 'number' && (
+                      <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>
+                    )}
+                  </div>
+                </div>
+              ) : showDetails && selectedPreset ? (
                 <div className="p-4 overflow-y-auto max-h-[70vh]">
                   {/* Preset details view */}
                   <div className="flex items-center mb-6">
@@ -279,46 +385,37 @@ export default function PreviewTab() {
                       {renderPresetIcon(selectedPreset)}
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">{selectedPreset.name}</h2>
+                      <h2 className="text-xl font-semibold">{getTranslatedText(selectedPreset.name, 'presets', selectedPreset.id, 'name', selectedLanguage)}</h2>
                       <p className="text-gray-500 text-sm capitalize">{selectedPreset.tags?.category || 'uncategorized'}</p>
                     </div>
                   </div>
 
                   {/* Fields section */}
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-3">Condições</h3>
                     <div className="space-y-4">
                       {config && selectedPreset.fieldRefs && selectedPreset.fieldRefs.length > 0 ? (
-                        selectedPreset.fieldRefs.map((fieldId: string) => {
+                        selectedPreset.fieldRefs.map((fieldId: string, index: number) => {
                           const field = config.fields.find(f => f.id === fieldId);
                           if (!field) return null;
 
-                          if (field.type === 'select' && field.options) {
-                            return (
-                              <div key={fieldId} className="space-y-3">
-                                <h4 className="font-medium">{field.name}</h4>
-                                {field.helperText && <p className="text-sm text-gray-500">{field.helperText}</p>}
-                                <div className="space-y-2">
-                                  {field.options.map((option: any, idx: number) => (
-                                    <div key={idx} className="flex items-center">
-                                      <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
-                                        {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
-                                      </div>
-                                      <span>{option.label}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          }
+                          // Add question number to field for display in field details view
+                          const fieldWithNumber = { ...field, questionNumber: index + 1 };
 
                           return (
-                            <div key={fieldId} className="space-y-2">
-                              <h4 className="font-medium">{field.name}</h4>
-                              {field.helperText && <p className="text-sm text-gray-500">{field.helperText}</p>}
-                              {field.type === 'text' && <div className="h-10 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>}
-                              {field.type === 'textarea' && <div className="h-20 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>}
-                              {field.type === 'number' && <div className="h-10 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>}
+                            <div
+                              key={fieldId}
+                              className="p-4 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50"
+                              onClick={() => {
+                                setSelectedField(fieldWithNumber);
+                                setShowFieldDetails(true);
+                              }}
+                            >
+                              <h4 className="font-medium">{getTranslatedText(field.name, 'fields', field.id, 'label', selectedLanguage)}</h4>
+                              {field.helperText && (
+                                <p className="text-sm text-gray-500 mt-1">
+                                  {getTranslatedText(field.helperText, 'fields', field.id, 'helperText', selectedLanguage)}
+                                </p>
+                              )}
                             </div>
                           );
                         })
@@ -326,13 +423,6 @@ export default function PreviewTab() {
                         <p className="text-gray-500">No fields for this preset</p>
                       )}
                     </div>
-                  </div>
-
-                  {/* Submit button */}
-                  <div className="mt-6">
-                    <Button className="w-full" size="lg">
-                      <Check className="mr-2 h-4 w-4" /> Submit
-                    </Button>
                   </div>
                 </div>
               ) : (
@@ -355,7 +445,7 @@ export default function PreviewTab() {
                               <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
                                 {renderPresetIcon(preset)}
                               </div>
-                              <span className="text-sm text-center">{preset.name}</span>
+                              <span className="text-sm text-center">{getTranslatedText(preset.name, 'presets', preset.id, 'name', selectedLanguage)}</span>
                             </div>
                           ))}
                         </div>
