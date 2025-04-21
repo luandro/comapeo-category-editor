@@ -16,27 +16,89 @@ export default function TranslationsTab() {
 
   // Get available locales
   const locales = config ? Object.keys(config.translations) : [];
-  
+
+  // Function to flatten nested translations
+  const flattenTranslations = (obj: any, prefix: string = ''): Record<string, string> => {
+    let result: Record<string, string> = {};
+
+    for (const key in obj) {
+      const newKey = prefix ? `${prefix}.${key}` : key;
+
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        // If it's an object with a 'label' property, it's likely a field or option
+        if (obj[key].label) {
+          result[`${newKey}.label`] = obj[key].label;
+
+          // Also add other properties like helperText if they exist
+          if (obj[key].helperText) {
+            result[`${newKey}.helperText`] = obj[key].helperText;
+          }
+          if (obj[key].placeholder) {
+            result[`${newKey}.placeholder`] = obj[key].placeholder;
+          }
+
+          // Handle options if they exist
+          if (obj[key].options && typeof obj[key].options === 'object') {
+            for (const optKey in obj[key].options) {
+              if (obj[key].options[optKey].label) {
+                result[`${newKey}.options.${optKey}.label`] = obj[key].options[optKey].label;
+              }
+            }
+          }
+        } else {
+          // Recursively flatten nested objects
+          const nested = flattenTranslations(obj[key], newKey);
+          result = { ...result, ...nested };
+        }
+      } else if (typeof obj[key] === 'string') {
+        // It's a simple string value
+        result[newKey] = obj[key];
+      }
+    }
+
+    return result;
+  };
+
+  // Flatten translations for display
+  const flatTranslations: Record<string, Record<string, string>> = {};
+  if (config) {
+    for (const locale of locales) {
+      if (config.translations[locale]) {
+        flatTranslations[locale] = flattenTranslations(config.translations[locale]);
+      } else {
+        flatTranslations[locale] = {};
+      }
+    }
+  }
+
+  // Get all unique keys from all locales
+  const allKeys = new Set<string>();
+  for (const locale of locales) {
+    Object.keys(flatTranslations[locale] || {}).forEach(key => allKeys.add(key));
+  }
+
   // Filter and categorize translation keys
-  const filteredKeys = !config ? [] : Object.keys(config.translations[locales[0]] || {})
+  const filteredKeys = !config ? [] : Array.from(allKeys)
     .filter(key => {
       // Filter by search query
       if (searchQuery && !key.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
-      
+
       // Filter by category
-      if (category === 'presets' && key.startsWith('presets/')) return true;
-      if (category === 'fields' && key.startsWith('fields/') && !key.includes('/options/')) return true;
-      if (category === 'options' && key.includes('/options/')) return true;
-      if (category === 'other' && !key.startsWith('presets/') && !key.startsWith('fields/')) return true;
-      
+      if (category === 'presets' && key.startsWith('presets')) return true;
+      if (category === 'fields' && key.startsWith('fields') && !key.includes('options')) return true;
+      if (category === 'options' && key.includes('options')) return true;
+      if (category === 'other' && !key.startsWith('presets') && !key.startsWith('fields')) return true;
+
       return false;
     })
     .sort();
 
   const handleTranslationChange = (locale: string, key: string, value: string) => {
-    updateTranslation(locale, key, value);
+    // Split the key into parts to handle nested structure
+    const keyParts = key.split('.');
+    updateTranslation(locale, key, value, keyParts);
   };
 
   const handleAddLanguage = (locale: string) => {
@@ -45,9 +107,27 @@ export default function TranslationsTab() {
   };
 
   const refreshTranslationKeys = () => {
-    // This would scan the config for all translatable strings and ensure
-    // they exist in all language files. For now, just show a simple alert.
-    alert('Translation keys refreshed');
+    if (!config || locales.length === 0) return;
+
+    // Get all unique keys from all locales
+    const allTranslationKeys = new Set<string>();
+    for (const locale of locales) {
+      Object.keys(flatTranslations[locale] || {}).forEach(key => allTranslationKeys.add(key));
+    }
+
+    // Ensure all keys exist in all locales
+    for (const locale of locales) {
+      for (const key of allTranslationKeys) {
+        if (!flatTranslations[locale]?.[key]) {
+          // If key doesn't exist in this locale, add it with empty value
+          const keyParts = key.split('.');
+          updateTranslation(locale, key, '', keyParts);
+        }
+      }
+    }
+
+    // Show success message
+    alert(`Translation keys refreshed. All ${allTranslationKeys.size} keys are now available in all ${locales.length} languages.`);
   };
 
   if (!config) return null;
@@ -59,15 +139,15 @@ export default function TranslationsTab() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Translations</h2>
             <div className="flex space-x-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setShowLanguageDialog(true)}
                 className="flex items-center"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Language
               </Button>
-              <Button 
+              <Button
                 onClick={refreshTranslationKeys}
                 className="flex items-center"
               >
@@ -76,7 +156,7 @@ export default function TranslationsTab() {
               </Button>
             </div>
           </div>
-          
+
           <div className="mb-4 flex space-x-4">
             <Select
               value={category}
@@ -92,7 +172,7 @@ export default function TranslationsTab() {
                 <SelectItem value="other">Other UI Elements</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Input
               placeholder="Search translation keys..."
               value={searchQuery}
@@ -100,7 +180,7 @@ export default function TranslationsTab() {
               className="flex-1"
             />
           </div>
-          
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -125,7 +205,7 @@ export default function TranslationsTab() {
                       {locales.map(locale => (
                         <TableCell key={`${locale}-${key}`}>
                           <Input
-                            value={config.translations[locale]?.[key] || ''}
+                            value={flatTranslations[locale]?.[key] || ''}
                             onChange={(e) => handleTranslationChange(locale, key, e.target.value)}
                             className="w-full"
                           />
@@ -139,7 +219,7 @@ export default function TranslationsTab() {
           </div>
         </CardContent>
       </Card>
-      
+
       {showLanguageDialog && (
         <LanguageDialog
           existingLocales={locales}
