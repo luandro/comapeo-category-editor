@@ -21,6 +21,58 @@ export default function PreviewTab() {
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number>(0);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
 
+  // Function to normalize options to array format
+  const normalizeOptions = (options: any): Array<{label: string, value: string}> => {
+    if (!options) return [];
+
+    // If options is already an array
+    if (Array.isArray(options)) {
+      return options.map((opt, idx) => {
+        if (typeof opt === 'string') {
+          return { label: opt, value: opt.toLowerCase().replace(/\s+/g, '_') };
+        } else if (opt && typeof opt === 'object' && opt.label) {
+          return {
+            label: opt.label,
+            value: opt.value || opt.label.toLowerCase().replace(/\s+/g, '_')
+          };
+        } else {
+          return { label: `Option ${idx + 1}`, value: `option_${idx}` };
+        }
+      });
+    }
+
+    // If options is an object (key-value pairs)
+    if (typeof options === 'object') {
+      return Object.entries(options).map(([key, value]) => {
+        if (typeof value === 'string') {
+          return { label: value, value: key };
+        } else if (value && typeof value === 'object' && 'label' in value) {
+          return { label: value.label, value: key };
+        } else {
+          return { label: key, value: key };
+        }
+      });
+    }
+
+    return [];
+  };
+
+  // Add a debug function to log field structure
+  const debugField = (field: any) => {
+    if (field && field.type === 'select' && field.options) {
+      console.log('Field with options:', field.id, field.name);
+      console.log('Options type:', typeof field.options, Array.isArray(field.options));
+      console.log('Options:', field.options);
+
+      if (Array.isArray(field.options) && field.options.length > 0) {
+        console.log('First option type:', typeof field.options[0]);
+        console.log('First option:', field.options[0]);
+      } else if (typeof field.options === 'object') {
+        console.log('Options keys:', Object.keys(field.options));
+      }
+    }
+  };
+
   // Function to get translated text based on the selected language
   const getTranslatedText = (defaultText: string, section: string, id: string, field: string, language: string): string => {
     if (!config || !config.translations || !language || language === 'en') {
@@ -375,17 +427,27 @@ export default function PreviewTab() {
                   <div className="space-y-4">
                     {selectedField.type === 'select' && selectedField.options && (
                       <div className="space-y-4">
-                        {selectedField.options.map((option: any, idx: number) => {
-                          const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
-                          return (
-                            <div key={idx} className="flex items-center">
-                              <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
-                                {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
-                              </div>
-                              <span className="text-lg">{optionLabel}</span>
-                            </div>
+                        {(() => {
+                          // Normalize options to a consistent format
+                          const normalizedOptions = normalizeOptions(selectedField.options);
+
+                          return normalizedOptions.length > 0 ? (
+                            normalizedOptions.map((option, idx) => {
+                              const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
+
+                              return (
+                                <div key={idx} className="flex items-center">
+                                  <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
+                                  </div>
+                                  <span className="text-lg">{optionLabel}</span>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="text-gray-500">No options available</div>
                           );
-                        })}
+                        })()}
                       </div>
                     )}
                     {selectedField.type === 'text' && (
@@ -420,6 +482,9 @@ export default function PreviewTab() {
                           const field = config.fields.find(f => f.id === fieldId);
                           if (!field) return null;
 
+                          // Debug field structure
+                          debugField(field);
+
                           // Add question number to field for display in field details view
                           const fieldWithNumber = { ...field, questionNumber: index + 1 };
 
@@ -441,15 +506,24 @@ export default function PreviewTab() {
                               )}
 
                               {/* Show options for fields that have them */}
-                              {field.type === 'select' && field.options && field.options.length > 0 && (
+                              {field.type === 'select' && field.options && (
                                 <div className="mt-2 pl-2 border-l-2 border-gray-200">
                                   <p className="text-xs text-gray-500 mb-1">Options:</p>
                                   <div className="flex flex-wrap gap-1">
-                                    {field.options.map((option: any, optIdx: number) => (
-                                      <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                        {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
-                                      </span>
-                                    ))}
+                                    {(() => {
+                                      // Normalize options to a consistent format
+                                      const normalizedOptions = normalizeOptions(field.options);
+
+                                      return normalizedOptions.length > 0 ? (
+                                        normalizedOptions.map((option, optIdx) => (
+                                          <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                            {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
+                                          </span>
+                                        ))
+                                      ) : (
+                                        <span className="text-xs text-gray-500">No options available</span>
+                                      );
+                                    })()}
                                   </div>
                                 </div>
                               )}
@@ -481,6 +555,8 @@ export default function PreviewTab() {
                                   const firstFieldId = preset.fieldRefs[0];
                                   const firstField = config.fields.find(f => f.id === firstFieldId);
                                   if (firstField) {
+                                    // Debug field structure
+                                    debugField(firstField);
                                     setSelectedField({ ...firstField, questionNumber: 1 });
                                     setShowFieldDetails(true);
                                     setCurrentFieldIndex(0);
