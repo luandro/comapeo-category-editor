@@ -369,28 +369,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
               />
             </div>
 
-            <div>
-              <Label htmlFor="category">Category</Label>
-              <Select
-                value={formData.id.split('/')[0] || ''}
-                onValueChange={(value) => {
-                  setFormData(prev => ({
-                    ...prev,
-                    id: `${value}/${prev.id.split('/')[1] || prev.name.toLowerCase().replace(/\s+/g, '_')}`
-                  }));
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="environment">Environment</SelectItem>
-                  <SelectItem value="wildlife">Wildlife</SelectItem>
-                  <SelectItem value="threats">Threats</SelectItem>
-                  <SelectItem value="infrastructure">Infrastructure</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
           </div>
 
           <div>

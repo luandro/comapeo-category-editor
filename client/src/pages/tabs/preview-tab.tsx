@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { useConfigStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { X } from 'lucide-react';
+import { X, ArrowLeft, Check, Circle } from 'lucide-react';
 import { sanitizeSvgForReact } from '@/lib/svg-utils';
+import { Button } from '@/components/ui/button';
 
 export default function PreviewTab() {
   const { config, rawFiles } = useConfigStore();
@@ -12,6 +13,8 @@ export default function PreviewTab() {
   const [categories, setCategories] = useState<string[]>([]);
   const [presetsByCategory, setPresetsByCategory] = useState<{[key: string]: any[]}>({});
   const [iconMap, setIconMap] = useState<{[key: string]: string}>({});
+  const [selectedPreset, setSelectedPreset] = useState<any | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     if (!config) return;
@@ -253,34 +256,118 @@ export default function PreviewTab() {
             <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
               {/* Mobile-like header */}
               <div className="p-4 border-b border-gray-200 flex items-center">
-                <X className="h-6 w-6 mr-3" />
-                <div className="text-xl font-semibold">Choose what is happening</div>
-              </div>
-
-              {/* Display presets by category */}
-              <div className="p-4 overflow-y-auto max-h-[70vh]">
-                {Object.keys(filteredPresetsByCategory).length > 0 ? (
-                  Object.keys(filteredPresetsByCategory).map((category) => (
-                    <div key={category} className="mb-6">
-                      <h3 className="text-lg font-semibold mb-3 capitalize">{category}</h3>
-                      <div className="grid grid-cols-3 gap-6">
-                        {filteredPresetsByCategory[category].map((preset, index) => (
-                          <div key={index} className="flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
-                              {renderPresetIcon(preset)}
-                            </div>
-                            <span className="text-sm text-center">{preset.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))
+                {showDetails ? (
+                  <>
+                    <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} className="mr-2">
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <div className="text-xl font-semibold">Details</div>
+                  </>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No presets found matching your search
-                  </div>
+                  <>
+                    <X className="h-6 w-6 mr-3" />
+                    <div className="text-xl font-semibold">Choose what is happening</div>
+                  </>
                 )}
               </div>
+
+              {showDetails && selectedPreset ? (
+                <div className="p-4 overflow-y-auto max-h-[70vh]">
+                  {/* Preset details view */}
+                  <div className="flex items-center mb-6">
+                    <div className="w-16 h-16 bg-white rounded-full shadow-md overflow-hidden border border-gray-100 p-2 mr-4">
+                      {renderPresetIcon(selectedPreset)}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold">{selectedPreset.name}</h2>
+                      <p className="text-gray-500 text-sm capitalize">{selectedPreset.tags?.category || 'uncategorized'}</p>
+                    </div>
+                  </div>
+
+                  {/* Fields section */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-3">Condições</h3>
+                    <div className="space-y-4">
+                      {config && selectedPreset.fieldRefs && selectedPreset.fieldRefs.length > 0 ? (
+                        selectedPreset.fieldRefs.map((fieldId: string) => {
+                          const field = config.fields.find(f => f.id === fieldId);
+                          if (!field) return null;
+
+                          if (field.type === 'select' && field.options) {
+                            return (
+                              <div key={fieldId} className="space-y-3">
+                                <h4 className="font-medium">{field.name}</h4>
+                                {field.helperText && <p className="text-sm text-gray-500">{field.helperText}</p>}
+                                <div className="space-y-2">
+                                  {field.options.map((option: any, idx: number) => (
+                                    <div key={idx} className="flex items-center">
+                                      <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                        {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
+                                      </div>
+                                      <span>{option.label}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div key={fieldId} className="space-y-2">
+                              <h4 className="font-medium">{field.name}</h4>
+                              {field.helperText && <p className="text-sm text-gray-500">{field.helperText}</p>}
+                              {field.type === 'text' && <div className="h-10 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>}
+                              {field.type === 'textarea' && <div className="h-20 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>}
+                              {field.type === 'number' && <div className="h-10 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>}
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <p className="text-gray-500">No fields for this preset</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit button */}
+                  <div className="mt-6">
+                    <Button className="w-full" size="lg">
+                      <Check className="mr-2 h-4 w-4" /> Submit
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 overflow-y-auto max-h-[70vh]">
+                  {/* Display presets by category */}
+                  {Object.keys(filteredPresetsByCategory).length > 0 ? (
+                    Object.keys(filteredPresetsByCategory).map((category) => (
+                      <div key={category} className="mb-6">
+                        <h3 className="text-lg font-semibold mb-3 capitalize">{category}</h3>
+                        <div className="grid grid-cols-3 gap-6">
+                          {filteredPresetsByCategory[category].map((preset, index) => (
+                            <div
+                              key={index}
+                              className="flex flex-col items-center cursor-pointer"
+                              onClick={() => {
+                                setSelectedPreset(preset);
+                                setShowDetails(true);
+                              }}
+                            >
+                              <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
+                                {renderPresetIcon(preset)}
+                              </div>
+                              <span className="text-sm text-center">{preset.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No presets found matching your search
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
