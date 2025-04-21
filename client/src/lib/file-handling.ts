@@ -3,11 +3,32 @@ import { ConfigFile, CoMapeoConfig } from "@shared/schema";
 import { apiRequest } from "./queryClient";
 
 /**
- * Extracts files from a .comapeocat (ZIP) file
+ * Progress callback type for file extraction
  */
-export async function extractZipFile(file: File): Promise<ConfigFile[]> {
+export type ProgressCallback = (progress: number, message: string) => void;
+
+/**
+ * Extracts files from a .comapeocat (ZIP) file
+ * @param file The ZIP file to extract
+ * @param onProgress Optional callback for progress updates
+ */
+export async function extractZipFile(file: File, onProgress?: ProgressCallback): Promise<ConfigFile[]> {
+  // Report initial progress
+  onProgress?.(5, 'Reading ZIP file...');
+
   const zip = new JSZip();
-  const zipContents = await zip.loadAsync(file);
+  const zipContents = await zip.loadAsync(file, {
+    // Add progress callback for loading the zip
+    onprogress: (metadata) => {
+      if (metadata.percent) {
+        // Map the JSZip loading progress to 5-15% of our overall progress
+        const loadProgress = 5 + Math.floor(metadata.percent / 10);
+        onProgress?.(loadProgress, `Loading ZIP file: ${Math.floor(metadata.percent)}%`);
+      }
+    }
+  });
+
+  onProgress?.(15, 'Analyzing ZIP structure...');
   const files: ConfigFile[] = [];
 
   // The component files we need to look for
@@ -24,7 +45,12 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
   let hasConfigJson = false;
   let hasComponentFiles = false;
 
+  // Count total files for progress reporting
+  const totalFiles = Object.keys(zipContents.files).length;
+  let processedFiles = 0;
+
   // First, check if there's a single config.json file
+  onProgress?.(20, 'Checking for configuration files...');
   if (zipContents.files["config.json"]) {
     hasConfigJson = true;
     const configContent =
@@ -42,6 +68,7 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
   }
 
   // Process all files in the ZIP
+  onProgress?.(25, 'Extracting files from ZIP...');
   for (const path in zipContents.files) {
     const zipEntry = zipContents.files[path];
     if (!zipEntry.dir) {
@@ -131,9 +158,15 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
         console.error(`Error processing file ${path}:`, error);
       }
     }
+
+    // Update progress (25-75% range)
+    processedFiles++;
+    const extractionProgress = 25 + Math.floor(50 * processedFiles / totalFiles);
+    onProgress?.(extractionProgress, `Extracting files (${processedFiles}/${totalFiles})...`);
   }
 
   // If we have component files but no config.json, create one
+  onProgress?.(80, 'Processing configuration components...');
   if (!hasConfigJson && hasComponentFiles) {
     console.log("No config.json found, reconstructing from component files...");
 
@@ -266,23 +299,74 @@ export async function extractZipFile(file: File): Promise<ConfigFile[]> {
     console.log("Created unified config.json from component files");
   }
 
+  onProgress?.(95, 'Finalizing configuration...');
   return files;
 }
 
 /**
  * Extracts files from a .mapeosettings (TAR) file
+ * @param file The TAR file to extract
+ * @param onProgress Optional callback for progress updates
  */
-export async function extractTarFile(file: File): Promise<ConfigFile[]> {
+export async function extractTarFile(file: File, onProgress?: ProgressCallback): Promise<ConfigFile[]> {
   // Since we can't directly use tar-js in the browser easily,
   // we'll use a streaming approach with a worker or other library
   // For now, we'll implement a basic extraction
 
+  // Report initial progress
+  onProgress?.(5, 'Reading file contents...');
+
   const arrayBuffer = await file.arrayBuffer();
   const files: ConfigFile[] = [];
 
+  // Report progress after file is loaded into memory
+  onProgress?.(10, 'Analyzing file structure...');
+
   let offset = 0;
   const view = new DataView(arrayBuffer);
+  const totalSize = arrayBuffer.byteLength;
+  let fileCount = 0;
+  let processedBytes = 0;
 
+  // First pass to count files for better progress reporting
+  let countOffset = 0;
+  while (countOffset < totalSize) {
+    // Check if we have a valid header
+    const headerSlice = arrayBuffer.slice(countOffset, countOffset + 512);
+    let hasContent = false;
+
+    // Check if header has content (not all zeros)
+    for (let i = 0; i < 100; i++) {
+      if (new Uint8Array(headerSlice)[i] !== 0) {
+        hasContent = true;
+        break;
+      }
+    }
+
+    if (!hasContent) break;
+
+    // Extract file size to skip to next header
+    let fileSizeOctal = "";
+    for (let i = 124; i < 136; i++) {
+      const byte = new Uint8Array(headerSlice)[i];
+      if (byte === 0 || byte === 32) break;
+      fileSizeOctal += String.fromCharCode(byte);
+    }
+
+    const fileSize = parseInt(fileSizeOctal, 8);
+    countOffset += 512; // Move past header
+
+    if (fileSize > 0) {
+      fileCount++;
+      countOffset += Math.ceil(fileSize / 512) * 512;
+    } else {
+      countOffset += 512;
+    }
+  }
+
+  onProgress?.(15, `Found ${fileCount} files in archive...`);
+
+  // Second pass to actually extract files
   while (offset < arrayBuffer.byteLength) {
     // Tar header is 512 bytes
     const header = arrayBuffer.slice(offset, offset + 512);
@@ -356,7 +440,15 @@ export async function extractTarFile(file: File): Promise<ConfigFile[]> {
       }
 
       // Move to next file, with padding to 512-byte boundary
-      offset += Math.ceil(fileSize / 512) * 512;
+      const blockSize = Math.ceil(fileSize / 512) * 512;
+      offset += blockSize;
+      processedBytes += blockSize + 512; // Include header size
+
+      // Calculate extraction progress (15-70% range)
+      if (fileCount > 0) {
+        const extractionProgress = Math.min(70, 15 + Math.floor(55 * processedBytes / totalSize));
+        onProgress?.(extractionProgress, `Extracting files (${files.length}/${fileCount})...`);
+      }
     } else {
       // Skip empty files or directories
       offset += 512;
@@ -364,6 +456,7 @@ export async function extractTarFile(file: File): Promise<ConfigFile[]> {
   }
 
   // Process the extracted files to create a unified config
+  onProgress?.(75, 'Processing extracted files...');
   const configComponents: Record<string, any> = {};
 
   // Extract JSON components
@@ -405,6 +498,7 @@ export async function extractTarFile(file: File): Promise<ConfigFile[]> {
     console.log('Created unified config.json from Mapeo components');
   }
 
+  onProgress?.(95, 'Finalizing configuration...');
   return files;
 }
 
