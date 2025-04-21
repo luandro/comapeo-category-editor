@@ -247,8 +247,78 @@ export const useConfigStore = create<ConfigState>()(
 
         // Convert if it's a Mapeo configuration
         if (isMapeo) {
-          const mapeoConfig: MapeoConfig = config as unknown as MapeoConfig;
-          config = convertMapeoToCoMapeo(mapeoConfig);
+          try {
+            console.log('Converting Mapeo configuration to CoMapeo format...');
+            const mapeoConfig: MapeoConfig = config as unknown as MapeoConfig;
+            config = convertMapeoToCoMapeo(mapeoConfig);
+
+            // Ensure fields are properly formatted
+            if (config.fields) {
+              config.fields = config.fields.map(field => {
+                // Ensure field is a proper object with all required properties
+                const safeField: CoMapeoField = {
+                  id: typeof field.id === 'string' ? field.id : String(field.id || ''),
+                  name: typeof field.name === 'string' ? field.name : String(field.name || field.id || ''),
+                  tagKey: typeof field.tagKey === 'string' ? field.tagKey : String(field.tagKey || field.id || ''),
+                  type: typeof field.type === 'string' ? field.type : 'text',
+                  universal: !!field.universal,
+                  helperText: typeof field.helperText === 'string' ? field.helperText : ''
+                };
+
+                // Handle options if present
+                if (field.options) {
+                  if (Array.isArray(field.options)) {
+                    safeField.options = field.options.map(opt => {
+                      if (typeof opt === 'string') {
+                        return { label: opt, value: opt.toLowerCase().replace(/\s+/g, '_') };
+                      } else if (opt && typeof opt === 'object') {
+                        return {
+                          label: typeof opt.label === 'string' ? opt.label : String(opt.label || ''),
+                          value: typeof opt.value === 'string' ? opt.value : String(opt.value || '').toLowerCase().replace(/\s+/g, '_')
+                        };
+                      } else {
+                        return { label: String(opt || ''), value: String(opt || '').toLowerCase().replace(/\s+/g, '_') };
+                      }
+                    });
+                  } else if (typeof field.options === 'object') {
+                    // Convert object options to array
+                    safeField.options = Object.entries(field.options).map(([key, value]) => {
+                      if (typeof value === 'string') {
+                        return { label: value, value: key.toLowerCase().replace(/\s+/g, '_') };
+                      } else if (value && typeof value === 'object' && 'label' in value) {
+                        return {
+                          label: typeof value.label === 'string' ? value.label : String(value.label || key),
+                          value: key.toLowerCase().replace(/\s+/g, '_')
+                        };
+                      } else {
+                        return { label: key, value: key.toLowerCase().replace(/\s+/g, '_') };
+                      }
+                    });
+                  }
+                }
+
+                return safeField;
+              });
+            }
+
+            console.log('Conversion completed successfully');
+          } catch (error) {
+            console.error('Error converting Mapeo configuration:', error);
+            // Provide fallback values if conversion fails
+            config = {
+              metadata: {
+                name: 'Converted Mapeo Configuration',
+                version: '1.0.0',
+                fileVersion: '1',
+                buildDate: new Date().toISOString(),
+                description: 'Converted from Mapeo configuration with errors'
+              },
+              presets: [],
+              fields: [],
+              translations: {},
+              icons: {}
+            };
+          }
         }
 
         // Set current date if buildDate is missing
