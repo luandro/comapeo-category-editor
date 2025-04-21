@@ -4,6 +4,7 @@ import { useConfigStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
+import { sanitizeSvgForReact } from '@/lib/svg-utils';
 
 export default function PreviewTab() {
   const { config, rawFiles } = useConfigStore();
@@ -52,7 +53,8 @@ export default function PreviewTab() {
       if (file.path.startsWith('icons/') && file.path.endsWith('.svg')) {
         const iconName = file.path.split('/').pop()?.replace('.svg', '') || '';
         if (typeof file.content === 'string') {
-          extractedIcons[iconName] = file.content;
+          // Sanitize SVG content for React
+          extractedIcons[iconName] = sanitizeSvgForReact(file.content);
         }
       }
     });
@@ -66,7 +68,7 @@ export default function PreviewTab() {
     const filtered: {[key: string]: any[]} = {};
 
     Object.keys(presetsByCategory).forEach(category => {
-      const matchingPresets = presetsByCategory[category].filter(preset => 
+      const matchingPresets = presetsByCategory[category].filter(preset =>
         preset.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
@@ -86,34 +88,34 @@ export default function PreviewTab() {
     const findMatchingIconFile = (iconName: string) => {
       // Looking for medium size icons as they fit best in our design
       const mediumSizePattern = `-medium@`;
-      const preferredFiles = rawFiles.filter(file => 
-        file.path.startsWith('icons/') && 
-        file.path.includes(iconName) && 
+      const preferredFiles = rawFiles.filter(file =>
+        file.path.startsWith('icons/') &&
+        file.path.includes(iconName) &&
         file.path.includes(mediumSizePattern) &&
         file.path.endsWith('.png')
       );
-      
+
       // If medium size exists, use the first one (usually @1x)
       if (preferredFiles.length > 0) {
         return preferredFiles[0];
       }
-      
+
       // Otherwise look for any PNG with this icon name
-      const anyPngFiles = rawFiles.filter(file => 
-        file.path.startsWith('icons/') && 
-        file.path.includes(iconName) && 
+      const anyPngFiles = rawFiles.filter(file =>
+        file.path.startsWith('icons/') &&
+        file.path.includes(iconName) &&
         file.path.endsWith('.png')
       );
-      
+
       return anyPngFiles.length > 0 ? anyPngFiles[0] : null;
     };
 
     if (preset.icon) {
       const iconName = preset.icon.replace('.png', '');
-      
+
       // First check if we have a PNG file for this icon
       const iconFile = findMatchingIconFile(iconName);
-      
+
       if (iconFile) {
         // For PNG files, we need to create a proper URL
         // This approach works for both string and binary content
@@ -121,7 +123,7 @@ export default function PreviewTab() {
           // Convert the content to a blob
           const content = iconFile.content;
           let blob;
-          
+
           if (typeof content === 'string') {
             // Create a Uint8Array from the string content
             const binaryString = window.atob(content);
@@ -137,13 +139,13 @@ export default function PreviewTab() {
             // Fallback for other content types
             blob = new Blob([content], { type: 'image/png' });
           }
-          
+
           // Create a URL for the blob
           const imageUrl = URL.createObjectURL(blob);
-          
+
           return (
             <div className="w-full h-full flex items-center justify-center">
-              <img 
+              <img
                 src={imageUrl}
                 alt={preset.name}
                 className="w-3/4 h-3/4 object-contain"
@@ -161,44 +163,69 @@ export default function PreviewTab() {
           );
         }
       }
-      
+
       // If no PNG, check for SVG in iconMap
       if (iconMap[preset.icon]) {
-        const svgBase64 = btoa(iconMap[preset.icon]);
-        return (
-          <div className="w-full h-full flex items-center justify-center">
-            <img 
-              src={`data:image/svg+xml;base64,${svgBase64}`}
-              alt={preset.name}
-              className="w-3/4 h-3/4 object-contain"
-            />
-          </div>
-        );
+        try {
+          // Use the sanitized SVG content
+          const svgContent = iconMap[preset.icon];
+          // Create a data URL with the sanitized SVG content
+          const svgBase64 = btoa(svgContent);
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <img
+                src={`data:image/svg+xml;base64,${svgBase64}`}
+                alt={typeof preset.name === 'string' ? preset.name : 'icon'}
+                className="w-3/4 h-3/4 object-contain"
+              />
+            </div>
+          );
+        } catch (error) {
+          console.error("Error displaying SVG icon:", error);
+          // Fallback display if SVG fails to load
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="material-icons text-gray-400">image_not_supported</span>
+            </div>
+          );
+        }
       }
-      
+
       // Fall back to material icon
       return (
         <div className="w-full h-full flex items-center justify-center">
-          <span 
+          <span
             className="material-icons"
-            style={{ 
+            style={{
               color: preset.color || '#000',
-              fontSize: '24px' 
+              fontSize: '24px'
             }}
           >
-            {iconName}
+            {typeof iconName === 'string' ? iconName : 'category'}
           </span>
         </div>
       );
     } else {
       // If no icon, use first letter of preset name as fallback
+      let firstLetter = 'A';
+      try {
+        if (typeof preset.name === 'string') {
+          firstLetter = preset.name.charAt(0).toUpperCase();
+        } else if (preset.name && typeof preset.name === 'object') {
+          // Handle case where name might be an object
+          firstLetter = 'P';
+        }
+      } catch (error) {
+        console.error("Error getting preset name:", error);
+      }
+
       return (
-        <div 
+        <div
           className="w-full h-full rounded-full flex items-center justify-center"
           style={{ backgroundColor: preset.color || '#808080' }}
         >
           <span className="text-white text-sm font-bold">
-            {preset.name.charAt(0).toUpperCase()}
+            {firstLetter}
           </span>
         </div>
       );
