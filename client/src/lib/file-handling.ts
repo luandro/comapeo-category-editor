@@ -310,24 +310,99 @@ export async function extractTarFile(file: File): Promise<ConfigFile[]> {
 
     if (fileSize > 0) {
       // Read file content
-      const content = arrayBuffer.slice(offset, offset + fileSize);
+      const contentBuffer = arrayBuffer.slice(offset, offset + fileSize);
+      const fileName = filename.split("/").pop() || "";
 
-      // Add to files array if it's a file we care about
-      if (
-        filename.endsWith(".json") ||
-        filename.endsWith(".svg") ||
-        filename === "VERSION"
-      ) {
-        files.push({
-          name: filename.split("/").pop() || "",
-          content: content,
-          path: filename,
-        });
+      try {
+        // Process different file types
+        if (filename.endsWith(".json") || filename === "VERSION") {
+          // Text files - convert to string
+          const textDecoder = new TextDecoder('utf-8');
+          const content = textDecoder.decode(contentBuffer);
+
+          files.push({
+            name: fileName,
+            content: content,
+            path: filename,
+          });
+
+          console.log(`Extracted text file: ${filename}, size: ${content.length}`);
+        }
+        else if (filename.endsWith(".svg")) {
+          // SVG files - convert to string
+          const textDecoder = new TextDecoder('utf-8');
+          const content = textDecoder.decode(contentBuffer);
+
+          files.push({
+            name: fileName,
+            content: content,
+            path: filename,
+          });
+
+          console.log(`Extracted SVG file: ${filename}, size: ${content.length}`);
+        }
+        else if (filename.endsWith(".png") || filename.includes("icons/")) {
+          // Binary files - keep as ArrayBuffer
+          files.push({
+            name: fileName,
+            content: contentBuffer,
+            path: filename,
+          });
+
+          console.log(`Extracted binary file: ${filename}, size: ${contentBuffer.byteLength} bytes`);
+        }
+      } catch (error) {
+        console.error(`Error processing file ${filename}:`, error);
       }
 
       // Move to next file, with padding to 512-byte boundary
       offset += Math.ceil(fileSize / 512) * 512;
+    } else {
+      // Skip empty files or directories
+      offset += 512;
     }
+  }
+
+  // Process the extracted files to create a unified config
+  const configComponents: Record<string, any> = {};
+
+  // Extract JSON components
+  for (const file of files) {
+    if (file.path.endsWith('.json') && typeof file.content === 'string') {
+      try {
+        const fileName = file.path.split('/').pop() || '';
+        const componentName = fileName.replace('.json', '');
+        configComponents[componentName] = JSON.parse(file.content);
+        console.log(`Parsed ${fileName} into component: ${componentName}`);
+      } catch (error) {
+        console.error(`Error parsing JSON file ${file.path}:`, error);
+      }
+    }
+  }
+
+  // Create a unified config from the components
+  if (Object.keys(configComponents).length > 0) {
+    // Detect if it's a Mapeo format
+    const isMapeo = configComponents.metadata && configComponents.metadata.hasOwnProperty('dataset_id');
+    console.log(`Format detected: ${isMapeo ? 'Mapeo' : 'CoMapeo'}`);
+
+    // Create a unified config structure
+    const unifiedConfig: any = {
+      metadata: configComponents.metadata || {},
+      presets: configComponents.presets || {},
+      fields: configComponents.fields || {},
+      translations: configComponents.translations || {},
+      icons: configComponents.icons || {}
+    };
+
+    // Add the unified config to the files
+    files.push({
+      name: 'config.json',
+      content: JSON.stringify(unifiedConfig, null, 2),
+      path: 'config.json'
+    });
+
+    console.log('Created unified config.json from Mapeo components');
   }
 
   return files;
