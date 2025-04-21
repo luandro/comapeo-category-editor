@@ -301,6 +301,74 @@ export const useConfigStore = create<ConfigState>()(
               });
             }
 
+            // Ensure translations are properly formatted
+            if (config.translations) {
+              // Process each language
+              for (const lang in config.translations) {
+                const langTranslations = config.translations[lang];
+
+                // Process fields section if it exists
+                if (langTranslations && langTranslations.fields) {
+                  for (const fieldKey in langTranslations.fields) {
+                    const fieldTrans = langTranslations.fields[fieldKey];
+
+                    // If fieldTrans is an object with key, type, etc. (the actual field object instead of translations)
+                    if (fieldTrans && typeof fieldTrans === 'object' && ('key' in fieldTrans || 'type' in fieldTrans)) {
+                      // Convert it to a proper translation object
+                      langTranslations.fields[fieldKey] = {
+                        label: typeof fieldTrans.label === 'string' ? fieldTrans.label : fieldKey,
+                        helperText: typeof fieldTrans.placeholder === 'string' ? fieldTrans.placeholder : '',
+                        options: {}
+                      };
+
+                      // Add options if they exist
+                      if (fieldTrans.options) {
+                        if (Array.isArray(fieldTrans.options)) {
+                          const optionsObj: Record<string, string> = {};
+                          fieldTrans.options.forEach((opt: any) => {
+                            if (typeof opt === 'string') {
+                              optionsObj[opt] = opt;
+                            } else if (opt && typeof opt === 'object' && opt.label) {
+                              optionsObj[opt.value || opt.label] = opt.label;
+                            }
+                          });
+                          langTranslations.fields[fieldKey].options = optionsObj;
+                        } else if (typeof fieldTrans.options === 'object') {
+                          const optionsObj: Record<string, string> = {};
+                          for (const optKey in fieldTrans.options) {
+                            const optValue = fieldTrans.options[optKey];
+                            if (typeof optValue === 'string') {
+                              optionsObj[optKey] = optValue;
+                            } else if (optValue && typeof optValue === 'object' && optValue.label) {
+                              optionsObj[optKey] = optValue.label;
+                            } else {
+                              optionsObj[optKey] = optKey;
+                            }
+                          }
+                          langTranslations.fields[fieldKey].options = optionsObj;
+                        }
+                      }
+                    }
+
+                    // Ensure options is an object, not an array
+                    if (fieldTrans && fieldTrans.options && Array.isArray(fieldTrans.options)) {
+                      const optionsObj: Record<string, string> = {};
+                      fieldTrans.options.forEach((opt: any) => {
+                        if (typeof opt === 'string') {
+                          optionsObj[opt] = opt;
+                        } else if (opt && typeof opt === 'object') {
+                          const key = opt.value || opt.label || String(opt);
+                          const value = opt.label || String(opt);
+                          optionsObj[key] = value;
+                        }
+                      });
+                      fieldTrans.options = optionsObj;
+                    }
+                  }
+                }
+              }
+            }
+
             console.log('Conversion completed successfully');
           } catch (error) {
             console.error('Error converting Mapeo configuration:', error);
