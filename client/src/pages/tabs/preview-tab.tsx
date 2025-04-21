@@ -21,48 +21,107 @@ export default function PreviewTab() {
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number>(0);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
 
-  // Function to normalize options to array format
+  // Function to normalize options to array format - borrowed from field-dialog.tsx approach
   const normalizeOptions = (options: any): Array<{label: string, value: string}> => {
     if (!options) return [];
 
+    console.log('Options before normalization:', options);
+
     // If options is already an array
     if (Array.isArray(options)) {
-      return options.map((opt, idx) => {
+      const normalized = options.map((opt, idx) => {
         if (typeof opt === 'string') {
-          return { label: opt, value: opt.toLowerCase().replace(/\s+/g, '_') };
-        } else if (opt && typeof opt === 'object' && opt.label) {
           return {
-            label: opt.label,
-            value: opt.value || opt.label.toLowerCase().replace(/\s+/g, '_')
+            label: opt,
+            value: opt.toLowerCase().replace(/\s+/g, '_')
           };
+        } else if (opt && typeof opt === 'object') {
+          // Handle object with label/value properties
+          if (typeof opt.label === 'string') {
+            return {
+              label: opt.label,
+              value: typeof opt.value === 'string' ? opt.value : opt.label.toLowerCase().replace(/\s+/g, '_')
+            };
+          } else {
+            // Try to extract a meaningful string representation
+            const label = String(Object.values(opt)[0] || `Option ${idx + 1}`);
+            return {
+              label,
+              value: `option_${idx}`
+            };
+          }
         } else {
-          return { label: `Option ${idx + 1}`, value: `option_${idx}` };
+          return {
+            label: `Option ${idx + 1}`,
+            value: `option_${idx}`
+          };
         }
       });
+      console.log('Normalized array options:', normalized);
+      return normalized;
     }
 
     // If options is an object (key-value pairs)
     if (typeof options === 'object') {
-      return Object.entries(options).map(([key, value]) => {
+      const normalized = Object.entries(options).map(([key, value]) => {
         if (typeof value === 'string') {
-          return { label: value, value: key };
-        } else if (value && typeof value === 'object' && 'label' in value) {
-          return { label: value.label, value: key };
+          return {
+            label: value,
+            value: key
+          };
+        } else if (value && typeof value === 'object') {
+          // Handle nested objects with label property
+          if ('label' in value && typeof value.label === 'string') {
+            return {
+              label: value.label,
+              value: key
+            };
+          } else {
+            // Try to extract a meaningful string representation
+            return {
+              label: key,
+              value: key
+            };
+          }
         } else {
-          return { label: key, value: key };
+          return {
+            label: key,
+            value: key
+          };
         }
       });
+      console.log('Normalized object options:', normalized);
+      return normalized;
     }
 
+    console.log('Could not normalize options, returning empty array');
     return [];
+  };
+
+  // Helper function to check if a field is a select type
+  const isSelectField = (field: any): boolean => {
+    if (!field || !field.type) return false;
+    const fieldType = field.type.toLowerCase();
+    return fieldType.includes('select');
   };
 
   // Add a debug function to log field structure
   const debugField = (field: any) => {
-    if (field && field.type === 'select' && field.options) {
-      console.log('Field with options:', field.id, field.name);
-      console.log('Options type:', typeof field.options, Array.isArray(field.options));
-      console.log('Options:', field.options);
+    if (!field) {
+      console.log('Field is null or undefined');
+      return;
+    }
+
+    console.log('Field:', {
+      id: field.id,
+      name: field.name,
+      type: field.type,
+      hasOptions: !!field.options
+    });
+
+    if (isSelectField(field) && field.options) {
+      console.log('Field options type:', typeof field.options, Array.isArray(field.options));
+      console.log('Field options:', field.options);
 
       if (Array.isArray(field.options) && field.options.length > 0) {
         console.log('First option type:', typeof field.options[0]);
@@ -70,6 +129,10 @@ export default function PreviewTab() {
       } else if (typeof field.options === 'object') {
         console.log('Options keys:', Object.keys(field.options));
       }
+
+      // Try normalizing the options
+      const normalizedOptions = normalizeOptions(field.options);
+      console.log('Normalized options:', normalizedOptions);
     }
   };
 
@@ -425,40 +488,72 @@ export default function PreviewTab() {
 
                   {/* Field input */}
                   <div className="space-y-4">
-                    {selectedField.type === 'select' && selectedField.options && (
-                      <div className="space-y-4">
-                        {(() => {
-                          // Normalize options to a consistent format
-                          const normalizedOptions = normalizeOptions(selectedField.options);
+                    {(() => {
+                      // Handle different field types
+                      const fieldType = selectedField.type?.toLowerCase() || '';
 
-                          return normalizedOptions.length > 0 ? (
-                            normalizedOptions.map((option, idx) => {
-                              const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
+                      // Handle select fields (selectOne, selectMany, select_one, select_many, select)
+                      if (isSelectField(selectedField) && selectedField.options) {
+                        // Normalize options to a consistent format
+                        const normalizedOptions = normalizeOptions(selectedField.options);
 
-                              return (
-                                <div key={idx} className="flex items-center">
-                                  <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
-                                    {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
+                        return (
+                          <div className="space-y-4">
+                            {normalizedOptions.length > 0 ? (
+                              normalizedOptions.map((option, idx) => {
+                                const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
+
+                                return (
+                                  <div key={idx} className="flex items-center">
+                                    <div className="w-6 h-6 border border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                      {idx === 0 && <Circle className="h-3 w-3 text-gray-400" />}
+                                    </div>
+                                    <span className="text-lg">{optionLabel}</span>
                                   </div>
-                                  <span className="text-lg">{optionLabel}</span>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <div className="text-gray-500">No options available</div>
-                          );
-                        })()}
-                      </div>
-                    )}
-                    {selectedField.type === 'text' && (
-                      <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>
-                    )}
-                    {selectedField.type === 'textarea' && (
-                      <div className="h-24 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>
-                    )}
-                    {selectedField.type === 'number' && (
-                      <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>
-                    )}
+                                );
+                              })
+                            ) : (
+                              <div className="text-gray-500">No options available</div>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // Handle text input
+                      if (fieldType === 'text') {
+                        return (
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>
+                        );
+                      }
+
+                      // Handle textarea
+                      if (fieldType === 'textarea') {
+                        return (
+                          <div className="h-24 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>
+                        );
+                      }
+
+                      // Handle number input
+                      if (fieldType === 'number') {
+                        return (
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>
+                        );
+                      }
+
+                      // Handle date input
+                      if (fieldType === 'date') {
+                        return (
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Date input</div>
+                        );
+                      }
+
+                      // Default fallback
+                      return (
+                        <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">
+                          {fieldType || 'Unknown'} input
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ) : showDetails && selectedPreset ? (
@@ -506,27 +601,35 @@ export default function PreviewTab() {
                               )}
 
                               {/* Show options for fields that have them */}
-                              {field.type === 'select' && field.options && (
-                                <div className="mt-2 pl-2 border-l-2 border-gray-200">
-                                  <p className="text-xs text-gray-500 mb-1">Options:</p>
-                                  <div className="flex flex-wrap gap-1">
-                                    {(() => {
-                                      // Normalize options to a consistent format
-                                      const normalizedOptions = normalizeOptions(field.options);
+                              {(() => {
+                                // Check if field is a select type
+                                if (isSelectField(field) && field.options) {
+                                  // Debug the options
+                                  console.log(`Options for field ${field.id}:`, field.options);
 
-                                      return normalizedOptions.length > 0 ? (
-                                        normalizedOptions.map((option, optIdx) => (
-                                          <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                            {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
-                                          </span>
-                                        ))
-                                      ) : (
-                                        <span className="text-xs text-gray-500">No options available</span>
-                                      );
-                                    })()}
-                                  </div>
-                                </div>
-                              )}
+                                  // Normalize options to a consistent format
+                                  const normalizedOptions = normalizeOptions(field.options);
+
+                                  return (
+                                    <div className="mt-2 pl-2 border-l-2 border-gray-200">
+                                      <p className="text-xs text-gray-500 mb-1">Options:</p>
+                                      <div className="flex flex-wrap gap-1">
+                                        {normalizedOptions.length > 0 ? (
+                                          normalizedOptions.map((option, optIdx) => (
+                                            <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                              {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
+                                            </span>
+                                          ))
+                                        ) : (
+                                          <span className="text-xs text-gray-500">No options available</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                return null;
+                              })()}
                             </div>
                           );
                         })
