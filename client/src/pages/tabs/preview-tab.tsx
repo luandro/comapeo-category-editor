@@ -18,6 +18,7 @@ export default function PreviewTab() {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedField, setSelectedField] = useState<any | null>(null);
   const [showFieldDetails, setShowFieldDetails] = useState(false);
+  const [currentFieldIndex, setCurrentFieldIndex] = useState<number>(0);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
 
   // Function to get translated text based on the selected language
@@ -322,7 +323,28 @@ export default function PreviewTab() {
                       </Button>
                       <div className="text-xl font-semibold">Question {selectedField?.questionNumber || 1} of {selectedPreset?.fieldRefs?.length || 1}</div>
                     </div>
-                    <div className="text-blue-500 font-medium">Done</div>
+                    <div
+                      className="text-blue-500 font-medium cursor-pointer"
+                      onClick={() => {
+                        // If there are more fields, go to the next one
+                        if (selectedPreset?.fieldRefs && currentFieldIndex < selectedPreset.fieldRefs.length - 1) {
+                          const nextIndex = currentFieldIndex + 1;
+                          setCurrentFieldIndex(nextIndex);
+                          const nextFieldId = selectedPreset.fieldRefs[nextIndex];
+                          const nextField = config?.fields.find(f => f.id === nextFieldId);
+                          if (nextField) {
+                            setSelectedField({ ...nextField, questionNumber: nextIndex + 1 });
+                          }
+                        } else {
+                          // If this is the last field, go back to the preset details
+                          setShowFieldDetails(false);
+                          setSelectedField(null);
+                          setCurrentFieldIndex(0);
+                        }
+                      }}
+                    >
+                      Next
+                    </div>
                   </>
                 ) : showDetails ? (
                   <>
@@ -408,6 +430,7 @@ export default function PreviewTab() {
                               onClick={() => {
                                 setSelectedField(fieldWithNumber);
                                 setShowFieldDetails(true);
+                                setCurrentFieldIndex(index);
                               }}
                             >
                               <h4 className="font-medium">{getTranslatedText(field.name, 'fields', field.id, 'label', selectedLanguage)}</h4>
@@ -415,6 +438,20 @@ export default function PreviewTab() {
                                 <p className="text-sm text-gray-500 mt-1">
                                   {getTranslatedText(field.helperText, 'fields', field.id, 'helperText', selectedLanguage)}
                                 </p>
+                              )}
+
+                              {/* Show options for fields that have them */}
+                              {field.type === 'select' && field.options && field.options.length > 0 && (
+                                <div className="mt-2 pl-2 border-l-2 border-gray-200">
+                                  <p className="text-xs text-gray-500 mb-1">Options:</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {field.options.map((option: any, optIdx: number) => (
+                                      <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                        {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
                               )}
                             </div>
                           );
@@ -439,7 +476,20 @@ export default function PreviewTab() {
                               className="flex flex-col items-center cursor-pointer"
                               onClick={() => {
                                 setSelectedPreset(preset);
-                                setShowDetails(true);
+                                // If the preset has fields, show the first field directly
+                                if (preset.fieldRefs && preset.fieldRefs.length > 0 && config) {
+                                  const firstFieldId = preset.fieldRefs[0];
+                                  const firstField = config.fields.find(f => f.id === firstFieldId);
+                                  if (firstField) {
+                                    setSelectedField({ ...firstField, questionNumber: 1 });
+                                    setShowFieldDetails(true);
+                                    setCurrentFieldIndex(0);
+                                  } else {
+                                    setShowDetails(true);
+                                  }
+                                } else {
+                                  setShowDetails(true);
+                                }
                               }}
                             >
                               <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
