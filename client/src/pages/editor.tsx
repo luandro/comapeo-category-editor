@@ -77,14 +77,6 @@ export default function EditorPage() {
               Preview
             </TabsTrigger>
             <TabsTrigger 
-              value="metadata" 
-              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
-            >
-              <InfoIcon className="mr-1 md:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Metadata</span>
-              <span className="sm:hidden">Meta</span>
-            </TabsTrigger>
-            <TabsTrigger 
               value="presets" 
               className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
             >
@@ -113,6 +105,15 @@ export default function EditorPage() {
               <Image className="mr-1 md:mr-2 h-4 w-4" />
               Icons
             </TabsTrigger>
+            <TabsTrigger 
+              value="metadata" 
+              className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
+            >
+              <InfoIcon className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Metadata</span>
+              <span className="sm:hidden">Meta</span>
+            </TabsTrigger>
+
             <TabsTrigger 
               value="advanced" 
               className="px-3 md:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none whitespace-nowrap flex-shrink-0"
