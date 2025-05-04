@@ -1,22 +1,29 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useConfigStore } from '@/lib/store';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2 } from 'lucide-react';
 import { PresetDialog } from '@/components/dialogs/preset-dialog';
-import { CoMapeoPreset, ConfigFile } from '@shared/schema';
-import { nanoid } from 'nanoid';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useConfigStore } from '@/lib/store';
 import { sanitizeSvgForReact } from '@/lib/svg-utils';
+import type { CoMapeoPreset, ConfigFile } from '@shared/schema';
+import { Edit, Plus, Trash2 } from 'lucide-react';
+import { nanoid } from 'nanoid';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function PresetsTab() {
   const { config, rawFiles, addPreset, updatePreset, deletePreset } = useConfigStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<CoMapeoPreset | null>(null);
-  const [iconMap, setIconMap] = useState<{[key: string]: ConfigFile}>({});
+  const [iconMap, setIconMap] = useState<{ [key: string]: ConfigFile }>({});
 
   // Function to extract base name from icon path
   const getIconBaseName = (path: string): string => {
@@ -30,17 +37,17 @@ export default function PresetsTab() {
 
   // Build icon map from raw files
   useEffect(() => {
-    const newIconMap: {[key: string]: ConfigFile} = {};
+    const newIconMap: { [key: string]: ConfigFile } = {};
 
     // Group icons by base name and select the best resolution
-    const allIconFiles = rawFiles.filter(file =>
-      file.path.startsWith('icons/') &&
-      (file.path.endsWith('.svg') || file.path.endsWith('.png'))
+    const allIconFiles = rawFiles.filter(
+      (file) =>
+        file.path.startsWith('icons/') && (file.path.endsWith('.svg') || file.path.endsWith('.png'))
     );
 
     // Group by base name
     const iconGroups: Record<string, ConfigFile[]> = {};
-    allIconFiles.forEach(file => {
+    allIconFiles.forEach((file) => {
       const baseName = getIconBaseName(file.path);
       if (!iconGroups[baseName]) {
         iconGroups[baseName] = [];
@@ -51,15 +58,15 @@ export default function PresetsTab() {
     // Select best resolution from each group
     Object.entries(iconGroups).forEach(([baseName, group]) => {
       // Prefer SVG files if available
-      const svgFile = group.find(file => file.path.endsWith('.svg'));
+      const svgFile = group.find((file) => file.path.endsWith('.svg'));
       if (svgFile) {
         newIconMap[baseName] = svgFile;
         return;
       }
 
       // Otherwise, look for medium size PNG
-      const mediumFile = group.find(file =>
-        file.path.includes('-medium@') && file.path.endsWith('.png')
+      const mediumFile = group.find(
+        (file) => file.path.includes('-medium@') && file.path.endsWith('.png')
       );
       if (mediumFile) {
         newIconMap[baseName] = mediumFile;
@@ -67,7 +74,7 @@ export default function PresetsTab() {
       }
 
       // Fall back to any PNG
-      const pngFile = group.find(file => file.path.endsWith('.png'));
+      const pngFile = group.find((file) => file.path.endsWith('.png'));
       if (pngFile) {
         newIconMap[baseName] = pngFile;
       }
@@ -78,7 +85,7 @@ export default function PresetsTab() {
 
   // Ensure presets is an array before filtering
   const presets = Array.isArray(config?.presets) ? config.presets : [];
-  const filteredPresets = presets.filter(preset =>
+  const filteredPresets = presets.filter((preset) =>
     preset.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -164,7 +171,14 @@ export default function PresetsTab() {
                                 typeof iconMap[preset.icon].content === 'string' ? (
                                   iconMap[preset.icon].content.trim().startsWith('<svg') ? (
                                     <div className="w-full h-full flex items-center justify-center">
-                                      <div className="w-3/4 h-3/4" dangerouslySetInnerHTML={{ __html: sanitizeSvgForReact(iconMap[preset.icon].content as string) }} />
+                                      <div
+                                        className="w-3/4 h-3/4"
+                                        dangerouslySetInnerHTML={{
+                                          __html: sanitizeSvgForReact(
+                                            iconMap[preset.icon].content as string
+                                          ),
+                                        }}
+                                      />
                                     </div>
                                   ) : (
                                     <img
@@ -175,10 +189,16 @@ export default function PresetsTab() {
                                   )
                                 ) : iconMap[preset.icon].content instanceof ArrayBuffer ? (
                                   <img
-                                    src={URL.createObjectURL(new Blob([iconMap[preset.icon].content as ArrayBuffer], { type: 'image/png' }))}
+                                    src={URL.createObjectURL(
+                                      new Blob([iconMap[preset.icon].content as ArrayBuffer], {
+                                        type: 'image/png',
+                                      })
+                                    )}
                                     alt={preset.name}
                                     className="w-full h-full object-contain"
-                                    onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                                    onLoad={(e) =>
+                                      URL.revokeObjectURL((e.target as HTMLImageElement).src)
+                                    }
                                   />
                                 ) : (
                                   <span className="material-icons text-sm">{preset.icon}</span>
@@ -188,7 +208,10 @@ export default function PresetsTab() {
                               )}
                             </div>
                           ) : (
-                            <span className="text-sm font-bold" style={{ color: preset.color || '#808080' }}>
+                            <span
+                              className="text-sm font-bold"
+                              style={{ color: preset.color || '#808080' }}
+                            >
                               {preset.name.charAt(0).toUpperCase()}
                             </span>
                           )}
@@ -198,7 +221,11 @@ export default function PresetsTab() {
                       <TableCell>{preset.fieldRefs.length} fields</TableCell>
                       <TableCell>
                         {Object.entries(preset.tags).map(([key, value], index) => (
-                          <Badge key={index} variant="outline" className="mr-1 bg-primary/10 text-primary">
+                          <Badge
+                            key={index}
+                            variant="outline"
+                            className="mr-1 bg-primary/10 text-primary"
+                          >
                             {key}={value}
                           </Badge>
                         ))}

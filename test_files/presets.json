@@ -1,1143 +1,850 @@
 {
-    "categories": {},
-    "fields": {
-        "activity": {
-            "tagKey": "activity",
-            "type": "selectMultiple",
-            "label": "Activity",
-            "placeholder": "What kind of activity is this?",
-            "options": [
-                {
-                    "label": "Human",
-                    "value": "human"
-                },
-                {
-                    "label": "Animal",
-                    "value": "animal"
-                }
-            ],
-            "universal": false
+  "categories": {},
+  "fields": {
+    "activity": {
+      "tagKey": "activity",
+      "type": "selectMultiple",
+      "label": "Activity",
+      "placeholder": "What kind of activity is this?",
+      "options": [
+        {
+          "label": "Human",
+          "value": "human"
         },
-        "animal-type": {
-            "tagKey": "animal-type",
-            "type": "text",
-            "label": "Animal type",
-            "placeholder": "What type of animal is this?",
-            "universal": false
-        },
-        "amount": {
-            "tagKey": "amount",
-            "type": "number",
-            "label": "Amount",
-            "placeholder": "How many are here?",
-            "universal": false
-        },
-        "bird-species": {
-            "tagKey": "bird-species",
-            "type": "text",
-            "label": "Bird species",
-            "placeholder": "What kind of bird species is this?",
-            "universal": false
-        },
-        "drinkable-water-source": {
-            "tagKey": "drinkable-water-source",
-            "type": "selectMultiple",
-            "label": "Drinkable water source",
-            "placeholder": "Is this a drinkable water source?",
-            "options": [
-                {
-                    "label": "Yes",
-                    "value": "yes"
-                },
-                {
-                    "label": "No",
-                    "value": "no"
-                }
-            ],
-            "universal": false
-        },
-        "description": {
-            "tagKey": "description",
-            "type": "text",
-            "label": "Description",
-            "placeholder": "How would you describe it?",
-            "universal": false
-        },
-        "edible": {
-            "tagKey": "edible",
-            "type": "selectMultiple",
-            "label": "Edible",
-            "placeholder": "Is this edible?",
-            "options": [
-                {
-                    "label": "Yes",
-                    "value": "yes"
-                },
-                {
-                    "label": "No",
-                    "value": "no"
-                }
-            ],
-            "universal": false
-        },
-        "fungi-species": {
-            "tagKey": "fungi-species",
-            "type": "text",
-            "label": "Fungi species",
-            "placeholder": "What kind of fungi is this?",
-            "universal": false
-        },
-        "fungi-uses": {
-            "tagKey": "fungi-uses",
-            "type": "text",
-            "label": "Fungi uses",
-            "placeholder": "How do you use it?",
-            "universal": false
-        },
-        "human-activity": {
-            "tagKey": "human-activity",
-            "type": "selectMultiple",
-            "label": "Human activity",
-            "placeholder": "What kind of human activity is this?",
-            "options": [
-                {
-                    "label": "Lega",
-                    "value": "lega"
-                },
-                {
-                    "label": "Illegal",
-                    "value": "illegal"
-                }
-            ],
-            "universal": false
-        },
-        "name": {
-            "tagKey": "name",
-            "type": "text",
-            "label": "Name",
-            "placeholder": "How do you call this?",
-            "universal": false
-        },
-        "nesting-stage": {
-            "tagKey": "nesting-stage",
-            "type": "selectMultiple",
-            "label": "Nesting stage",
-            "placeholder": "What is happening here now?",
-            "options": [
-                {
-                    "label": "Nest buildng",
-                    "value": "nest-buildng"
-                },
-                {
-                    "label": "Incubation",
-                    "value": "incubation"
-                },
-                {
-                    "label": "Empty",
-                    "value": "empty"
-                }
-            ],
-            "universal": false
-        },
-        "plant-species": {
-            "tagKey": "plant-species",
-            "type": "selectMultiple",
-            "label": "Plant species",
-            "placeholder": "What kind of plant species is this?",
-            "options": [
-                {
-                    "label": "Tree",
-                    "value": "tree"
-                },
-                {
-                    "label": "Shrub",
-                    "value": "shrub"
-                },
-                {
-                    "label": "Vine",
-                    "value": "vine"
-                },
-                {
-                    "label": "Herb",
-                    "value": "herb"
-                },
-                {
-                    "label": "Grass",
-                    "value": "grass"
-                },
-                {
-                    "label": "Fern",
-                    "value": "fern"
-                },
-                {
-                    "label": "Moss",
-                    "value": "moss"
-                },
-                {
-                    "label": "Succulent",
-                    "value": "succulent"
-                },
-                {
-                    "label": "Palm",
-                    "value": "palm"
-                },
-                {
-                    "label": "Ground cover plant",
-                    "value": "ground-cover-plant"
-                },
-                {
-                    "label": "Epiphyte",
-                    "value": "epiphyte"
-                },
-                {
-                    "label": "Aquatic plant",
-                    "value": "aquatic-plant"
-                },
-                {
-                    "label": "Bamboo",
-                    "value": "bamboo"
-                },
-                {
-                    "label": "Cactus",
-                    "value": "cactus"
-                }
-            ],
-            "universal": false
-        },
-        "plant-uses": {
-            "tagKey": "plant-uses",
-            "type": "text",
-            "label": "Plant uses",
-            "placeholder": "How to people use this plant in this territory?",
-            "universal": false
-        },
-        "pollution": {
-            "tagKey": "pollution",
-            "type": "selectMultiple",
-            "label": "Pollution",
-            "placeholder": "Is this polluted?",
-            "options": [
-                {
-                    "label": "Yes",
-                    "value": "yes"
-                },
-                {
-                    "label": "No",
-                    "value": "no"
-                }
-            ],
-            "universal": false
-        },
-        "presence-of-animals": {
-            "tagKey": "presence-of-animals",
-            "type": "selectMultiple",
-            "label": "Presence of animals",
-            "placeholder": "Did you see any animal?",
-            "options": [
-                {
-                    "label": "Yes",
-                    "value": "yes"
-                },
-                {
-                    "label": "No",
-                    "value": "no"
-                }
-            ],
-            "universal": false
-        },
-        "site-type": {
-            "tagKey": "site-type",
-            "type": "selectMultiple",
-            "label": "Site type",
-            "placeholder": "What kind of site is this?",
-            "options": [
-                {
-                    "label": "Mating site",
-                    "value": "mating-site"
-                },
-                {
-                    "label": "Nesting site",
-                    "value": "nesting-site"
-                },
-                {
-                    "label": "Sprawning site",
-                    "value": "sprawning-site"
-                }
-            ],
-            "universal": false
-        },
-        "soil-stage": {
-            "tagKey": "soil-stage",
-            "type": "selectMultiple",
-            "label": "Soil stage",
-            "placeholder": "How would you describe the stage of this soil regeneration?",
-            "options": [
-                {
-                    "label": "Bare soil",
-                    "value": "bare-soil"
-                },
-                {
-                    "label": "Initial vegetation growth",
-                    "value": "initial-vegetation-growth"
-                },
-                {
-                    "label": "Grass cover",
-                    "value": "grass-cover"
-                },
-                {
-                    "label": "Herbaceous plants",
-                    "value": "herbaceous-plants"
-                },
-                {
-                    "label": "Shrub establishment",
-                    "value": "shrub-establishment"
-                },
-                {
-                    "label": "Young tree growth",
-                    "value": "young-tree-growth"
-                },
-                {
-                    "label": "Tree canopy formation",
-                    "value": "tree-canopy-formation"
-                },
-                {
-                    "label": "Soil nutrient enrichment",
-                    "value": "soil-nutrient-enrichment"
-                },
-                {
-                    "label": "Root system expansion",
-                    "value": "root-system-expansion"
-                },
-                {
-                    "label": "Biodiversity increase",
-                    "value": "biodiversity-increase"
-                },
-                {
-                    "label": "Full vegetation cover",
-                    "value": "full-vegetation-cover"
-                },
-                {
-                    "label": "Ecosystem stabilization",
-                    "value": "ecosystem-stabilization"
-                },
-                {
-                    "label": "Organic matter buildup",
-                    "value": "organic-matter-buildup"
-                },
-                {
-                    "label": "Erosion control",
-                    "value": "erosion-control"
-                },
-                {
-                    "label": "Mature forest development",
-                    "value": "mature-forest-development"
-                }
-            ],
-            "universal": false
-        },
-        "testing-type": {
-            "tagKey": "testing-type",
-            "type": "selectMultiple",
-            "label": "Testing type",
-            "placeholder": "What is being tested here?",
-            "options": [
-                {
-                    "label": "Water quality monitoring station",
-                    "value": "water-quality-monitoring-station"
-                },
-                {
-                    "label": "Mercury testing site",
-                    "value": "mercury-testing-site"
-                },
-                {
-                    "label": "Contamination analysis site",
-                    "value": "contamination-analysis-site"
-                },
-                {
-                    "label": "Spill detection point",
-                    "value": "spill-detection-point"
-                },
-                {
-                    "label": "Pollution sampling site",
-                    "value": "pollution-sampling-site"
-                },
-                {
-                    "label": "Chemical testing site",
-                    "value": "chemical-testing-site"
-                },
-                {
-                    "label": "Aquatic toxicity testing site",
-                    "value": "aquatic-toxicity-testing-site"
-                },
-                {
-                    "label": "Heavy metal testing zone",
-                    "value": "heavy-metal-testing-zone"
-                },
-                {
-                    "label": "Sediment sampling station",
-                    "value": "sediment-sampling-station"
-                },
-                {
-                    "label": "Surface water testing site",
-                    "value": "surface-water-testing-site"
-                },
-                {
-                    "label": "Groundwater monitoring site",
-                    "value": "groundwater-monitoring-site"
-                },
-                {
-                    "label": "Effluent testing site",
-                    "value": "effluent-testing-site"
-                },
-                {
-                    "label": "Drinking water",
-                    "value": "drinking-water"
-                },
-                {
-                    "label": "Runoff sampling area",
-                    "value": "runoff-sampling-area"
-                }
-            ],
-            "universal": false
-        },
-        "testing": {
-            "tagKey": "testing",
-            "type": "text",
-            "label": "Testing",
-            "placeholder": "What is being tested here?",
-            "universal": false
-        },
-        "tree-species": {
-            "tagKey": "tree-species",
-            "type": "text",
-            "label": "Tree species ",
-            "placeholder": "What kind of tree species is this?",
-            "universal": false
-        },
-        "type-of-saltlick-site": {
-            "tagKey": "type-of-saltlick-site",
-            "type": "selectMultiple",
-            "label": "Type of saltlick site",
-            "placeholder": "What type of salt like is this?",
-            "options": [
-                {
-                    "label": "Natural",
-                    "value": "natural"
-                }
-            ],
-            "universal": false
-        },
-        "type-of-specie": {
-            "tagKey": "type-of-specie",
-            "type": "selectMultiple",
-            "label": "Type of specie",
-            "placeholder": "What kind of specie is here?",
-            "options": [
-                {
-                    "label": "Animal",
-                    "value": "animal"
-                },
-                {
-                    "label": "Plant",
-                    "value": "plant"
-                },
-                {
-                    "label": "Fungi",
-                    "value": "fungi"
-                }
-            ],
-            "universal": false
-        },
-        "water-levels": {
-            "tagKey": "water-levels",
-            "type": "selectMultiple",
-            "label": "Water levels",
-            "placeholder": "What is the water level like?",
-            "options": [
-                {
-                    "label": "High",
-                    "value": "high"
-                },
-                {
-                    "label": "Average",
-                    "value": "average"
-                },
-                {
-                    "label": "Low",
-                    "value": "low"
-                }
-            ],
-            "universal": false
+        {
+          "label": "Animal",
+          "value": "animal"
         }
+      ],
+      "universal": false
     },
-    "presets": {
-        "animal-route": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Animal route",
-                "animal type",
-                "description",
-                "site type"
-            ],
-            "color": "#e69138",
-            "icon": "animal-route",
-            "fields": [
-                "animal-type",
-                "description",
-                "site-type"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "animal-route": "yes"
-            },
-            "name": "Animal route",
-            "sort": 5
+    "animal-type": {
+      "tagKey": "animal-type",
+      "type": "text",
+      "label": "Animal type",
+      "placeholder": "What type of animal is this?",
+      "universal": false
+    },
+    "amount": {
+      "tagKey": "amount",
+      "type": "number",
+      "label": "Amount",
+      "placeholder": "How many are here?",
+      "universal": false
+    },
+    "bird-species": {
+      "tagKey": "bird-species",
+      "type": "text",
+      "label": "Bird species",
+      "placeholder": "What kind of bird species is this?",
+      "universal": false
+    },
+    "drinkable-water-source": {
+      "tagKey": "drinkable-water-source",
+      "type": "selectMultiple",
+      "label": "Drinkable water source",
+      "placeholder": "Is this a drinkable water source?",
+      "options": [
+        {
+          "label": "Yes",
+          "value": "yes"
         },
-        "beehive": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Beehive ",
-                "description"
-            ],
-            "color": "#e69138",
-            "icon": "beehive",
-            "fields": [
-                "description"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "beehive": "yes"
-            },
-            "name": "Beehive ",
-            "sort": 4
-        },
-        "beach": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Beach",
-                "name",
-                "pollution"
-            ],
-            "color": "#9fc5e8",
-            "icon": "beach",
-            "fields": [
-                "name",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "beach": "yes"
-            },
-            "name": "Beach",
-            "sort": 15
-        },
-        "bird": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Bird ",
-                "bird species"
-            ],
-            "color": "#e69138",
-            "icon": "bird",
-            "fields": [
-                "bird-species"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "bird": "yes"
-            },
-            "name": "Bird ",
-            "sort": 3
-        },
-        "camera-trap": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Camera trap",
-                "description",
-                "activity",
-                "animal type",
-                "human activity"
-            ],
-            "color": "#d5a6bd",
-            "icon": "camera-trap",
-            "fields": [
-                "description",
-                "activity",
-                "animal-type",
-                "human-activity"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "camera-trap": "yes"
-            },
-            "name": "Camera trap",
-            "sort": 25
-        },
-        "cave": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Cave ",
-                "name"
-            ],
-            "color": "#ffd966",
-            "icon": "cave",
-            "fields": [
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "cave": "yes"
-            },
-            "name": "Cave ",
-            "sort": 20
-        },
-        "edible-plant": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Edible plant",
-                "plant species",
-                "name",
-                "plant uses"
-            ],
-            "color": "#b6d7a8",
-            "icon": "edible-plant",
-            "fields": [
-                "plant-species",
-                "name",
-                "plant-uses"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "edible-plant": "yes"
-            },
-            "name": "Edible plant",
-            "sort": 12
-        },
-        "endangered-specie": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Endangered specie",
-                "animal type",
-                "type of specie"
-            ],
-            "color": "#ea9999",
-            "icon": "endangered-specie",
-            "fields": [
-                "animal-type",
-                "type-of-specie"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "endangered-specie": "yes"
-            },
-            "name": "Endangered specie",
-            "sort": 6
-        },
-        "fungi": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Fungi ",
-                "fungi species",
-                "edible",
-                "fungi uses"
-            ],
-            "color": "#b6d7a8",
-            "icon": "fungi",
-            "fields": [
-                "fungi-species",
-                "edible",
-                "fungi-uses"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "fungi": "yes"
-            },
-            "name": "Fungi ",
-            "sort": 13
-        },
-        "lake": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Lake ",
-                "name",
-                "drinkable water source",
-                "water levels",
-                "pollution"
-            ],
-            "color": "#9fc5e8",
-            "icon": "lake",
-            "fields": [
-                "name",
-                "drinkable-water-source",
-                "water-levels",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "lake": "yes"
-            },
-            "name": "Lake ",
-            "sort": 17
-        },
-        "medicinal-plant": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Medicinal plant",
-                "plant uses",
-                "plant species",
-                "name"
-            ],
-            "color": "#b6d7a8",
-            "icon": "medicinal-plant",
-            "fields": [
-                "plant-uses",
-                "plant-species",
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "medicinal-plant": "yes"
-            },
-            "name": "Medicinal plant",
-            "sort": 9
-        },
-        "invasive-specie": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Invasive specie",
-                "type of specie",
-                "description"
-            ],
-            "color": "#ea9999",
-            "icon": "invasive-specie",
-            "fields": [
-                "type-of-specie",
-                "description"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "invasive-specie": "yes"
-            },
-            "name": "Invasive specie",
-            "sort": 7
-        },
-        "mountain": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Mountain",
-                "name"
-            ],
-            "color": "#ffd966",
-            "icon": "mountain",
-            "fields": [
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "mountain": "yes"
-            },
-            "name": "Mountain",
-            "sort": 23
-        },
-        "plant-for-construction": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Plant for construction",
-                "plant uses",
-                "plant species",
-                "name"
-            ],
-            "color": "#b6d7a8",
-            "icon": "plant-for-construction",
-            "fields": [
-                "plant-uses",
-                "plant-species",
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "plant-for-construction": "yes"
-            },
-            "name": "Plant for construction",
-            "sort": 10
-        },
-        "plant-for-crafts": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Plant for crafts",
-                "plant species",
-                "plant uses",
-                "name"
-            ],
-            "color": "#b6d7a8",
-            "icon": "plant-for-crafts",
-            "fields": [
-                "plant-species",
-                "plant-uses",
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "plant-for-crafts": "yes"
-            },
-            "name": "Plant for crafts",
-            "sort": 11
-        },
-        "plant": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Plant",
-                "plant species",
-                "name"
-            ],
-            "color": "#b6d7a8",
-            "icon": "plant",
-            "fields": [
-                "plant-species",
-                "name"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "plant": "yes"
-            },
-            "name": "Plant",
-            "sort": 8
-        },
-        "river": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "River ",
-                "name",
-                "drinkable water source",
-                "water levels",
-                "pollution"
-            ],
-            "color": "#9fc5e8",
-            "icon": "river",
-            "fields": [
-                "name",
-                "drinkable-water-source",
-                "water-levels",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "river": "yes"
-            },
-            "name": "River ",
-            "sort": 16
-        },
-        "salt-lick-site": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Salt lick site ",
-                "description",
-                "pollution"
-            ],
-            "color": "#ffd966",
-            "icon": "salt-lick-site",
-            "fields": [
-                "description",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "salt-lick-site": "yes"
-            },
-            "name": "Salt lick site ",
-            "sort": 21
-        },
-        "soil-regeneration": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Soil regeneration ",
-                "soil stage",
-                "description"
-            ],
-            "color": "#ffd966",
-            "icon": "soil-regeneration",
-            "fields": [
-                "soil-stage",
-                "description"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "soil-regeneration": "yes"
-            },
-            "name": "Soil regeneration ",
-            "sort": 22
-        },
-        "terrestrial-animal": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Terrestrial animal",
-                "animal type"
-            ],
-            "color": "#e69138",
-            "icon": "terrestrial-animal",
-            "fields": [
-                "animal-type"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "terrestrial-animal": "yes"
-            },
-            "name": "Terrestrial animal",
-            "sort": 1
-        },
-        "testing-site": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Testing site",
-                "description",
-                "testing type"
-            ],
-            "color": "#d5a6bd",
-            "icon": "testing-site",
-            "fields": [
-                "description",
-                "testing-type"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "testing-site": "yes"
-            },
-            "name": "Testing site",
-            "sort": 24
-        },
-        "tree": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Tree",
-                "tree species"
-            ],
-            "color": "#b6d7a8",
-            "icon": "tree",
-            "fields": [
-                "tree-species"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "tree": "yes"
-            },
-            "name": "Tree",
-            "sort": 14
-        },
-        "water-animal": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Water animal ",
-                "animal type"
-            ],
-            "color": "#e69138",
-            "icon": "water-animal",
-            "fields": [
-                "animal-type"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "water-animal": "yes"
-            },
-            "name": "Water animal ",
-            "sort": 2
-        },
-        "water-source": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Water source ",
-                "drinkable water source",
-                "name",
-                "water levels",
-                "pollution"
-            ],
-            "color": "#9fc5e8",
-            "icon": "water-source",
-            "fields": [
-                "drinkable-water-source",
-                "name",
-                "water-levels",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "water-source": "yes"
-            },
-            "name": "Water source ",
-            "sort": 19
-        },
-        "waterfall": {
-            "fieldRefs": [],
-            "removeTags": {},
-            "addTags": {},
-            "terms": [
-                "Waterfall",
-                "name",
-                "water levels",
-                "drinkable water source",
-                "pollution"
-            ],
-            "color": "#9fc5e8",
-            "icon": "waterfall",
-            "fields": [
-                "name",
-                "water-levels",
-                "drinkable-water-source",
-                "pollution"
-            ],
-            "geometry": [
-                "point",
-                "line",
-                "area"
-            ],
-            "tags": {
-                "waterfall": "yes"
-            },
-            "name": "Waterfall",
-            "sort": 18
+        {
+          "label": "No",
+          "value": "no"
         }
+      ],
+      "universal": false
+    },
+    "description": {
+      "tagKey": "description",
+      "type": "text",
+      "label": "Description",
+      "placeholder": "How would you describe it?",
+      "universal": false
+    },
+    "edible": {
+      "tagKey": "edible",
+      "type": "selectMultiple",
+      "label": "Edible",
+      "placeholder": "Is this edible?",
+      "options": [
+        {
+          "label": "Yes",
+          "value": "yes"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "universal": false
+    },
+    "fungi-species": {
+      "tagKey": "fungi-species",
+      "type": "text",
+      "label": "Fungi species",
+      "placeholder": "What kind of fungi is this?",
+      "universal": false
+    },
+    "fungi-uses": {
+      "tagKey": "fungi-uses",
+      "type": "text",
+      "label": "Fungi uses",
+      "placeholder": "How do you use it?",
+      "universal": false
+    },
+    "human-activity": {
+      "tagKey": "human-activity",
+      "type": "selectMultiple",
+      "label": "Human activity",
+      "placeholder": "What kind of human activity is this?",
+      "options": [
+        {
+          "label": "Lega",
+          "value": "lega"
+        },
+        {
+          "label": "Illegal",
+          "value": "illegal"
+        }
+      ],
+      "universal": false
+    },
+    "name": {
+      "tagKey": "name",
+      "type": "text",
+      "label": "Name",
+      "placeholder": "How do you call this?",
+      "universal": false
+    },
+    "nesting-stage": {
+      "tagKey": "nesting-stage",
+      "type": "selectMultiple",
+      "label": "Nesting stage",
+      "placeholder": "What is happening here now?",
+      "options": [
+        {
+          "label": "Nest buildng",
+          "value": "nest-buildng"
+        },
+        {
+          "label": "Incubation",
+          "value": "incubation"
+        },
+        {
+          "label": "Empty",
+          "value": "empty"
+        }
+      ],
+      "universal": false
+    },
+    "plant-species": {
+      "tagKey": "plant-species",
+      "type": "selectMultiple",
+      "label": "Plant species",
+      "placeholder": "What kind of plant species is this?",
+      "options": [
+        {
+          "label": "Tree",
+          "value": "tree"
+        },
+        {
+          "label": "Shrub",
+          "value": "shrub"
+        },
+        {
+          "label": "Vine",
+          "value": "vine"
+        },
+        {
+          "label": "Herb",
+          "value": "herb"
+        },
+        {
+          "label": "Grass",
+          "value": "grass"
+        },
+        {
+          "label": "Fern",
+          "value": "fern"
+        },
+        {
+          "label": "Moss",
+          "value": "moss"
+        },
+        {
+          "label": "Succulent",
+          "value": "succulent"
+        },
+        {
+          "label": "Palm",
+          "value": "palm"
+        },
+        {
+          "label": "Ground cover plant",
+          "value": "ground-cover-plant"
+        },
+        {
+          "label": "Epiphyte",
+          "value": "epiphyte"
+        },
+        {
+          "label": "Aquatic plant",
+          "value": "aquatic-plant"
+        },
+        {
+          "label": "Bamboo",
+          "value": "bamboo"
+        },
+        {
+          "label": "Cactus",
+          "value": "cactus"
+        }
+      ],
+      "universal": false
+    },
+    "plant-uses": {
+      "tagKey": "plant-uses",
+      "type": "text",
+      "label": "Plant uses",
+      "placeholder": "How to people use this plant in this territory?",
+      "universal": false
+    },
+    "pollution": {
+      "tagKey": "pollution",
+      "type": "selectMultiple",
+      "label": "Pollution",
+      "placeholder": "Is this polluted?",
+      "options": [
+        {
+          "label": "Yes",
+          "value": "yes"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "universal": false
+    },
+    "presence-of-animals": {
+      "tagKey": "presence-of-animals",
+      "type": "selectMultiple",
+      "label": "Presence of animals",
+      "placeholder": "Did you see any animal?",
+      "options": [
+        {
+          "label": "Yes",
+          "value": "yes"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "universal": false
+    },
+    "site-type": {
+      "tagKey": "site-type",
+      "type": "selectMultiple",
+      "label": "Site type",
+      "placeholder": "What kind of site is this?",
+      "options": [
+        {
+          "label": "Mating site",
+          "value": "mating-site"
+        },
+        {
+          "label": "Nesting site",
+          "value": "nesting-site"
+        },
+        {
+          "label": "Sprawning site",
+          "value": "sprawning-site"
+        }
+      ],
+      "universal": false
+    },
+    "soil-stage": {
+      "tagKey": "soil-stage",
+      "type": "selectMultiple",
+      "label": "Soil stage",
+      "placeholder": "How would you describe the stage of this soil regeneration?",
+      "options": [
+        {
+          "label": "Bare soil",
+          "value": "bare-soil"
+        },
+        {
+          "label": "Initial vegetation growth",
+          "value": "initial-vegetation-growth"
+        },
+        {
+          "label": "Grass cover",
+          "value": "grass-cover"
+        },
+        {
+          "label": "Herbaceous plants",
+          "value": "herbaceous-plants"
+        },
+        {
+          "label": "Shrub establishment",
+          "value": "shrub-establishment"
+        },
+        {
+          "label": "Young tree growth",
+          "value": "young-tree-growth"
+        },
+        {
+          "label": "Tree canopy formation",
+          "value": "tree-canopy-formation"
+        },
+        {
+          "label": "Soil nutrient enrichment",
+          "value": "soil-nutrient-enrichment"
+        },
+        {
+          "label": "Root system expansion",
+          "value": "root-system-expansion"
+        },
+        {
+          "label": "Biodiversity increase",
+          "value": "biodiversity-increase"
+        },
+        {
+          "label": "Full vegetation cover",
+          "value": "full-vegetation-cover"
+        },
+        {
+          "label": "Ecosystem stabilization",
+          "value": "ecosystem-stabilization"
+        },
+        {
+          "label": "Organic matter buildup",
+          "value": "organic-matter-buildup"
+        },
+        {
+          "label": "Erosion control",
+          "value": "erosion-control"
+        },
+        {
+          "label": "Mature forest development",
+          "value": "mature-forest-development"
+        }
+      ],
+      "universal": false
+    },
+    "testing-type": {
+      "tagKey": "testing-type",
+      "type": "selectMultiple",
+      "label": "Testing type",
+      "placeholder": "What is being tested here?",
+      "options": [
+        {
+          "label": "Water quality monitoring station",
+          "value": "water-quality-monitoring-station"
+        },
+        {
+          "label": "Mercury testing site",
+          "value": "mercury-testing-site"
+        },
+        {
+          "label": "Contamination analysis site",
+          "value": "contamination-analysis-site"
+        },
+        {
+          "label": "Spill detection point",
+          "value": "spill-detection-point"
+        },
+        {
+          "label": "Pollution sampling site",
+          "value": "pollution-sampling-site"
+        },
+        {
+          "label": "Chemical testing site",
+          "value": "chemical-testing-site"
+        },
+        {
+          "label": "Aquatic toxicity testing site",
+          "value": "aquatic-toxicity-testing-site"
+        },
+        {
+          "label": "Heavy metal testing zone",
+          "value": "heavy-metal-testing-zone"
+        },
+        {
+          "label": "Sediment sampling station",
+          "value": "sediment-sampling-station"
+        },
+        {
+          "label": "Surface water testing site",
+          "value": "surface-water-testing-site"
+        },
+        {
+          "label": "Groundwater monitoring site",
+          "value": "groundwater-monitoring-site"
+        },
+        {
+          "label": "Effluent testing site",
+          "value": "effluent-testing-site"
+        },
+        {
+          "label": "Drinking water",
+          "value": "drinking-water"
+        },
+        {
+          "label": "Runoff sampling area",
+          "value": "runoff-sampling-area"
+        }
+      ],
+      "universal": false
+    },
+    "testing": {
+      "tagKey": "testing",
+      "type": "text",
+      "label": "Testing",
+      "placeholder": "What is being tested here?",
+      "universal": false
+    },
+    "tree-species": {
+      "tagKey": "tree-species",
+      "type": "text",
+      "label": "Tree species ",
+      "placeholder": "What kind of tree species is this?",
+      "universal": false
+    },
+    "type-of-saltlick-site": {
+      "tagKey": "type-of-saltlick-site",
+      "type": "selectMultiple",
+      "label": "Type of saltlick site",
+      "placeholder": "What type of salt like is this?",
+      "options": [
+        {
+          "label": "Natural",
+          "value": "natural"
+        }
+      ],
+      "universal": false
+    },
+    "type-of-specie": {
+      "tagKey": "type-of-specie",
+      "type": "selectMultiple",
+      "label": "Type of specie",
+      "placeholder": "What kind of specie is here?",
+      "options": [
+        {
+          "label": "Animal",
+          "value": "animal"
+        },
+        {
+          "label": "Plant",
+          "value": "plant"
+        },
+        {
+          "label": "Fungi",
+          "value": "fungi"
+        }
+      ],
+      "universal": false
+    },
+    "water-levels": {
+      "tagKey": "water-levels",
+      "type": "selectMultiple",
+      "label": "Water levels",
+      "placeholder": "What is the water level like?",
+      "options": [
+        {
+          "label": "High",
+          "value": "high"
+        },
+        {
+          "label": "Average",
+          "value": "average"
+        },
+        {
+          "label": "Low",
+          "value": "low"
+        }
+      ],
+      "universal": false
     }
+  },
+  "presets": {
+    "animal-route": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Animal route", "animal type", "description", "site type"],
+      "color": "#e69138",
+      "icon": "animal-route",
+      "fields": ["animal-type", "description", "site-type"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "animal-route": "yes"
+      },
+      "name": "Animal route",
+      "sort": 5
+    },
+    "beehive": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Beehive ", "description"],
+      "color": "#e69138",
+      "icon": "beehive",
+      "fields": ["description"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "beehive": "yes"
+      },
+      "name": "Beehive ",
+      "sort": 4
+    },
+    "beach": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Beach", "name", "pollution"],
+      "color": "#9fc5e8",
+      "icon": "beach",
+      "fields": ["name", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "beach": "yes"
+      },
+      "name": "Beach",
+      "sort": 15
+    },
+    "bird": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Bird ", "bird species"],
+      "color": "#e69138",
+      "icon": "bird",
+      "fields": ["bird-species"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "bird": "yes"
+      },
+      "name": "Bird ",
+      "sort": 3
+    },
+    "camera-trap": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Camera trap", "description", "activity", "animal type", "human activity"],
+      "color": "#d5a6bd",
+      "icon": "camera-trap",
+      "fields": ["description", "activity", "animal-type", "human-activity"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "camera-trap": "yes"
+      },
+      "name": "Camera trap",
+      "sort": 25
+    },
+    "cave": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Cave ", "name"],
+      "color": "#ffd966",
+      "icon": "cave",
+      "fields": ["name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "cave": "yes"
+      },
+      "name": "Cave ",
+      "sort": 20
+    },
+    "edible-plant": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Edible plant", "plant species", "name", "plant uses"],
+      "color": "#b6d7a8",
+      "icon": "edible-plant",
+      "fields": ["plant-species", "name", "plant-uses"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "edible-plant": "yes"
+      },
+      "name": "Edible plant",
+      "sort": 12
+    },
+    "endangered-specie": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Endangered specie", "animal type", "type of specie"],
+      "color": "#ea9999",
+      "icon": "endangered-specie",
+      "fields": ["animal-type", "type-of-specie"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "endangered-specie": "yes"
+      },
+      "name": "Endangered specie",
+      "sort": 6
+    },
+    "fungi": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Fungi ", "fungi species", "edible", "fungi uses"],
+      "color": "#b6d7a8",
+      "icon": "fungi",
+      "fields": ["fungi-species", "edible", "fungi-uses"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "fungi": "yes"
+      },
+      "name": "Fungi ",
+      "sort": 13
+    },
+    "lake": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Lake ", "name", "drinkable water source", "water levels", "pollution"],
+      "color": "#9fc5e8",
+      "icon": "lake",
+      "fields": ["name", "drinkable-water-source", "water-levels", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "lake": "yes"
+      },
+      "name": "Lake ",
+      "sort": 17
+    },
+    "medicinal-plant": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Medicinal plant", "plant uses", "plant species", "name"],
+      "color": "#b6d7a8",
+      "icon": "medicinal-plant",
+      "fields": ["plant-uses", "plant-species", "name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "medicinal-plant": "yes"
+      },
+      "name": "Medicinal plant",
+      "sort": 9
+    },
+    "invasive-specie": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Invasive specie", "type of specie", "description"],
+      "color": "#ea9999",
+      "icon": "invasive-specie",
+      "fields": ["type-of-specie", "description"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "invasive-specie": "yes"
+      },
+      "name": "Invasive specie",
+      "sort": 7
+    },
+    "mountain": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Mountain", "name"],
+      "color": "#ffd966",
+      "icon": "mountain",
+      "fields": ["name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "mountain": "yes"
+      },
+      "name": "Mountain",
+      "sort": 23
+    },
+    "plant-for-construction": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Plant for construction", "plant uses", "plant species", "name"],
+      "color": "#b6d7a8",
+      "icon": "plant-for-construction",
+      "fields": ["plant-uses", "plant-species", "name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "plant-for-construction": "yes"
+      },
+      "name": "Plant for construction",
+      "sort": 10
+    },
+    "plant-for-crafts": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Plant for crafts", "plant species", "plant uses", "name"],
+      "color": "#b6d7a8",
+      "icon": "plant-for-crafts",
+      "fields": ["plant-species", "plant-uses", "name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "plant-for-crafts": "yes"
+      },
+      "name": "Plant for crafts",
+      "sort": 11
+    },
+    "plant": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Plant", "plant species", "name"],
+      "color": "#b6d7a8",
+      "icon": "plant",
+      "fields": ["plant-species", "name"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "plant": "yes"
+      },
+      "name": "Plant",
+      "sort": 8
+    },
+    "river": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["River ", "name", "drinkable water source", "water levels", "pollution"],
+      "color": "#9fc5e8",
+      "icon": "river",
+      "fields": ["name", "drinkable-water-source", "water-levels", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "river": "yes"
+      },
+      "name": "River ",
+      "sort": 16
+    },
+    "salt-lick-site": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Salt lick site ", "description", "pollution"],
+      "color": "#ffd966",
+      "icon": "salt-lick-site",
+      "fields": ["description", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "salt-lick-site": "yes"
+      },
+      "name": "Salt lick site ",
+      "sort": 21
+    },
+    "soil-regeneration": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Soil regeneration ", "soil stage", "description"],
+      "color": "#ffd966",
+      "icon": "soil-regeneration",
+      "fields": ["soil-stage", "description"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "soil-regeneration": "yes"
+      },
+      "name": "Soil regeneration ",
+      "sort": 22
+    },
+    "terrestrial-animal": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Terrestrial animal", "animal type"],
+      "color": "#e69138",
+      "icon": "terrestrial-animal",
+      "fields": ["animal-type"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "terrestrial-animal": "yes"
+      },
+      "name": "Terrestrial animal",
+      "sort": 1
+    },
+    "testing-site": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Testing site", "description", "testing type"],
+      "color": "#d5a6bd",
+      "icon": "testing-site",
+      "fields": ["description", "testing-type"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "testing-site": "yes"
+      },
+      "name": "Testing site",
+      "sort": 24
+    },
+    "tree": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Tree", "tree species"],
+      "color": "#b6d7a8",
+      "icon": "tree",
+      "fields": ["tree-species"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "tree": "yes"
+      },
+      "name": "Tree",
+      "sort": 14
+    },
+    "water-animal": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Water animal ", "animal type"],
+      "color": "#e69138",
+      "icon": "water-animal",
+      "fields": ["animal-type"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "water-animal": "yes"
+      },
+      "name": "Water animal ",
+      "sort": 2
+    },
+    "water-source": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Water source ", "drinkable water source", "name", "water levels", "pollution"],
+      "color": "#9fc5e8",
+      "icon": "water-source",
+      "fields": ["drinkable-water-source", "name", "water-levels", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "water-source": "yes"
+      },
+      "name": "Water source ",
+      "sort": 19
+    },
+    "waterfall": {
+      "fieldRefs": [],
+      "removeTags": {},
+      "addTags": {},
+      "terms": ["Waterfall", "name", "water levels", "drinkable water source", "pollution"],
+      "color": "#9fc5e8",
+      "icon": "waterfall",
+      "fields": ["name", "water-levels", "drinkable-water-source", "pollution"],
+      "geometry": ["point", "line", "area"],
+      "tags": {
+        "waterfall": "yes"
+      },
+      "name": "Waterfall",
+      "sort": 18
+    }
+  }
 }

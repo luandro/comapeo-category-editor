@@ -1,18 +1,18 @@
-import { pgTable, text, serial, integer, boolean, jsonb } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import { boolean, integer, jsonb, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { createInsertSchema } from 'drizzle-zod';
+import type { z } from 'zod';
 
 // Configuration models
-export const configs = pgTable("configs", {
-  id: serial("id").primaryKey(),
-  hashId: text("hash_id").notNull().unique(),
-  name: text("name").notNull(),
-  version: text("version").notNull(),
-  fileVersion: text("file_version").notNull(),
-  buildDate: text("build_date").notNull(),
-  data: jsonb("data").notNull(), // Stores the complete configuration data
-  isMapeo: boolean("is_mapeo").default(false).notNull(),
-  createdAt: text("created_at").notNull(),
+export const configs = pgTable('configs', {
+  id: serial('id').primaryKey(),
+  hashId: text('hash_id').notNull().unique(),
+  name: text('name').notNull(),
+  version: text('version').notNull(),
+  fileVersion: text('file_version').notNull(),
+  buildDate: text('build_date').notNull(),
+  data: jsonb('data').notNull(), // Stores the complete configuration data
+  isMapeo: boolean('is_mapeo').default(false).notNull(),
+  createdAt: text('created_at').notNull(),
 });
 
 export const insertConfigSchema = createInsertSchema(configs).omit({

@@ -1,9 +1,15 @@
-import { useState, useRef } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Image, Upload } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 interface IconDialogProps {
   onSave: (name: string, content: string, fileType?: string) => void;
@@ -83,7 +89,8 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
     }
 
     try {
-      const isSvg = iconFile.type === 'image/svg+xml' || iconFile.name.toLowerCase().endsWith('.svg');
+      const isSvg =
+        iconFile.type === 'image/svg+xml' || iconFile.name.toLowerCase().endsWith('.svg');
       const fileType = isSvg ? 'svg' : 'png';
 
       if (isSvg) {
@@ -124,14 +131,17 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={triggerFileInput}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                triggerFileInput();
+              }
+            }}
+            role="button"
+            tabIndex={0}
           >
             {iconPreview ? (
               <div className="flex flex-col items-center">
-                <img
-                  src={iconPreview}
-                  alt="Icon preview"
-                  className="w-16 h-16 mb-2"
-                />
+                <img src={iconPreview} alt="Icon preview" className="w-16 h-16 mb-2" />
                 <p className="text-sm font-medium text-gray-700">{iconFile?.name}</p>
                 <p className="text-xs text-gray-500 mt-1">Click or drag to replace</p>
               </div>
@@ -144,7 +154,9 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
                   <Upload className="mr-2 h-4 w-4" />
                   Browse Files
                 </Button>
-                <p className="mt-2 text-xs text-gray-500">SVG or PNG formats accepted (SVG recommended)</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  SVG or PNG formats accepted (SVG recommended)
+                </p>
               </>
             )}
 
@@ -166,7 +178,9 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
               placeholder="E.g., park, tree, river (no spaces, no extension)"
               className="w-full"
             />
-            <p className="mt-1 text-xs text-gray-500">Will be saved in the icons directory with the appropriate extension</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Will be saved in the icons directory with the appropriate extension
+            </p>
           </div>
         </div>
 
@@ -174,10 +188,7 @@ export function IconDialog({ onSave, onCancel }: IconDialogProps) {
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!iconFile || !iconName}
-          >
+          <Button onClick={handleSubmit} disabled={!iconFile || !iconName}>
             Upload Icon
           </Button>
         </DialogFooter>

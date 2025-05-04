@@ -1,10 +1,10 @@
-import { 
-  configs, 
-  type Config, 
-  type InsertConfig, 
+import {
   type CoMapeoConfig,
-  type MapeoConfig
-} from "@shared/schema";
+  type Config,
+  type InsertConfig,
+  type MapeoConfig,
+  configs,
+} from '@shared/schema';
 
 export interface IStorage {
   getConfigByHash(hashId: string): Promise<Config | undefined>;

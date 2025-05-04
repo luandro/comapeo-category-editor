@@ -1,18 +1,30 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useConfigStore } from '@/lib/store';
-import { FileDropZone } from '@/components/ui/file-drop-zone';
 import { Header } from '@/components/header';
-import { PageContainer } from '@/components/ui/page-container';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, AlertCircle, RefreshCw, Download, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { extractZipFile, extractTarFile } from '@/lib/file-handling';
+import { Card, CardContent } from '@/components/ui/card';
+import { FileDropZone } from '@/components/ui/file-drop-zone';
+import { PageContainer } from '@/components/ui/page-container';
+import { Progress } from '@/components/ui/progress';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { createSampleConfig, createSampleIconFiles } from '@/lib/createSampleConfig';
-import { getLatestDefaultConfigs, downloadAndProcessDefaultConfig, DefaultConfigOption } from '@/lib/getLatestDefaultConfig';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
+import { extractTarFile, extractZipFile } from '@/lib/file-handling';
+import {
+  type DefaultConfigOption,
+  downloadAndProcessDefaultConfig,
+  getLatestDefaultConfigs,
+} from '@/lib/getLatestDefaultConfig';
+import { useConfigStore } from '@/lib/store';
+import { AlertCircle, AlertTriangle, Download, Globe, RefreshCw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'wouter';
 
 export default function ImportPage() {
   const [, setLocation] = useLocation();
@@ -100,13 +112,11 @@ export default function ImportPage() {
     } catch (error) {
       console.error('File processing error:', error);
       setProcessingState('error');
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Unknown error occurred.'
-      );
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred.');
     }
   };
 
-  const handleUseSampleConfig = () => {
+  const _handleUseSampleConfig = () => {
     try {
       setProcessingState('processing');
       setProgress(0);
@@ -118,24 +128,24 @@ export default function ImportPage() {
         // Step 1: Creating configuration
         setProgress(10);
         setStatusText('Creating sample configuration...');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Step 2: Generate sample config
         setProgress(30);
         setStatusText('Generating configuration structure...');
         const sampleConfig = createSampleConfig();
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Step 3: Create sample icons
         setProgress(50);
         setStatusText('Creating sample icons...');
         const sampleIconFiles = createSampleIconFiles();
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Step 4: Process configuration
         setProgress(70);
         setStatusText('Processing sample configuration...');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Step 5: Import configuration
         setProgress(90);
@@ -143,7 +153,7 @@ export default function ImportPage() {
         importConfig(
           [
             { name: 'config.json', path: 'config.json', content: JSON.stringify(sampleConfig) },
-            ...sampleIconFiles
+            ...sampleIconFiles,
           ],
           false
         );
@@ -159,7 +169,7 @@ export default function ImportPage() {
       };
 
       // Execute the progress simulation
-      simulateProgress().catch(error => {
+      simulateProgress().catch((error) => {
         console.error('Error in sample config creation:', error);
         setProcessingState('error');
         setErrorMessage(
@@ -184,7 +194,7 @@ export default function ImportPage() {
 
       // Find the selected config option
       const configOption = defaultConfigs.find(
-        config => config.fileName === selectedDefaultConfig
+        (config) => config.fileName === selectedDefaultConfig
       );
       if (!configOption) {
         throw new Error('Selected configuration not found');
@@ -200,10 +210,7 @@ export default function ImportPage() {
       };
 
       // Download and process the configuration
-      const extractedFiles = await downloadAndProcessDefaultConfig(
-        configOption,
-        updateProgress
-      );
+      const extractedFiles = await downloadAndProcessDefaultConfig(configOption, updateProgress);
 
       setProgress(96);
       setStatusText('Importing configuration...');
@@ -221,9 +228,7 @@ export default function ImportPage() {
     } catch (error) {
       console.error('Default config processing error:', error);
       setProcessingState('error');
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Unknown error occurred.'
-      );
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred.');
     }
   };
 
@@ -243,9 +248,7 @@ export default function ImportPage() {
         <Card className="max-w-3xl mx-auto">
           <CardContent className="pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-semibold text-center flex-grow">
-                Import Configuration
-              </h1>
+              <h1 className="text-2xl font-semibold text-center flex-grow">Import Configuration</h1>
               {processingState !== 'idle' && (
                 <Button variant="outline" onClick={resetProcess} className="flex items-center">
                   <RefreshCw className="mr-2 h-4 w-4" />
@@ -305,20 +308,24 @@ export default function ImportPage() {
                             </SelectTrigger>
                             <SelectContent>
                               {/* Group configurations by source */}
-                              {Array.from(new Set(defaultConfigs.map(config => config.source))).map(
-                                source => (
-                                  <SelectGroup key={`group-${source}`}>
-                                    <SelectLabel>{source}</SelectLabel>
-                                    {defaultConfigs
-                                      .filter(config => config.source === source)
-                                      .map(config => (
-                                        <SelectItem key={config.fileName} value={config.fileName} className="pl-6">
-                                          {config.name} ({config.formattedSize})
-                                        </SelectItem>
-                                      ))}
-                                  </SelectGroup>
-                                )
-                              )}
+                              {Array.from(
+                                new Set(defaultConfigs.map((config) => config.source))
+                              ).map((source) => (
+                                <SelectGroup key={`group-${source}`}>
+                                  <SelectLabel>{source}</SelectLabel>
+                                  {defaultConfigs
+                                    .filter((config) => config.source === source)
+                                    .map((config) => (
+                                      <SelectItem
+                                        key={config.fileName}
+                                        value={config.fileName}
+                                        className="pl-6"
+                                      >
+                                        {config.name} ({config.formattedSize})
+                                      </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                              ))}
                             </SelectContent>
                           </Select>
 
@@ -336,7 +343,7 @@ export default function ImportPage() {
                             <div className="text-xs text-gray-500 text-left mt-2 p-2 border border-gray-200 rounded-md">
                               {(() => {
                                 const config = defaultConfigs.find(
-                                  c => c.fileName === selectedDefaultConfig
+                                  (c) => c.fileName === selectedDefaultConfig
                                 );
                                 if (!config) return null;
                                 return (
@@ -372,9 +379,7 @@ export default function ImportPage() {
                     </div>
                     <Progress value={progress} className="w-full h-2 mb-1" />
                     {fileSize && (
-                      <p className="text-xs text-gray-500 text-right">
-                        File size: {fileSize}
-                      </p>
+                      <p className="text-xs text-gray-500 text-right">File size: {fileSize}</p>
                     )}
                   </div>
                 </div>

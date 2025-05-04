@@ -1,13 +1,20 @@
-import { useState } from 'react';
-import { useConfigStore } from '@/lib/store';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { FieldDialog } from '@/components/dialogs/field-dialog';
-import { CoMapeoField } from '@shared/schema';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useConfigStore } from '@/lib/store';
+import type { CoMapeoField } from '@shared/schema';
+import { CheckCircle, Edit, Plus, Trash2, XCircle } from 'lucide-react';
 import { nanoid } from 'nanoid';
+import { useState } from 'react';
 
 export default function FieldsTab() {
   const { config, addField, updateField, deleteField } = useConfigStore();
@@ -17,9 +24,10 @@ export default function FieldsTab() {
 
   // Ensure fields is an array before filtering
   const fields = Array.isArray(config?.fields) ? config.fields : [];
-  const filteredFields = fields.filter(field => 
-    field.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    field.tagKey.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFields = fields.filter(
+    (field) =>
+      field.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      field.tagKey.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleAddField = () => {
@@ -62,7 +70,7 @@ export default function FieldsTab() {
               Add Field
             </Button>
           </div>
-          
+
           <div className="mb-4">
             <Input
               placeholder="Search fields..."
@@ -71,7 +79,7 @@ export default function FieldsTab() {
               className="w-full"
             />
           </div>
-          
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -109,16 +117,16 @@ export default function FieldsTab() {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleEditField(field)}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleDeleteField(field.id)}
                             className="text-destructive hover:text-destructive/80"
                           >
@@ -134,7 +142,7 @@ export default function FieldsTab() {
           </div>
         </CardContent>
       </Card>
-      
+
       {showDialog && (
         <FieldDialog
           field={selectedField}

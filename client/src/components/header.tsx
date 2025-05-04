@@ -1,10 +1,10 @@
-import { useConfigStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { FileDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useLocation } from 'wouter';
+import { buildComapeoCatFile, createZipFile } from '@/lib/file-handling';
+import { useConfigStore } from '@/lib/store';
+import { FileDown } from 'lucide-react';
 import { useState } from 'react';
-import { createZipFile, buildComapeoCatFile } from '@/lib/file-handling';
+import { useLocation } from 'wouter';
 import { ExportDialog } from './dialogs/export-dialog';
 
 export function Header() {
@@ -19,41 +19,41 @@ export function Header() {
   const handleExport = async () => {
     if (!config) {
       toast({
-        title: "No configuration",
-        description: "Please import a configuration file first.",
-        variant: "destructive"
+        title: 'No configuration',
+        description: 'Please import a configuration file first.',
+        variant: 'destructive',
       });
       return;
     }
 
     setIsExporting(true);
-    
+
     try {
       // Create a zip file from the current configuration
       const zipBlob = await createZipFile(config, rawFiles);
-      
+
       // Build the .comapeocat file using the API
       const comapeoCatBlob = await buildComapeoCatFile(zipBlob);
-      
+
       // Create URL for download
       const url = URL.createObjectURL(comapeoCatBlob);
       setExportUrl(url);
-      
+
       // Save to server for sharing
       const hashId = await useConfigStore.getState().saveConfigToServer();
-      
+
       // Create share URL
       const host = window.location.origin;
       setShareUrl(`${host}/#/config/${hashId}`);
-      
+
       // Show export dialog
       setShowExportDialog(true);
     } catch (error) {
       console.error('Export failed:', error);
       toast({
-        title: "Export failed",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive"
+        title: 'Export failed',
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
       });
     } finally {
       setIsExporting(false);
@@ -76,24 +76,20 @@ export function Header() {
         </div>
         <div>
           {location !== '/' && (
-            <Button 
+            <Button
               onClick={handleExport}
               disabled={!config || isExporting}
               className="flex items-center"
             >
               <FileDown className="mr-2 h-4 w-4" />
-              {isExporting ? "Exporting..." : "Export .comapeocat"}
+              {isExporting ? 'Exporting...' : 'Export .comapeocat'}
             </Button>
           )}
         </div>
       </div>
-      
+
       {showExportDialog && exportUrl && shareUrl && (
-        <ExportDialog 
-          downloadUrl={exportUrl} 
-          shareUrl={shareUrl} 
-          onClose={closeExportDialog} 
-        />
+        <ExportDialog downloadUrl={exportUrl} shareUrl={shareUrl} onClose={closeExportDialog} />
       )}
     </header>
   );

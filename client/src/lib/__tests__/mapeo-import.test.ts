@@ -7,7 +7,7 @@ global.File = class MockFile {
   type: string;
   arrayBuffer: () => Promise<ArrayBuffer>;
 
-  constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
+  constructor(_bits: BlobPart[], name: string, options?: FilePropertyBag) {
     this.name = name;
     this.type = options?.type || '';
     
@@ -20,7 +20,7 @@ global.File = class MockFile {
 
 // Mock TextDecoder
 global.TextDecoder = class MockTextDecoder {
-  decode(buffer: ArrayBuffer): string {
+  decode(_buffer: ArrayBuffer): string {
     // Return mock content based on the test case
     return ''; // This will be replaced in tests
   }

@@ -487,24 +487,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Animal route",
-          "animal type",
-          "description",
-          "site type"
-        ],
+        "terms": ["Animal route", "animal type", "description", "site type"],
         "color": "#e69138",
         "icon": "animal-route",
-        "fields": [
-          "animal-type",
-          "description",
-          "site-type"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["animal-type", "description", "site-type"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "animal-route": "yes"
         },
@@ -515,20 +502,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Beehive ",
-          "description"
-        ],
+        "terms": ["Beehive ", "description"],
         "color": "#e69138",
         "icon": "beehive",
-        "fields": [
-          "description"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["description"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "beehive": "yes"
         },
@@ -539,22 +517,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Beach",
-          "name",
-          "pollution"
-        ],
+        "terms": ["Beach", "name", "pollution"],
         "color": "#9fc5e8",
         "icon": "beach",
-        "fields": [
-          "name",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "beach": "yes"
         },
@@ -565,20 +532,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Bird ",
-          "bird species"
-        ],
+        "terms": ["Bird ", "bird species"],
         "color": "#e69138",
         "icon": "bird",
-        "fields": [
-          "bird-species"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["bird-species"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "bird": "yes"
         },
@@ -589,26 +547,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Camera trap",
-          "description",
-          "activity",
-          "animal type",
-          "human activity"
-        ],
+        "terms": ["Camera trap", "description", "activity", "animal type", "human activity"],
         "color": "#d5a6bd",
         "icon": "camera-trap",
-        "fields": [
-          "description",
-          "activity",
-          "animal-type",
-          "human-activity"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["description", "activity", "animal-type", "human-activity"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "camera-trap": "yes"
         },
@@ -619,20 +562,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Cave ",
-          "name"
-        ],
+        "terms": ["Cave ", "name"],
         "color": "#ffd966",
         "icon": "cave",
-        "fields": [
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "cave": "yes"
         },
@@ -643,24 +577,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Edible plant",
-          "plant species",
-          "name",
-          "plant uses"
-        ],
+        "terms": ["Edible plant", "plant species", "name", "plant uses"],
         "color": "#b6d7a8",
         "icon": "edible-plant",
-        "fields": [
-          "plant-species",
-          "name",
-          "plant-uses"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["plant-species", "name", "plant-uses"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "edible-plant": "yes"
         },
@@ -671,22 +592,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Endangered specie",
-          "animal type",
-          "type of specie"
-        ],
+        "terms": ["Endangered specie", "animal type", "type of specie"],
         "color": "#ea9999",
         "icon": "endangered-specie",
-        "fields": [
-          "animal-type",
-          "type-of-specie"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["animal-type", "type-of-specie"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "endangered-specie": "yes"
         },
@@ -697,24 +607,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Fungi ",
-          "fungi species",
-          "edible",
-          "fungi uses"
-        ],
+        "terms": ["Fungi ", "fungi species", "edible", "fungi uses"],
         "color": "#b6d7a8",
         "icon": "fungi",
-        "fields": [
-          "fungi-species",
-          "edible",
-          "fungi-uses"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["fungi-species", "edible", "fungi-uses"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "fungi": "yes"
         },
@@ -725,26 +622,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Lake ",
-          "name",
-          "drinkable water source",
-          "water levels",
-          "pollution"
-        ],
+        "terms": ["Lake ", "name", "drinkable water source", "water levels", "pollution"],
         "color": "#9fc5e8",
         "icon": "lake",
-        "fields": [
-          "name",
-          "drinkable-water-source",
-          "water-levels",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name", "drinkable-water-source", "water-levels", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "lake": "yes"
         },
@@ -755,24 +637,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Medicinal plant",
-          "plant uses",
-          "plant species",
-          "name"
-        ],
+        "terms": ["Medicinal plant", "plant uses", "plant species", "name"],
         "color": "#b6d7a8",
         "icon": "medicinal-plant",
-        "fields": [
-          "plant-uses",
-          "plant-species",
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["plant-uses", "plant-species", "name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "medicinal-plant": "yes"
         },
@@ -783,22 +652,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Invasive specie",
-          "type of specie",
-          "description"
-        ],
+        "terms": ["Invasive specie", "type of specie", "description"],
         "color": "#ea9999",
         "icon": "invasive-specie",
-        "fields": [
-          "type-of-specie",
-          "description"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["type-of-specie", "description"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "invasive-specie": "yes"
         },
@@ -809,20 +667,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Mountain",
-          "name"
-        ],
+        "terms": ["Mountain", "name"],
         "color": "#ffd966",
         "icon": "mountain",
-        "fields": [
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "mountain": "yes"
         },
@@ -833,24 +682,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Plant for construction",
-          "plant uses",
-          "plant species",
-          "name"
-        ],
+        "terms": ["Plant for construction", "plant uses", "plant species", "name"],
         "color": "#b6d7a8",
         "icon": "plant-for-construction",
-        "fields": [
-          "plant-uses",
-          "plant-species",
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["plant-uses", "plant-species", "name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "plant-for-construction": "yes"
         },
@@ -861,24 +697,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Plant for crafts",
-          "plant species",
-          "plant uses",
-          "name"
-        ],
+        "terms": ["Plant for crafts", "plant species", "plant uses", "name"],
         "color": "#b6d7a8",
         "icon": "plant-for-crafts",
-        "fields": [
-          "plant-species",
-          "plant-uses",
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["plant-species", "plant-uses", "name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "plant-for-crafts": "yes"
         },
@@ -889,22 +712,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Plant",
-          "plant species",
-          "name"
-        ],
+        "terms": ["Plant", "plant species", "name"],
         "color": "#b6d7a8",
         "icon": "plant",
-        "fields": [
-          "plant-species",
-          "name"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["plant-species", "name"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "plant": "yes"
         },
@@ -915,26 +727,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "River ",
-          "name",
-          "drinkable water source",
-          "water levels",
-          "pollution"
-        ],
+        "terms": ["River ", "name", "drinkable water source", "water levels", "pollution"],
         "color": "#9fc5e8",
         "icon": "river",
-        "fields": [
-          "name",
-          "drinkable-water-source",
-          "water-levels",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name", "drinkable-water-source", "water-levels", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "river": "yes"
         },
@@ -945,22 +742,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Salt lick site ",
-          "description",
-          "pollution"
-        ],
+        "terms": ["Salt lick site ", "description", "pollution"],
         "color": "#ffd966",
         "icon": "salt-lick-site",
-        "fields": [
-          "description",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["description", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "salt-lick-site": "yes"
         },
@@ -971,22 +757,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Soil regeneration ",
-          "soil stage",
-          "description"
-        ],
+        "terms": ["Soil regeneration ", "soil stage", "description"],
         "color": "#ffd966",
         "icon": "soil-regeneration",
-        "fields": [
-          "soil-stage",
-          "description"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["soil-stage", "description"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "soil-regeneration": "yes"
         },
@@ -997,20 +772,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Terrestrial animal",
-          "animal type"
-        ],
+        "terms": ["Terrestrial animal", "animal type"],
         "color": "#e69138",
         "icon": "terrestrial-animal",
-        "fields": [
-          "animal-type"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["animal-type"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "terrestrial-animal": "yes"
         },
@@ -1021,22 +787,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Testing site",
-          "description",
-          "testing type"
-        ],
+        "terms": ["Testing site", "description", "testing type"],
         "color": "#d5a6bd",
         "icon": "testing-site",
-        "fields": [
-          "description",
-          "testing-type"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["description", "testing-type"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "testing-site": "yes"
         },
@@ -1047,20 +802,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Tree",
-          "tree species"
-        ],
+        "terms": ["Tree", "tree species"],
         "color": "#b6d7a8",
         "icon": "tree",
-        "fields": [
-          "tree-species"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["tree-species"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "tree": "yes"
         },
@@ -1071,20 +817,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Water animal ",
-          "animal type"
-        ],
+        "terms": ["Water animal ", "animal type"],
         "color": "#e69138",
         "icon": "water-animal",
-        "fields": [
-          "animal-type"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["animal-type"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "water-animal": "yes"
         },
@@ -1095,26 +832,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Water source ",
-          "drinkable water source",
-          "name",
-          "water levels",
-          "pollution"
-        ],
+        "terms": ["Water source ", "drinkable water source", "name", "water levels", "pollution"],
         "color": "#9fc5e8",
         "icon": "water-source",
-        "fields": [
-          "drinkable-water-source",
-          "name",
-          "water-levels",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["drinkable-water-source", "name", "water-levels", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "water-source": "yes"
         },
@@ -1125,26 +847,11 @@
         "fieldRefs": [],
         "removeTags": {},
         "addTags": {},
-        "terms": [
-          "Waterfall",
-          "name",
-          "water levels",
-          "drinkable water source",
-          "pollution"
-        ],
+        "terms": ["Waterfall", "name", "water levels", "drinkable water source", "pollution"],
         "color": "#9fc5e8",
         "icon": "waterfall",
-        "fields": [
-          "name",
-          "water-levels",
-          "drinkable-water-source",
-          "pollution"
-        ],
-        "geometry": [
-          "point",
-          "line",
-          "area"
-        ],
+        "fields": ["name", "water-levels", "drinkable-water-source", "pollution"],
+        "geometry": ["point", "line", "area"],
         "tags": {
           "waterfall": "yes"
         },

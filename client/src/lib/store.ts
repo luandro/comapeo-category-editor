@@ -1,14 +1,14 @@
+import {
+  type CoMapeoConfig,
+  type CoMapeoField,
+  type CoMapeoPreset,
+  type ConfigFile,
+  type MapeoConfig,
+  OptionType,
+} from '@shared/schema';
+import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
-import {
-  CoMapeoConfig,
-  MapeoConfig,
-  CoMapeoPreset,
-  CoMapeoField,
-  OptionType,
-  ConfigFile
-} from '@shared/schema';
 import { convertMapeoToCoMapeo } from './conversion';
 import { apiRequest } from './queryClient';
 
@@ -92,7 +92,7 @@ export const useConfigStore = create<ConfigState>()(
           set({
             config: config.data,
             isMapeo: config.isMapeo,
-            rawFiles: [] // We don't store raw files on the server
+            rawFiles: [], // We don't store raw files on the server
           });
         } catch (error) {
           console.error('Failed to load config from hash:', error);
@@ -109,7 +109,7 @@ export const useConfigStore = create<ConfigState>()(
         let icons = {} as Record<string, unknown>;
 
         // For Comapeo format, check if there's a main config file first
-        const configFile = files.find(file => file.path.endsWith('config.json'));
+        const configFile = files.find((file) => file.path.endsWith('config.json'));
 
         if (configFile && !isMapeo) {
           // Parse the main config file
@@ -124,15 +124,17 @@ export const useConfigStore = create<ConfigState>()(
                 fields = parsedConfig.fields;
               } else {
                 // Convert object map to array
-                fields = Object.entries(parsedConfig.fields).map(([id, fieldData]: [string, any]) => ({
-                  id,
-                  name: fieldData.label || id,
-                  tagKey: fieldData.tagKey,
-                  type: fieldData.type,
-                  universal: !!fieldData.universal,
-                  helperText: fieldData.helperText || '',
-                  options: Array.isArray(fieldData.options) ? fieldData.options : []
-                }));
+                fields = Object.entries(parsedConfig.fields).map(
+                  ([id, fieldData]: [string, any]) => ({
+                    id,
+                    name: fieldData.label || id,
+                    tagKey: fieldData.tagKey,
+                    type: fieldData.type,
+                    universal: !!fieldData.universal,
+                    helperText: fieldData.helperText || '',
+                    options: Array.isArray(fieldData.options) ? fieldData.options : [],
+                  })
+                );
               }
             }
 
@@ -142,17 +144,19 @@ export const useConfigStore = create<ConfigState>()(
                 presets = parsedConfig.presets;
               } else {
                 // Convert object map to array
-                presets = Object.entries(parsedConfig.presets).map(([id, presetData]: [string, any]) => ({
-                  id,
-                  name: presetData.name || id,
-                  tags: presetData.tags || {},
-                  color: presetData.color || '#000000',
-                  icon: presetData.icon || 'default',
-                  fieldRefs: presetData.fields || presetData.fieldRefs || [],
-                  removeTags: presetData.removeTags || {},
-                  addTags: presetData.addTags || {},
-                  geometry: presetData.geometry || ['point']
-                }));
+                presets = Object.entries(parsedConfig.presets).map(
+                  ([id, presetData]: [string, any]) => ({
+                    id,
+                    name: presetData.name || id,
+                    tags: presetData.tags || {},
+                    color: presetData.color || '#000000',
+                    icon: presetData.icon || 'default',
+                    fieldRefs: presetData.fields || presetData.fieldRefs || [],
+                    removeTags: presetData.removeTags || {},
+                    addTags: presetData.addTags || {},
+                    geometry: presetData.geometry || ['point'],
+                  })
+                );
               }
             }
 
@@ -189,17 +193,19 @@ export const useConfigStore = create<ConfigState>()(
                   presets = parsedPresets;
                 } else {
                   // Convert object map to array
-                  presets = Object.entries(parsedPresets).map(([id, presetData]: [string, any]) => ({
-                    id,
-                    name: presetData.name || id,
-                    tags: presetData.tags || {},
-                    color: presetData.color || '#000000',
-                    icon: presetData.icon || 'default',
-                    fieldRefs: presetData.fields || presetData.fieldRefs || [],
-                    removeTags: presetData.removeTags || {},
-                    addTags: presetData.addTags || {},
-                    geometry: presetData.geometry || ['point']
-                  }));
+                  presets = Object.entries(parsedPresets).map(
+                    ([id, presetData]: [string, any]) => ({
+                      id,
+                      name: presetData.name || id,
+                      tags: presetData.tags || {},
+                      color: presetData.color || '#000000',
+                      icon: presetData.icon || 'default',
+                      fieldRefs: presetData.fields || presetData.fieldRefs || [],
+                      removeTags: presetData.removeTags || {},
+                      addTags: presetData.addTags || {},
+                      geometry: presetData.geometry || ['point'],
+                    })
+                  );
                 }
               } else if (file.path.endsWith('fields.json')) {
                 const parsedFields = JSON.parse(content);
@@ -216,7 +222,7 @@ export const useConfigStore = create<ConfigState>()(
                     type: fieldData.type,
                     universal: !!fieldData.universal,
                     helperText: fieldData.helperText || fieldData.placeholder || '',
-                    options: Array.isArray(fieldData.options) ? fieldData.options : []
+                    options: Array.isArray(fieldData.options) ? fieldData.options : [],
                   }));
                 }
               } else if (file.path.endsWith('translations.json')) {
@@ -237,12 +243,12 @@ export const useConfigStore = create<ConfigState>()(
             version: '1.0.0',
             fileVersion: '1',
             buildDate: new Date().toISOString(),
-            description: ''
+            description: '',
           },
           presets: Array.isArray(presets) ? presets : [],
           fields: Array.isArray(fields) ? fields : [],
           translations: translations || {},
-          icons: icons || {}
+          icons: icons || {},
         };
 
         // Convert if it's a Mapeo configuration
@@ -254,45 +260,65 @@ export const useConfigStore = create<ConfigState>()(
 
             // Ensure fields are properly formatted
             if (config.fields) {
-              config.fields = config.fields.map(field => {
+              config.fields = config.fields.map((field) => {
                 // Ensure field is a proper object with all required properties
                 const safeField: CoMapeoField = {
                   id: typeof field.id === 'string' ? field.id : String(field.id || ''),
-                  name: typeof field.name === 'string' ? field.name : String(field.name || field.id || ''),
-                  tagKey: typeof field.tagKey === 'string' ? field.tagKey : String(field.tagKey || field.id || ''),
+                  name:
+                    typeof field.name === 'string'
+                      ? field.name
+                      : String(field.name || field.id || ''),
+                  tagKey:
+                    typeof field.tagKey === 'string'
+                      ? field.tagKey
+                      : String(field.tagKey || field.id || ''),
                   type: typeof field.type === 'string' ? field.type : 'text',
                   universal: !!field.universal,
-                  helperText: typeof field.helperText === 'string' ? field.helperText : ''
+                  helperText: typeof field.helperText === 'string' ? field.helperText : '',
                 };
 
                 // Handle options if present
                 if (field.options) {
                   if (Array.isArray(field.options)) {
-                    safeField.options = field.options.map(opt => {
+                    safeField.options = field.options.map((opt) => {
                       if (typeof opt === 'string') {
                         return { label: opt, value: opt.toLowerCase().replace(/\s+/g, '_') };
-                      } else if (opt && typeof opt === 'object') {
-                        return {
-                          label: typeof opt.label === 'string' ? opt.label : String(opt.label || ''),
-                          value: typeof opt.value === 'string' ? opt.value : String(opt.value || '').toLowerCase().replace(/\s+/g, '_')
-                        };
-                      } else {
-                        return { label: String(opt || ''), value: String(opt || '').toLowerCase().replace(/\s+/g, '_') };
                       }
+                      if (opt && typeof opt === 'object') {
+                        return {
+                          label:
+                            typeof opt.label === 'string' ? opt.label : String(opt.label || ''),
+                          value:
+                            typeof opt.value === 'string'
+                              ? opt.value
+                              : String(opt.value || '')
+                                  .toLowerCase()
+                                  .replace(/\s+/g, '_'),
+                        };
+                      }
+                      return {
+                        label: String(opt || ''),
+                        value: String(opt || '')
+                          .toLowerCase()
+                          .replace(/\s+/g, '_'),
+                      };
                     });
                   } else if (typeof field.options === 'object') {
                     // Convert object options to array
                     safeField.options = Object.entries(field.options).map(([key, value]) => {
                       if (typeof value === 'string') {
                         return { label: value, value: key.toLowerCase().replace(/\s+/g, '_') };
-                      } else if (value && typeof value === 'object' && 'label' in value) {
-                        return {
-                          label: typeof value.label === 'string' ? value.label : String(value.label || key),
-                          value: key.toLowerCase().replace(/\s+/g, '_')
-                        };
-                      } else {
-                        return { label: key, value: key.toLowerCase().replace(/\s+/g, '_') };
                       }
+                      if (value && typeof value === 'object' && 'label' in value) {
+                        return {
+                          label:
+                            typeof value.label === 'string'
+                              ? value.label
+                              : String(value.label || key),
+                          value: key.toLowerCase().replace(/\s+/g, '_'),
+                        };
+                      }
+                      return { label: key, value: key.toLowerCase().replace(/\s+/g, '_') };
                     });
                   }
                 }
@@ -308,17 +334,22 @@ export const useConfigStore = create<ConfigState>()(
                 const langTranslations = config.translations[lang];
 
                 // Process fields section if it exists
-                if (langTranslations && langTranslations.fields) {
+                if (langTranslations?.fields) {
                   for (const fieldKey in langTranslations.fields) {
                     const fieldTrans = langTranslations.fields[fieldKey];
 
                     // If fieldTrans is an object with key, type, etc. (the actual field object instead of translations)
-                    if (fieldTrans && typeof fieldTrans === 'object' && ('key' in fieldTrans || 'type' in fieldTrans)) {
+                    if (
+                      fieldTrans &&
+                      typeof fieldTrans === 'object' &&
+                      ('key' in fieldTrans || 'type' in fieldTrans)
+                    ) {
                       // Convert it to a proper translation object
                       langTranslations.fields[fieldKey] = {
                         label: typeof fieldTrans.label === 'string' ? fieldTrans.label : fieldKey,
-                        helperText: typeof fieldTrans.placeholder === 'string' ? fieldTrans.placeholder : '',
-                        options: {}
+                        helperText:
+                          typeof fieldTrans.placeholder === 'string' ? fieldTrans.placeholder : '',
+                        options: {},
                       };
 
                       // Add options if they exist
@@ -351,7 +382,7 @@ export const useConfigStore = create<ConfigState>()(
                     }
 
                     // Ensure options is an object, not an array
-                    if (fieldTrans && fieldTrans.options && Array.isArray(fieldTrans.options)) {
+                    if (fieldTrans?.options && Array.isArray(fieldTrans.options)) {
                       const optionsObj: Record<string, string> = {};
                       fieldTrans.options.forEach((opt: any) => {
                         if (typeof opt === 'string') {
@@ -379,12 +410,12 @@ export const useConfigStore = create<ConfigState>()(
                 version: '1.0.0',
                 fileVersion: '1',
                 buildDate: new Date().toISOString(),
-                description: 'Converted from Mapeo configuration with errors'
+                description: 'Converted from Mapeo configuration with errors',
               },
               presets: [],
               fields: [],
               translations: {},
-              icons: {}
+              icons: {},
             };
           }
         }
@@ -397,7 +428,7 @@ export const useConfigStore = create<ConfigState>()(
         set({
           config,
           isMapeo,
-          rawFiles: files
+          rawFiles: files,
         });
       },
 
@@ -414,9 +445,9 @@ export const useConfigStore = create<ConfigState>()(
               ...state.config,
               metadata: {
                 ...state.config.metadata,
-                ...updates
-              }
-            }
+                ...updates,
+              },
+            },
           };
         });
       },
@@ -431,8 +462,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              presets: [...currentPresets, preset]
-            }
+              presets: [...currentPresets, preset],
+            },
           };
         });
       },
@@ -444,15 +475,15 @@ export const useConfigStore = create<ConfigState>()(
           // Ensure presets is an array
           const currentPresets = Array.isArray(state.config.presets) ? state.config.presets : [];
 
-          const presets = currentPresets.map(preset =>
+          const presets = currentPresets.map((preset) =>
             preset.id === id ? { ...preset, ...updates } : preset
           );
 
           return {
             config: {
               ...state.config,
-              presets
-            }
+              presets,
+            },
           };
         });
       },
@@ -467,8 +498,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              presets: currentPresets.filter(preset => preset.id !== id)
-            }
+              presets: currentPresets.filter((preset) => preset.id !== id),
+            },
           };
         });
       },
@@ -483,8 +514,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              fields: [...currentFields, field]
-            }
+              fields: [...currentFields, field],
+            },
           };
         });
       },
@@ -496,15 +527,15 @@ export const useConfigStore = create<ConfigState>()(
           // Ensure fields is an array
           const currentFields = Array.isArray(state.config.fields) ? state.config.fields : [];
 
-          const fields = currentFields.map(field =>
+          const fields = currentFields.map((field) =>
             field.id === id ? { ...field, ...updates } : field
           );
 
           return {
             config: {
               ...state.config,
-              fields
-            }
+              fields,
+            },
           };
         });
       },
@@ -519,8 +550,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              fields: currentFields.filter(field => field.id !== id)
-            }
+              fields: currentFields.filter((field) => field.id !== id),
+            },
           };
         });
       },
@@ -538,8 +569,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              translations: newTranslations
-            }
+              translations: newTranslations,
+            },
           };
         });
       },
@@ -551,7 +582,9 @@ export const useConfigStore = create<ConfigState>()(
           // If we have key parts, use them to update nested structure
           if (keyParts && keyParts.length > 1) {
             // Create a deep copy of the current translations for this locale
-            const localeTranslations = JSON.parse(JSON.stringify(state.config.translations[locale] || {}));
+            const localeTranslations = JSON.parse(
+              JSON.stringify(state.config.translations[locale] || {})
+            );
 
             // Navigate to the correct nested object and update the value
             let current = localeTranslations;
@@ -568,36 +601,35 @@ export const useConfigStore = create<ConfigState>()(
 
             const translations = {
               ...state.config.translations,
-              [locale]: localeTranslations
+              [locale]: localeTranslations,
             };
 
             return {
               config: {
                 ...state.config,
-                translations
-              }
-            };
-          } else {
-            // Fall back to flat structure if no key parts provided
-            const translations = {
-              ...state.config.translations,
-              [locale]: {
-                ...state.config.translations[locale],
-                [key]: value
-              }
-            };
-
-            return {
-              config: {
-                ...state.config,
-                translations
-              }
+                translations,
+              },
             };
           }
+          // Fall back to flat structure if no key parts provided
+          const translations = {
+            ...state.config.translations,
+            [locale]: {
+              ...state.config.translations[locale],
+              [key]: value,
+            },
+          };
+
+          return {
+            config: {
+              ...state.config,
+              translations,
+            },
+          };
         });
       },
 
-      addIcon: (name: string, content: string, fileType: string = 'svg') => {
+      addIcon: (name: string, content: string, fileType = 'svg') => {
         set((state) => {
           if (!state.config) return state;
 
@@ -606,11 +638,14 @@ export const useConfigStore = create<ConfigState>()(
           const filePath = `icons/${fileName}`;
 
           // Check if this icon already exists and remove it first
-          const existingIconIndex = state.rawFiles.findIndex(file =>
-            file.path === filePath || file.path.startsWith(`icons/${name}.`) || file.path.startsWith(`icons/${name}-`)
+          const existingIconIndex = state.rawFiles.findIndex(
+            (file) =>
+              file.path === filePath ||
+              file.path.startsWith(`icons/${name}.`) ||
+              file.path.startsWith(`icons/${name}-`)
           );
 
-          let newRawFiles = [...state.rawFiles];
+          const newRawFiles = [...state.rawFiles];
           if (existingIconIndex !== -1) {
             // Remove the existing icon
             newRawFiles.splice(existingIconIndex, 1);
@@ -620,13 +655,13 @@ export const useConfigStore = create<ConfigState>()(
           newRawFiles.push({
             name: fileName,
             content,
-            path: filePath
+            path: filePath,
           });
 
           // Also update the icons object in the config
           const updatedIcons = {
             ...state.config.icons,
-            [name]: { src: filePath }
+            [name]: { src: filePath },
           };
 
           console.log(`Added icon: ${name} with path ${filePath}`);
@@ -635,8 +670,8 @@ export const useConfigStore = create<ConfigState>()(
             rawFiles: newRawFiles,
             config: {
               ...state.config,
-              icons: updatedIcons
-            }
+              icons: updatedIcons,
+            },
           };
         });
       },
@@ -647,7 +682,8 @@ export const useConfigStore = create<ConfigState>()(
 
           // Remove from raw files - handle both SVG and PNG files
           const newRawFiles = state.rawFiles.filter(
-            file => !file.path.startsWith(`icons/${name}.`) && !file.path.startsWith(`icons/${name}-`)
+            (file) =>
+              !file.path.startsWith(`icons/${name}.`) && !file.path.startsWith(`icons/${name}-`)
           );
 
           // Also remove from the icons object in the config
@@ -658,8 +694,8 @@ export const useConfigStore = create<ConfigState>()(
             rawFiles: newRawFiles,
             config: {
               ...state.config,
-              icons: updatedIcons
-            }
+              icons: updatedIcons,
+            },
           };
         });
       },
@@ -671,8 +707,8 @@ export const useConfigStore = create<ConfigState>()(
           return {
             config: {
               ...state.config,
-              icons: iconsJson
-            }
+              icons: iconsJson,
+            },
           };
         });
       },
@@ -697,7 +733,7 @@ export const useConfigStore = create<ConfigState>()(
             buildDate: state.config.metadata.buildDate,
             data: state.config,
             isMapeo: state.isMapeo,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
 
           // Save to server
@@ -714,30 +750,35 @@ export const useConfigStore = create<ConfigState>()(
         // This function will create a ZIP blob with all the configuration files
         // We'll implement this with JSZip in the file-handling.ts module
         throw new Error('Not implemented yet');
-      }
+      },
     }),
     {
       name: 'comapeo-config-storage',
       partialize: (state) => ({
         config: state.config,
         isMapeo: state.isMapeo,
-        rawFiles: state.rawFiles
+        rawFiles: state.rawFiles,
       }),
       // Custom serialization to handle ArrayBuffer content
       serialize: (state) => {
         try {
           // Create a deep copy of the state to avoid modifying the original
-          const serializedState = JSON.parse(JSON.stringify(state, (key, value) => {
-            // Check if this is an ArrayBuffer (will be detected as an empty object)
-            if (value && typeof value === 'object' &&
+          const serializedState = JSON.parse(
+            JSON.stringify(state, (_key, value) => {
+              // Check if this is an ArrayBuffer (will be detected as an empty object)
+              if (
+                value &&
+                typeof value === 'object' &&
                 Object.keys(value).length === 0 &&
                 value.constructor &&
-                value.constructor.name === 'ArrayBuffer') {
-              // Mark ArrayBuffer with a special type for deserialization
-              return { __type: 'ArrayBuffer', data: serializeArrayBuffer(value) };
-            }
-            return value;
-          }));
+                value.constructor.name === 'ArrayBuffer'
+              ) {
+                // Mark ArrayBuffer with a special type for deserialization
+                return { __type: 'ArrayBuffer', data: serializeArrayBuffer(value) };
+              }
+              return value;
+            })
+          );
 
           // Process rawFiles to handle ArrayBuffer content
           if (serializedState.rawFiles) {
@@ -745,7 +786,7 @@ export const useConfigStore = create<ConfigState>()(
               if (file.content && file.content instanceof ArrayBuffer) {
                 return {
                   ...file,
-                  content: { __type: 'ArrayBuffer', data: serializeArrayBuffer(file.content) }
+                  content: { __type: 'ArrayBuffer', data: serializeArrayBuffer(file.content) },
                 };
               }
 
@@ -758,7 +799,7 @@ export const useConfigStore = create<ConfigState>()(
                 }
                 return {
                   ...file,
-                  content: svgContent
+                  content: svgContent,
                 };
               }
 
@@ -776,7 +817,7 @@ export const useConfigStore = create<ConfigState>()(
       // Custom deserialization to restore ArrayBuffer content
       deserialize: (str) => {
         try {
-          const deserializedState = JSON.parse(str, (key, value) => {
+          const deserializedState = JSON.parse(str, (_key, value) => {
             // Check for our special ArrayBuffer marker
             if (value && typeof value === 'object' && value.__type === 'ArrayBuffer') {
               return deserializeArrayBuffer(value.data);
@@ -787,10 +828,14 @@ export const useConfigStore = create<ConfigState>()(
           // Process rawFiles to restore ArrayBuffer content
           if (deserializedState.rawFiles) {
             deserializedState.rawFiles = deserializedState.rawFiles.map((file: any) => {
-              if (file.content && typeof file.content === 'object' && file.content.__type === 'ArrayBuffer') {
+              if (
+                file.content &&
+                typeof file.content === 'object' &&
+                file.content.__type === 'ArrayBuffer'
+              ) {
                 return {
                   ...file,
-                  content: deserializeArrayBuffer(file.content.data)
+                  content: deserializeArrayBuffer(file.content.data),
                 };
               }
 
@@ -802,7 +847,7 @@ export const useConfigStore = create<ConfigState>()(
                 }
                 return {
                   ...file,
-                  content: svgContent
+                  content: svgContent,
                 };
               }
 
@@ -816,7 +861,7 @@ export const useConfigStore = create<ConfigState>()(
           // Return an empty state as fallback
           return { config: null, isMapeo: false, rawFiles: [] };
         }
-      }
+      },
     }
   )
 );

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useConfigStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useConfigStore } from '@/lib/store';
+import { useEffect, useState } from 'react';
 
 export default function MetadataTab() {
   const { config, updateMetadata } = useConfigStore();
@@ -12,7 +12,7 @@ export default function MetadataTab() {
     version: '',
     fileVersion: '',
     buildDate: '',
-    description: ''
+    description: '',
   });
 
   useEffect(() => {
@@ -22,16 +22,16 @@ export default function MetadataTab() {
         version: config.metadata.version || '',
         fileVersion: config.metadata.fileVersion || '',
         buildDate: config.metadata.buildDate || '',
-        description: config.metadata.description || ''
+        description: config.metadata.description || '',
       });
     }
   }, [config]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
 
     // Update the store (except for buildDate which is read-only)
@@ -46,22 +46,17 @@ export default function MetadataTab() {
     <Card>
       <CardContent className="pt-6">
         <h2 className="text-xl font-semibold mb-6">Configuration Metadata</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="name" className="text-sm font-medium text-gray-700 mb-1">
                 Configuration Name
               </Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full"
-              />
+              <Input id="name" value={formData.name} onChange={handleChange} className="w-full" />
               <p className="mt-1 text-sm text-gray-500">Unique identifier (npm package style)</p>
             </div>
-            
+
             <div>
               <Label htmlFor="version" className="text-sm font-medium text-gray-700 mb-1">
                 Version
@@ -75,7 +70,7 @@ export default function MetadataTab() {
               <p className="mt-1 text-sm text-gray-500">Semantic version (e.g., 1.0.0)</p>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <Label htmlFor="fileVersion" className="text-sm font-medium text-gray-700 mb-1">
@@ -89,7 +84,7 @@ export default function MetadataTab() {
               />
               <p className="mt-1 text-sm text-gray-500">CoMapeo format version</p>
             </div>
-            
+
             <div>
               <Label htmlFor="buildDate" className="text-sm font-medium text-gray-700 mb-1">
                 Build Date
@@ -104,7 +99,7 @@ export default function MetadataTab() {
             </div>
           </div>
         </div>
-        
+
         <div className="mt-6">
           <Label htmlFor="description" className="text-sm font-medium text-gray-700 mb-1">
             Configuration Description

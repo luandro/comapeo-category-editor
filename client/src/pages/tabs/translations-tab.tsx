@@ -1,12 +1,25 @@
-import { useState } from 'react';
-import { useConfigStore } from '@/lib/store';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, RefreshCw } from 'lucide-react';
 import { LanguageDialog } from '@/components/dialogs/language-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useConfigStore } from '@/lib/store';
+import { Plus, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
 
 export default function TranslationsTab() {
   const { config, updateTranslation, addLanguage } = useConfigStore();
@@ -18,7 +31,7 @@ export default function TranslationsTab() {
   const locales = config ? Object.keys(config.translations) : [];
 
   // Function to flatten nested translations
-  const flattenTranslations = (obj: any, prefix: string = ''): Record<string, string> => {
+  const flattenTranslations = (obj: any, prefix = ''): Record<string, string> => {
     let result: Record<string, string> = {};
 
     for (const key in obj) {
@@ -82,26 +95,30 @@ export default function TranslationsTab() {
   // Get all unique keys from all locales
   const allKeys = new Set<string>();
   for (const locale of locales) {
-    Object.keys(flatTranslations[locale] || {}).forEach(key => allKeys.add(key));
+    Object.keys(flatTranslations[locale] || {}).forEach((key) => allKeys.add(key));
   }
 
   // Filter and categorize translation keys
-  const filteredKeys = !config ? [] : Array.from(allKeys)
-    .filter(key => {
-      // Filter by search query
-      if (searchQuery && !key.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
+  const filteredKeys = !config
+    ? []
+    : Array.from(allKeys)
+        .filter((key) => {
+          // Filter by search query
+          if (searchQuery && !key.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return false;
+          }
 
-      // Filter by category
-      if (category === 'presets' && key.startsWith('presets')) return true;
-      if (category === 'fields' && key.startsWith('fields') && !key.includes('options')) return true;
-      if (category === 'options' && key.includes('options')) return true;
-      if (category === 'other' && !key.startsWith('presets') && !key.startsWith('fields')) return true;
+          // Filter by category
+          if (category === 'presets' && key.startsWith('presets')) return true;
+          if (category === 'fields' && key.startsWith('fields') && !key.includes('options'))
+            return true;
+          if (category === 'options' && key.includes('options')) return true;
+          if (category === 'other' && !key.startsWith('presets') && !key.startsWith('fields'))
+            return true;
 
-      return false;
-    })
-    .sort();
+          return false;
+        })
+        .sort();
 
   const handleTranslationChange = (locale: string, key: string, value: string) => {
     // Split the key into parts to handle nested structure
@@ -120,7 +137,7 @@ export default function TranslationsTab() {
     // Get all unique keys from all locales
     const allTranslationKeys = new Set<string>();
     for (const locale of locales) {
-      Object.keys(flatTranslations[locale] || {}).forEach(key => allTranslationKeys.add(key));
+      Object.keys(flatTranslations[locale] || {}).forEach((key) => allTranslationKeys.add(key));
     }
 
     // Ensure all keys exist in all locales
@@ -135,7 +152,9 @@ export default function TranslationsTab() {
     }
 
     // Show success message
-    alert(`Translation keys refreshed. All ${allTranslationKeys.size} keys are now available in all ${locales.length} languages.`);
+    alert(
+      `Translation keys refreshed. All ${allTranslationKeys.size} keys are now available in all ${locales.length} languages.`
+    );
   };
 
   if (!config) return null;
@@ -155,10 +174,7 @@ export default function TranslationsTab() {
                 <Plus className="mr-2 h-4 w-4" />
                 Add Language
               </Button>
-              <Button
-                onClick={refreshTranslationKeys}
-                className="flex items-center"
-              >
+              <Button onClick={refreshTranslationKeys} className="flex items-center">
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Refresh Keys
               </Button>
@@ -166,10 +182,7 @@ export default function TranslationsTab() {
           </div>
 
           <div className="mb-4 flex space-x-4">
-            <Select
-              value={category}
-              onValueChange={setCategory}
-            >
+            <Select value={category} onValueChange={setCategory}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
@@ -194,7 +207,7 @@ export default function TranslationsTab() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Key</TableHead>
-                  {locales.map(locale => (
+                  {locales.map((locale) => (
                     <TableHead key={locale}>{locale}</TableHead>
                   ))}
                 </TableRow>
@@ -202,7 +215,10 @@ export default function TranslationsTab() {
               <TableBody>
                 {filteredKeys.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={locales.length + 1} className="text-center py-6 text-gray-500">
+                    <TableCell
+                      colSpan={locales.length + 1}
+                      className="text-center py-6 text-gray-500"
+                    >
                       No translation keys found for this category.
                     </TableCell>
                   </TableRow>
@@ -210,10 +226,14 @@ export default function TranslationsTab() {
                   filteredKeys.map((key) => (
                     <TableRow key={key}>
                       <TableCell className="font-medium">{key}</TableCell>
-                      {locales.map(locale => (
+                      {locales.map((locale) => (
                         <TableCell key={`${locale}-${key}`}>
                           <Input
-                            value={typeof flatTranslations[locale]?.[key] === 'string' ? flatTranslations[locale]?.[key] : JSON.stringify(flatTranslations[locale]?.[key]) || ''}
+                            value={
+                              typeof flatTranslations[locale]?.[key] === 'string'
+                                ? flatTranslations[locale]?.[key]
+                                : JSON.stringify(flatTranslations[locale]?.[key]) || ''
+                            }
                             onChange={(e) => handleTranslationChange(locale, key, e.target.value)}
                             className="w-full"
                           />

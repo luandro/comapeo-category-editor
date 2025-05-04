@@ -1,24 +1,26 @@
 /**
  * Converts a Mapeo configuration to CoMapeo format
  */
-export function convertMapeoToCoMapeo(mapeoConfig: MapeoConfig | Record<string, any>): CoMapeoConfig {
+export function convertMapeoToCoMapeo(
+  mapeoConfig: MapeoConfig | Record<string, any>
+): CoMapeoConfig {
   // Handle presets.json format where fields and presets are in the same file
   let fields = mapeoConfig.fields;
   let presets = mapeoConfig.presets;
-  
+
   // Special case for Mapeo format where presets.json contains both fields and presets
   if (!fields && !presets && mapeoConfig.presets && mapeoConfig.presets.fields) {
     fields = mapeoConfig.presets.fields;
     presets = mapeoConfig.presets.presets;
     console.log('Detected Mapeo format with fields and presets in presets.json');
   }
-  
+
   return {
     metadata: convertMetadata(mapeoConfig.metadata),
     fields: convertFields(fields),
     presets: convertPresets(presets),
     translations: convertTranslations(mapeoConfig.translations),
-    icons: mapeoConfig.icons || {}
+    icons: mapeoConfig.icons || {},
   };
 }
 
@@ -28,22 +30,23 @@ export function convertMapeoToCoMapeo(mapeoConfig: MapeoConfig | Record<string, 
 function convertMetadata(mapeoMetadata: MapeoConfig['metadata']): CoMapeoConfig['metadata'] {
   // Handle missing or undefined version
   let version = '1.0.0'; // Default version if none is provided
-  
-  if (mapeoMetadata && mapeoMetadata.version) {
+
+  if (mapeoMetadata?.version) {
     // Convert version format (remove 'v' prefix if present)
-    version = typeof mapeoMetadata.version === 'string' && mapeoMetadata.version.startsWith('v')
-      ? mapeoMetadata.version.substring(1)
-      : mapeoMetadata.version;
+    version =
+      typeof mapeoMetadata.version === 'string' && mapeoMetadata.version.startsWith('v')
+        ? mapeoMetadata.version.substring(1)
+        : mapeoMetadata.version;
   }
-  
+
   return {
-    name: mapeoMetadata && mapeoMetadata.name ? mapeoMetadata.name : 'converted-mapeo-config',
+    name: mapeoMetadata?.name ? mapeoMetadata.name : 'converted-mapeo-config',
     version: version,
     fileVersion: '1',
     buildDate: new Date().toISOString(),
-    description: mapeoMetadata && mapeoMetadata.dataset_id 
-      ? `Converted from Mapeo dataset: ${mapeoMetadata.dataset_id}` 
-      : 'Converted from Mapeo configuration'
+    description: mapeoMetadata?.dataset_id
+      ? `Converted from Mapeo dataset: ${mapeoMetadata.dataset_id}`
+      : 'Converted from Mapeo configuration',
   };
 }
 
@@ -53,16 +56,16 @@ function convertMetadata(mapeoMetadata: MapeoConfig['metadata']): CoMapeoConfig[
 function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeoField[] {
   // Handle both array and object formats
   if (!mapeoFields) return [];
-  
+
   // If mapeoFields is an object map, convert it to an array
-  const fieldsArray = Array.isArray(mapeoFields) 
-    ? mapeoFields 
+  const fieldsArray = Array.isArray(mapeoFields)
+    ? mapeoFields
     : Object.entries(mapeoFields).map(([id, field]) => ({
         id,
-        ...field
+        ...field,
       }));
-  
-  return fieldsArray.map(field => {
+
+  return fieldsArray.map((field) => {
     // Ensure field is an object
     if (!field || typeof field !== 'object') {
       console.warn('Invalid field object:', field);
@@ -72,10 +75,10 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
         tagKey: 'unknown',
         type: 'text',
         universal: false,
-        helperText: ''
+        helperText: '',
       };
     }
-    
+
     // Convert field type format (e.g., 'select_one' to 'selectOne')
     let type = field.type || 'text';
     if (typeof type === 'string') {
@@ -84,47 +87,57 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
     } else {
       type = 'text'; // Default to text if type is not a string
     }
-    
+
     // Ensure all field properties are valid
     const fieldId = typeof field.id === 'string' ? field.id : String(field.id || '');
-    const fieldName = typeof field.label === 'string' ? field.label : 
-                     (typeof field.name === 'string' ? field.name : fieldId);
+    const fieldName =
+      typeof field.label === 'string'
+        ? field.label
+        : typeof field.name === 'string'
+          ? field.name
+          : fieldId;
     const fieldKey = typeof field.key === 'string' ? field.key : fieldId;
-    
+
     const coMapeoField: CoMapeoField = {
       id: fieldId,
       name: fieldName,
       tagKey: fieldKey,
       type: type,
       universal: !!field.universal,
-      helperText: typeof field.placeholder === 'string' ? field.placeholder : ''
+      helperText: typeof field.placeholder === 'string' ? field.placeholder : '',
     };
-    
+
     // Convert options format if present
     if (field.options) {
       try {
         if (Array.isArray(field.options)) {
           coMapeoField.options = field.options.map((opt: any) => {
             if (typeof opt === 'string') {
-              return { 
-                label: opt, 
-                value: opt.toLowerCase().replace(/\\s+/g, '_') 
-              };
-            } else if (opt && typeof opt === 'object') {
-              // Handle object options
-              const label = typeof opt.label === 'string' ? opt.label : 
-                          (typeof opt.name === 'string' ? opt.name : String(opt));
-              const value = typeof opt.value === 'string' ? opt.value : 
-                          label.toLowerCase().replace(/\\s+/g, '_');
-              return { label, value };
-            } else {
-              // Handle any other type
-              const str = String(opt || '');
-              return { 
-                label: str, 
-                value: str.toLowerCase().replace(/\\s+/g, '_') 
+              return {
+                label: opt,
+                value: opt.toLowerCase().replace(/\\s+/g, '_'),
               };
             }
+            if (opt && typeof opt === 'object') {
+              // Handle object options
+              const label =
+                typeof opt.label === 'string'
+                  ? opt.label
+                  : typeof opt.name === 'string'
+                    ? opt.name
+                    : String(opt);
+              const value =
+                typeof opt.value === 'string'
+                  ? opt.value
+                  : label.toLowerCase().replace(/\\s+/g, '_');
+              return { label, value };
+            }
+            // Handle any other type
+            const str = String(opt || '');
+            return {
+              label: str,
+              value: str.toLowerCase().replace(/\\s+/g, '_'),
+            };
           });
         } else if (typeof field.options === 'object') {
           // Handle object format options
@@ -134,7 +147,7 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
               const cleanValue = value.replace(/^\\\"|\\\"\$/g, '');
               // Handle case where label is an object with a label property
               let labelText = cleanValue;
-              
+
               if (typeof label === 'string') {
                 labelText = label;
               } else if (label && typeof label === 'object') {
@@ -144,16 +157,16 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
                   labelText = label.name;
                 }
               }
-              
+
               return {
                 label: labelText,
-                value: cleanValue.toLowerCase().replace(/\\s+/g, '_')
+                value: cleanValue.toLowerCase().replace(/\\s+/g, '_'),
               };
             } catch (e) {
               console.warn('Error processing option:', e);
               return {
                 label: String(value),
-                value: String(value).toLowerCase().replace(/\\s+/g, '_')
+                value: String(value).toLowerCase().replace(/\\s+/g, '_'),
               };
             }
           });
@@ -166,7 +179,7 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
         coMapeoField.options = [];
       }
     }
-    
+
     return coMapeoField;
   });
 }
@@ -177,23 +190,23 @@ function convertFields(mapeoFields: MapeoField[] | Record<string, any>): CoMapeo
 function convertPresets(mapeoPresets: MapeoPreset[] | Record<string, any>): CoMapeoPreset[] {
   // Handle both array and object formats
   if (!mapeoPresets) return [];
-  
+
   // If mapeoPresets is an object map, convert it to an array
-  const presetsArray = Array.isArray(mapeoPresets) 
-    ? mapeoPresets 
+  const presetsArray = Array.isArray(mapeoPresets)
+    ? mapeoPresets
     : Object.entries(mapeoPresets).map(([id, preset]) => ({
         id,
-        ...preset
+        ...preset,
       }));
-  
-  return presetsArray.map(preset => {
+
+  return presetsArray.map((preset) => {
     // Generate a default color based on the preset id
     // This is a simple hash function to generate a color
     const hash = preset.id.split('').reduce((acc, char) => {
       return char.charCodeAt(0) + ((acc << 5) - acc);
     }, 0);
-    const color = `#${(hash & 0x00FFFFFF).toString(16).padStart(6, '0')}`;
-    
+    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0')}`;
+
     return {
       id: preset.id,
       name: preset.name || preset.id,
@@ -203,7 +216,7 @@ function convertPresets(mapeoPresets: MapeoPreset[] | Record<string, any>): CoMa
       fieldRefs: preset.fields || [],
       removeTags: preset.removeTags || {},
       addTags: preset.addTags || {},
-      geometry: preset.geometry || ['point']
+      geometry: preset.geometry || ['point'],
     };
   });
 }
@@ -211,26 +224,28 @@ function convertPresets(mapeoPresets: MapeoPreset[] | Record<string, any>): CoMa
 /**
  * Converts Mapeo translations to CoMapeo translations
  */
-function convertTranslations(mapeoTranslations: Record<string, any>): Record<string, Record<string, any>> {
+function convertTranslations(
+  mapeoTranslations: Record<string, any>
+): Record<string, Record<string, any>> {
   if (!mapeoTranslations) return {};
-  
+
   const coMapeoTranslations: Record<string, Record<string, any>> = {};
-  
+
   // Process each language
   for (const [lang, translations] of Object.entries(mapeoTranslations)) {
     coMapeoTranslations[lang] = {};
-    
+
     // Check if translations is a flat object or has nested structure
     if (translations && typeof translations === 'object') {
       if (translations.fields || translations.presets) {
         // It's already in the nested format we want
         coMapeoTranslations[lang] = JSON.parse(JSON.stringify(translations));
-        
+
         // Clean up any quoted keys in options
         if (translations.fields) {
           for (const fieldKey in translations.fields) {
             const field = translations.fields[fieldKey];
-            if (field && field.options) {
+            if (field?.options) {
               const cleanOptions: Record<string, any> = {};
               for (const optKey in field.options) {
                 // Remove quotes from keys
@@ -254,12 +269,12 @@ function convertTranslations(mapeoTranslations: Record<string, any>): Record<str
         for (const [key, value] of Object.entries(translations)) {
           // Handle odd quote keys which may be present in Mapeo translations
           const cleanKey = key.replace(/["']/g, '');
-          
+
           // Check if this is a nested path (e.g., 'fields/building-type/label')
           if (cleanKey.includes('/')) {
             const parts = cleanKey.split('/');
             let current = coMapeoTranslations[lang];
-            
+
             // Create nested structure
             for (let i = 0; i < parts.length - 1; i++) {
               const part = parts[i];
@@ -268,7 +283,7 @@ function convertTranslations(mapeoTranslations: Record<string, any>): Record<str
               }
               current = current[part];
             }
-            
+
             // Set the value at the final key
             current[parts[parts.length - 1]] = value;
           } else {
@@ -279,7 +294,7 @@ function convertTranslations(mapeoTranslations: Record<string, any>): Record<str
       }
     }
   }
-  
+
   return coMapeoTranslations;
 }
 

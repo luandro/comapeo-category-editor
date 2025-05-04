@@ -1,6 +1,6 @@
-import JSZip from "jszip";
-import { ConfigFile, CoMapeoConfig } from "@shared/schema";
-import { apiRequest } from "./queryClient";
+import type { CoMapeoConfig, ConfigFile } from '@shared/schema';
+import JSZip from 'jszip';
+import { apiRequest } from './queryClient';
 
 /**
  * Progress callback type for file extraction
@@ -12,7 +12,10 @@ export type ProgressCallback = (progress: number, message: string) => void;
  * @param file The ZIP file to extract
  * @param onProgress Optional callback for progress updates
  */
-export async function extractZipFile(file: File, onProgress?: ProgressCallback): Promise<ConfigFile[]> {
+export async function extractZipFile(
+  file: File,
+  onProgress?: ProgressCallback
+): Promise<ConfigFile[]> {
   // Report initial progress
   onProgress?.(5, 'Reading ZIP file...');
 
@@ -25,7 +28,7 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
         const loadProgress = 5 + Math.floor(metadata.percent / 10);
         onProgress?.(loadProgress, `Loading ZIP file: ${Math.floor(metadata.percent)}%`);
       }
-    }
+    },
   });
 
   onProgress?.(15, 'Analyzing ZIP structure...');
@@ -34,11 +37,11 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
   // The component files we need to look for
   const configComponents: Record<string, any> = {};
   const componentFileNames = [
-    "metadata.json",
-    "presets.json",
-    "fields.json",
-    "translations.json",
-    "icons.json",
+    'metadata.json',
+    'presets.json',
+    'fields.json',
+    'translations.json',
+    'icons.json',
   ];
 
   // Flag to determine if we need to extract and combine components
@@ -51,20 +54,16 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
 
   // First, check if there's a single config.json file
   onProgress?.(20, 'Checking for configuration files...');
-  if (zipContents.files["config.json"]) {
+  if (zipContents.files['config.json']) {
     hasConfigJson = true;
-    const configContent =
-      await zipContents.files["config.json"].async("string");
+    const configContent = await zipContents.files['config.json'].async('string');
     files.push({
-      name: "config.json",
+      name: 'config.json',
       content: configContent,
-      path: "config.json",
+      path: 'config.json',
     });
 
-    console.log(
-      "Found config.json in zip file:",
-      configContent.substring(0, 200) + "...",
-    );
+    console.log('Found config.json in zip file:', `${configContent.substring(0, 200)}...`);
   }
 
   // Process all files in the ZIP
@@ -73,18 +72,18 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
     const zipEntry = zipContents.files[path];
     if (!zipEntry.dir) {
       // Check if this is a component file we're interested in
-      const fileName = zipEntry.name.split("/").pop() || "";
+      const fileName = zipEntry.name.split('/').pop() || '';
 
       // Process all files to extract them
       try {
         // For JSON files, we validate them and optionally store for combining
-        if (path.endsWith(".json")) {
+        if (path.endsWith('.json')) {
           if (!hasConfigJson && componentFileNames.includes(fileName)) {
             // This is a component file we need to track
             hasComponentFiles = true;
-            const content = await zipEntry.async("string");
+            const content = await zipEntry.async('string');
             const parsedData = JSON.parse(content);
-            configComponents[fileName.replace(".json", "")] = parsedData;
+            configComponents[fileName.replace('.json', '')] = parsedData;
 
             // Also add the raw file to our list
             files.push({
@@ -93,12 +92,10 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
               path,
             });
 
-            console.log(
-              `Extracted component file: ${path}, size: ${content.length}`,
-            );
-          } else if (!hasConfigJson || path !== "config.json") {
+            console.log(`Extracted component file: ${path}, size: ${content.length}`);
+          } else if (!hasConfigJson || path !== 'config.json') {
             // Any other JSON file that's not already processed config.json
-            const content = await zipEntry.async("string");
+            const content = await zipEntry.async('string');
             JSON.parse(content); // Validate but don't store the result
 
             files.push({
@@ -111,27 +108,24 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
           }
         }
         // For icons and other binary files, we determine the appropriate method
-        else if (path.startsWith("icons/")) {
+        else if (path.startsWith('icons/')) {
           // We need to handle both text-based SVG files and binary PNG files
           let content: string | ArrayBuffer;
 
-          if (path.endsWith(".svg")) {
-            content = await zipEntry.async("string");
+          if (path.endsWith('.svg')) {
+            content = await zipEntry.async('string');
             // Ensure SVG content is properly formatted
-            if (
-              typeof content === "string" &&
-              content.trim().startsWith("<svg")
-            ) {
+            if (typeof content === 'string' && content.trim().startsWith('<svg')) {
               // SVG content is valid
               console.log(`Valid SVG content extracted for ${path}`);
             } else {
               console.warn(`Possibly invalid SVG content in ${path}`);
             }
-          } else if (path.endsWith(".png")) {
-            content = await zipEntry.async("arraybuffer");
+          } else if (path.endsWith('.png')) {
+            content = await zipEntry.async('arraybuffer');
           } else {
             // Default to string for other files
-            content = await zipEntry.async("string");
+            content = await zipEntry.async('string');
           }
 
           files.push({
@@ -144,7 +138,7 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
         }
         // Handle VERSION file and other non-icon, non-JSON files
         else {
-          const content = await zipEntry.async("string");
+          const content = await zipEntry.async('string');
 
           files.push({
             name: fileName,
@@ -161,14 +155,14 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
 
     // Update progress (25-75% range)
     processedFiles++;
-    const extractionProgress = 25 + Math.floor(50 * processedFiles / totalFiles);
+    const extractionProgress = 25 + Math.floor((50 * processedFiles) / totalFiles);
     onProgress?.(extractionProgress, `Extracting files (${processedFiles}/${totalFiles})...`);
   }
 
   // If we have component files but no config.json, create one
   onProgress?.(80, 'Processing configuration components...');
   if (!hasConfigJson && hasComponentFiles) {
-    console.log("No config.json found, reconstructing from component files...");
+    console.log('No config.json found, reconstructing from component files...');
 
     // Attempt to build a unified config
     const unifiedConfig = {
@@ -187,12 +181,7 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
       if (configComponents.presets.fields) {
         // Fields are nested under the "fields" key in presets.json
         for (const fieldId in configComponents.presets.fields) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              configComponents.presets.fields,
-              fieldId,
-            )
-          ) {
+          if (Object.prototype.hasOwnProperty.call(configComponents.presets.fields, fieldId)) {
             const field = configComponents.presets.fields[fieldId];
 
             // Convert to our field format
@@ -214,15 +203,14 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
 
       // Handle case when presets.json contains actual presets (not under a 'presets' key)
       if (
-        typeof configComponents.presets === "object" &&
+        typeof configComponents.presets === 'object' &&
         !Array.isArray(configComponents.presets)
       ) {
         // Check if it has a "presets" key or is a direct object map of presets
-        const presetsMap =
-          configComponents.presets.presets || configComponents.presets;
+        const presetsMap = configComponents.presets.presets || configComponents.presets;
 
         // Filter out the fields and other special entries
-        const excludedKeys = ["fields", "categories"];
+        const excludedKeys = ['fields', 'categories'];
 
         for (const presetId in presetsMap) {
           if (
@@ -236,9 +224,9 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
               id: presetId,
               name: preset.name,
               tags: preset.tags || {},
-              color: preset.color || "#000000",
-              icon: preset.icon || "default",
-              geometry: preset.geometry || ["point"],
+              color: preset.color || '#000000',
+              icon: preset.icon || 'default',
+              geometry: preset.geometry || ['point'],
               fieldRefs: preset.fields || [],
             });
           }
@@ -255,17 +243,9 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
     if (configComponents.fields) {
       let fieldsArray: any[] = [];
 
-      if (
-        typeof configComponents.fields === "object" &&
-        !Array.isArray(configComponents.fields)
-      ) {
+      if (typeof configComponents.fields === 'object' && !Array.isArray(configComponents.fields)) {
         for (const fieldId in configComponents.fields) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              configComponents.fields,
-              fieldId,
-            )
-          ) {
+          if (Object.prototype.hasOwnProperty.call(configComponents.fields, fieldId)) {
             const field = configComponents.fields[fieldId];
 
             // Convert to our field format
@@ -273,9 +253,9 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
               id: fieldId,
               name: field.label || fieldId,
               tagKey: field.tagKey || field.key || fieldId,
-              type: field.type || "text",
+              type: field.type || 'text',
               universal: field.universal || false,
-              helperText: field.helperText || field.placeholder || "",
+              helperText: field.helperText || field.placeholder || '',
               options: field.options || [],
             });
           }
@@ -291,12 +271,12 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
     // Create a unified config.json file
     const configContent = JSON.stringify(unifiedConfig, null, 2);
     files.push({
-      name: "config.json",
+      name: 'config.json',
       content: configContent,
-      path: "config.json",
+      path: 'config.json',
     });
 
-    console.log("Created unified config.json from component files");
+    console.log('Created unified config.json from component files');
   }
 
   onProgress?.(95, 'Finalizing configuration...');
@@ -308,7 +288,10 @@ export async function extractZipFile(file: File, onProgress?: ProgressCallback):
  * @param file The TAR file to extract
  * @param onProgress Optional callback for progress updates
  */
-export async function extractTarFile(file: File, onProgress?: ProgressCallback): Promise<ConfigFile[]> {
+export async function extractTarFile(
+  file: File,
+  onProgress?: ProgressCallback
+): Promise<ConfigFile[]> {
   // Since we can't directly use tar-js in the browser easily,
   // we'll use a streaming approach with a worker or other library
   // For now, we'll implement a basic extraction
@@ -323,7 +306,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
   onProgress?.(10, 'Analyzing file structure...');
 
   let offset = 0;
-  const view = new DataView(arrayBuffer);
+  const _view = new DataView(arrayBuffer);
   const totalSize = arrayBuffer.byteLength;
   let fileCount = 0;
   let processedBytes = 0;
@@ -346,14 +329,14 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
     if (!hasContent) break;
 
     // Extract file size to skip to next header
-    let fileSizeOctal = "";
+    let fileSizeOctal = '';
     for (let i = 124; i < 136; i++) {
       const byte = new Uint8Array(headerSlice)[i];
       if (byte === 0 || byte === 32) break;
       fileSizeOctal += String.fromCharCode(byte);
     }
 
-    const fileSize = parseInt(fileSizeOctal, 8);
+    const fileSize = Number.parseInt(fileSizeOctal, 8);
     countOffset += 512; // Move past header
 
     if (fileSize > 0) {
@@ -372,7 +355,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
     const header = arrayBuffer.slice(offset, offset + 512);
 
     // Extract filename (first 100 bytes of header)
-    let filename = "";
+    let filename = '';
     for (let i = 0; i < 100; i++) {
       const byte = new Uint8Array(header)[i];
       if (byte === 0) break;
@@ -382,24 +365,24 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
     if (filename.length === 0) break; // End of archive
 
     // Extract file size (bytes 124-136)
-    let fileSizeOctal = "";
+    let fileSizeOctal = '';
     for (let i = 124; i < 136; i++) {
       const byte = new Uint8Array(header)[i];
       if (byte === 0 || byte === 32) break;
       fileSizeOctal += String.fromCharCode(byte);
     }
 
-    const fileSize = parseInt(fileSizeOctal, 8);
+    const fileSize = Number.parseInt(fileSizeOctal, 8);
     offset += 512; // Move past header
 
     if (fileSize > 0) {
       // Read file content
       const contentBuffer = arrayBuffer.slice(offset, offset + fileSize);
-      const fileName = filename.split("/").pop() || "";
+      const fileName = filename.split('/').pop() || '';
 
       try {
         // Process different file types
-        if (filename.endsWith(".json") || filename === "VERSION") {
+        if (filename.endsWith('.json') || filename === 'VERSION') {
           // Text files - convert to string
           const textDecoder = new TextDecoder('utf-8');
           const content = textDecoder.decode(contentBuffer);
@@ -411,8 +394,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
           });
 
           console.log(`Extracted text file: ${filename}, size: ${content.length}`);
-        }
-        else if (filename.endsWith(".svg")) {
+        } else if (filename.endsWith('.svg')) {
           // SVG files - convert to string
           const textDecoder = new TextDecoder('utf-8');
           const content = textDecoder.decode(contentBuffer);
@@ -424,8 +406,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
           });
 
           console.log(`Extracted SVG file: ${filename}, size: ${content.length}`);
-        }
-        else if (filename.endsWith(".png") || filename.includes("icons/")) {
+        } else if (filename.endsWith('.png') || filename.includes('icons/')) {
           // Binary files - keep as ArrayBuffer
           files.push({
             name: fileName,
@@ -433,7 +414,9 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
             path: filename,
           });
 
-          console.log(`Extracted binary file: ${filename}, size: ${contentBuffer.byteLength} bytes`);
+          console.log(
+            `Extracted binary file: ${filename}, size: ${contentBuffer.byteLength} bytes`
+          );
         }
       } catch (error) {
         console.error(`Error processing file ${filename}:`, error);
@@ -446,7 +429,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
 
       // Calculate extraction progress (15-70% range)
       if (fileCount > 0) {
-        const extractionProgress = Math.min(70, 15 + Math.floor(55 * processedBytes / totalSize));
+        const extractionProgress = Math.min(70, 15 + Math.floor((55 * processedBytes) / totalSize));
         onProgress?.(extractionProgress, `Extracting files (${files.length}/${fileCount})...`);
       }
     } else {
@@ -476,7 +459,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
   // Create a unified config from the components
   if (Object.keys(configComponents).length > 0) {
     // Detect if it's a Mapeo format
-    const isMapeo = configComponents.metadata && configComponents.metadata.hasOwnProperty('dataset_id');
+    const isMapeo = configComponents.metadata?.hasOwnProperty('dataset_id');
     console.log(`Format detected: ${isMapeo ? 'Mapeo' : 'CoMapeo'}`);
 
     // Create a unified config structure
@@ -485,14 +468,14 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
       presets: configComponents.presets || {},
       fields: configComponents.fields || {},
       translations: configComponents.translations || {},
-      icons: configComponents.icons || {}
+      icons: configComponents.icons || {},
     };
 
     // Add the unified config to the files
     files.push({
       name: 'config.json',
       content: JSON.stringify(unifiedConfig, null, 2),
-      path: 'config.json'
+      path: 'config.json',
     });
 
     console.log('Created unified config.json from Mapeo components');
@@ -505,10 +488,7 @@ export async function extractTarFile(file: File, onProgress?: ProgressCallback):
 /**
  * Creates a ZIP file from the configuration
  */
-export async function createZipFile(
-  config: CoMapeoConfig,
-  rawFiles: ConfigFile[],
-): Promise<Blob> {
+export async function createZipFile(config: CoMapeoConfig, rawFiles: ConfigFile[]): Promise<Blob> {
   const zip = new JSZip();
 
   // Prepare to collect presets by geometry type
@@ -552,8 +532,8 @@ export async function createZipFile(
         line: linePresets,
         point: pointPresets,
         vertex: [],
-        relation: []
-      }
+        relation: [],
+      },
     };
 
     // Add fields in the correct format
@@ -564,8 +544,8 @@ export async function createZipFile(
             tagKey: field.tagKey,
             type: field.type,
             label: field.name,
-            helperText: field.helperText || "",
-            universal: field.universal || false
+            helperText: field.helperText || '',
+            universal: field.universal || false,
           };
 
           // Add options if they exist
@@ -580,28 +560,31 @@ export async function createZipFile(
   };
 
   // Add the required files
-  zip.file("metadata.json", JSON.stringify(config.metadata, null, 2));
-  zip.file("presets.json", JSON.stringify(generatePresetsJson(), null, 2));
-  zip.file("translations.json", JSON.stringify(config.translations, null, 2));
-  zip.file("icons.json", JSON.stringify(config.icons, null, 2));
+  zip.file('metadata.json', JSON.stringify(config.metadata, null, 2));
+  zip.file('presets.json', JSON.stringify(generatePresetsJson(), null, 2));
+  zip.file('translations.json', JSON.stringify(config.translations, null, 2));
+  zip.file('icons.json', JSON.stringify(config.icons, null, 2));
 
   // Add VERSION file
-  zip.file("VERSION", "1");
+  zip.file('VERSION', '1');
 
   // Add style.css file (empty or with default styles)
-  zip.file("style.css", "/* CoMapeo configuration styles */");
+  zip.file('style.css', '/* CoMapeo configuration styles */');
 
   // Create icons directory
-  zip.folder("icons");
+  zip.folder('icons');
 
   // Add icons.png and icons.svg placeholder files
   // These would normally be sprite sheets generated from individual icons
-  zip.file("icons.png", new Uint8Array([]));
-  zip.file("icons.svg", '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>');
+  zip.file('icons.png', new Uint8Array([]));
+  zip.file(
+    'icons.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>'
+  );
 
   // Add any raw files (like icons)
   for (const file of rawFiles) {
-    if (file.path.startsWith("icons/")) {
+    if (file.path.startsWith('icons/')) {
       // Create icons directory if needed
       if (file.path.endsWith('.png') && file.content instanceof ArrayBuffer) {
         // Handle ArrayBuffer content for PNG files
@@ -628,7 +611,7 @@ export async function createZipFile(
   }
 
   // Generate the ZIP file
-  return await zip.generateAsync({ type: "blob" });
+  return await zip.generateAsync({ type: 'blob' });
 }
 
 /**
@@ -636,12 +619,12 @@ export async function createZipFile(
  */
 export async function buildComapeoCatFile(zipBlob: Blob): Promise<Blob> {
   const formData = new FormData();
-  formData.append("file", zipBlob, "config.zip");
+  formData.append('file', zipBlob, 'config.zip');
 
-  const response = await fetch("/api/build", {
-    method: "POST",
+  const response = await fetch('/api/build', {
+    method: 'POST',
     body: formData,
-    credentials: "include",
+    credentials: 'include',
   });
 
   if (!response.ok) {

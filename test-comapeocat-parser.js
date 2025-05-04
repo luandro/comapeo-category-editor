@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import JSZip from 'jszip';
 
 // Get the current directory
@@ -81,9 +81,9 @@ async function analyzeComapeoCat(filePath) {
     }
     
     // Check VERSION file
-    if (zipContents.files['VERSION']) {
+    if (zipContents.files.VERSION) {
       console.log('✅ Found VERSION file');
-      const content = await zipContents.files['VERSION'].async('string');
+      const content = await zipContents.files.VERSION.async('string');
       console.log(`  Version: ${content.trim()}`);
     }
     
@@ -100,7 +100,7 @@ async function analyzeComapeoCat(filePath) {
       // Extract the icon name without size and extension
       // Format is typically: icons/name-size@resolution.png
       const match = icon.match(/icons\/([a-z-]+)-(?:small|medium|large)@\d+x\.png/);
-      if (match && match[1]) {
+      if (match?.[1]) {
         iconNames.add(match[1]);
       }
     }
@@ -124,7 +124,7 @@ async function analyzeComapeoCat(filePath) {
       };
       
       // Detect if it's a Mapeo or CoMapeo format
-      const isMapeo = configComponents.metadata && configComponents.metadata.hasOwnProperty('dataset_id');
+      const isMapeo = configComponents.metadata?.hasOwnProperty('dataset_id');
       console.log(`Format detected: ${isMapeo ? 'Mapeo' : 'CoMapeo'}`);
       
       // If it's Mapeo, mark for conversion

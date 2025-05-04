@@ -1,10 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useConfigStore } from '@/lib/store';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlignLeft, Copy } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useConfigStore } from '@/lib/store';
+import { AlignLeft, Copy } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function AdvancedTab() {
   const { config } = useConfigStore();
@@ -20,9 +26,9 @@ export default function AdvancedTab() {
 
   const updateJsonContent = (fileType: string) => {
     if (!config) return;
-    
+
     let content = '';
-    
+
     switch (fileType) {
       case 'presets':
         content = JSON.stringify(config.presets, null, 2);
@@ -46,7 +52,7 @@ export default function AdvancedTab() {
       default:
         content = '';
     }
-    
+
     setJsonContent(content);
   };
 
@@ -58,34 +64,34 @@ export default function AdvancedTab() {
     try {
       const obj = JSON.parse(jsonContent);
       setJsonContent(JSON.stringify(obj, null, 2));
-      
+
       toast({
-        title: "JSON formatted",
-        description: "The JSON content has been properly formatted.",
+        title: 'JSON formatted',
+        description: 'The JSON content has been properly formatted.',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
-        title: "Format error",
-        description: "Invalid JSON content. Please check for syntax errors.",
-        variant: "destructive"
+        title: 'Format error',
+        description: 'Invalid JSON content. Please check for syntax errors.',
+        variant: 'destructive',
       });
     }
   };
 
   const copyJson = () => {
     navigator.clipboard.writeText(jsonContent);
-    
+
     toast({
-      title: "Copied to clipboard",
-      description: "The JSON content has been copied to your clipboard.",
+      title: 'Copied to clipboard',
+      description: 'The JSON content has been copied to your clipboard.',
     });
   };
 
   const applyChanges = () => {
     // In a real implementation, this would parse the JSON and update the config store
     toast({
-      title: "Changes applied",
-      description: "Your changes have been applied to the configuration.",
+      title: 'Changes applied',
+      description: 'Your changes have been applied to the configuration.',
     });
   };
 
@@ -97,14 +103,13 @@ export default function AdvancedTab() {
         <CardContent className="pt-6">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">Advanced JSON Editing</h2>
-            <p className="text-gray-600">Edit configuration files directly in JSON format. Use with caution.</p>
+            <p className="text-gray-600">
+              Edit configuration files directly in JSON format. Use with caution.
+            </p>
           </div>
-          
+
           <div className="mb-4">
-            <Select
-              value={selectedFile}
-              onValueChange={handleFileChange}
-            >
+            <Select value={selectedFile} onValueChange={handleFileChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select file" />
               </SelectTrigger>
@@ -118,7 +123,7 @@ export default function AdvancedTab() {
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="border border-gray-300 rounded-md overflow-hidden">
             <div className="bg-gray-50 px-4 py-2 flex justify-between items-center border-b border-gray-300">
               <h3 className="text-sm font-medium text-gray-700">{selectedFile}.json</h3>
@@ -131,7 +136,7 @@ export default function AdvancedTab() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="bg-white p-4">
               <textarea
                 value={jsonContent}
@@ -140,25 +145,26 @@ export default function AdvancedTab() {
               />
             </div>
           </div>
-          
+
           <div className="mt-4 text-right">
-            <Button onClick={applyChanges}>
-              Apply Changes
-            </Button>
+            <Button onClick={applyChanges}>Apply Changes</Button>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="mt-6">
         <CardContent className="pt-6">
           <div className="mb-4">
             <h2 className="text-xl font-semibold mb-2">Additional Files</h2>
             <p className="text-gray-600">Manage other configuration files</p>
           </div>
-          
+
           <div className="space-y-3">
             {['VERSION', 'style.css'].map((filename, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-md shadow-sm">
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-md shadow-sm"
+              >
                 <div className="flex items-center">
                   <span className="material-icons text-gray-600 mr-2">
                     {filename === 'VERSION' ? 'text_snippet' : 'code'}
@@ -166,8 +172,8 @@ export default function AdvancedTab() {
                   <div>
                     <p className="text-sm font-medium text-gray-800">{filename}</p>
                     <p className="text-xs text-gray-500">
-                      {filename === 'VERSION' 
-                        ? 'File version information' 
+                      {filename === 'VERSION'
+                        ? 'File version information'
                         : 'Custom styling for the configuration'}
                     </p>
                   </div>

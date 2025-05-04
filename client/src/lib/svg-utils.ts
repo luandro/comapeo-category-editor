@@ -32,13 +32,13 @@ export function sanitizeSvgForReact(svgContent: string): string {
     'xlink:show',
     'xml:base',
     'xml:lang',
-    'xml:space'
+    'xml:space',
   ];
 
   let sanitizedContent = svgContent;
 
   // Convert kebab-case to camelCase for each attribute
-  attributesToConvert.forEach(attr => {
+  attributesToConvert.forEach((attr) => {
     const kebabCase = attr;
     // Handle xlink: and xml: namespaces specially
     if (kebabCase.includes(':')) {

@@ -1,6 +1,6 @@
-import { ConfigFile } from '@shared/schema';
-import { extractZipFile } from './file-handling';
+import type { ConfigFile } from '@shared/schema';
 import JSZip from 'jszip';
+import { extractZipFile } from './file-handling';
 
 // Define the structure for GitHub release data
 interface GitHubRelease {
@@ -48,9 +48,7 @@ const REPOSITORIES = [
  */
 function formatFileSize(sizeInBytes: number): string {
   const sizeInKB = sizeInBytes / 1024;
-  return sizeInKB > 1024
-    ? `${(sizeInKB / 1024).toFixed(2)}MB`
-    : `${sizeInKB.toFixed(2)}KB`;
+  return sizeInKB > 1024 ? `${(sizeInKB / 1024).toFixed(2)}MB` : `${sizeInKB.toFixed(2)}KB`;
 }
 
 /**
@@ -111,9 +109,7 @@ async function processReleaseAssets(
   }
 
   // Then, check zip files for .comapeocat files inside
-  const zipFiles = release.assets.filter((asset) =>
-    asset.name.toLowerCase().endsWith('.zip')
-  );
+  const zipFiles = release.assets.filter((asset) => asset.name.toLowerCase().endsWith('.zip'));
   for (const zipAsset of zipFiles) {
     try {
       // Download the zip file to check its contents
@@ -159,7 +155,9 @@ export async function getLatestDefaultConfigs(): Promise<DefaultConfigOption[]> 
           // Fetch the latest release from GitHub API
           const response = await fetch(repo.url);
           if (!response.ok) {
-            throw new Error(`GitHub API error for ${repo.name}: ${response.status} ${response.statusText}`);
+            throw new Error(
+              `GitHub API error for ${repo.name}: ${response.status} ${response.statusText}`
+            );
           }
           const release: GitHubRelease = await response.json();
           return await processReleaseAssets(release, {
@@ -174,11 +172,16 @@ export async function getLatestDefaultConfigs(): Promise<DefaultConfigOption[]> 
     );
 
     // Combine results from all repositories
-    results.forEach((result) => {
-      if (result.status === 'fulfilled') {
-        allOptions.push(...result.value);
-      }
-    });
+    const fulfilledResults = results
+      .filter(
+        (result): result is PromiseFulfilledResult<DefaultConfigOption[]> =>
+          result.status === 'fulfilled'
+      )
+      .flatMap((result) => result.value);
+
+    // Add all fulfilled results to our options array
+    allOptions.push(...fulfilledResults);
+
     if (allOptions.length === 0) {
       console.log('No .comapeocat files found in any repository');
     }
@@ -249,20 +252,19 @@ export async function downloadAndProcessDefaultConfig(
         const adjustedProgress = 50 + progress * 0.5;
         onProgress?.(adjustedProgress, message);
       });
-    } else {
-      // This is a direct .comapeocat file
-      // Convert blob to File object
-      const file = new File([blob], configOption.fileName, {
-        type: 'application/zip',
-      });
-
-      // Use the existing extractZipFile function to process the file
-      return await extractZipFile(file, (progress, message) => {
-        // Map the extraction progress to 30-100% range
-        const adjustedProgress = 30 + progress * 0.7;
-        onProgress?.(adjustedProgress, message);
-      });
     }
+    // This is a direct .comapeocat file
+    // Convert blob to File object
+    const file = new File([blob], configOption.fileName, {
+      type: 'application/zip',
+    });
+
+    // Use the existing extractZipFile function to process the file
+    return await extractZipFile(file, (progress, message) => {
+      // Map the extraction progress to 30-100% range
+      const adjustedProgress = 30 + progress * 0.7;
+      onProgress?.(adjustedProgress, message);
+    });
   } catch (error) {
     console.error('Error downloading default config:', error);
     throw error;

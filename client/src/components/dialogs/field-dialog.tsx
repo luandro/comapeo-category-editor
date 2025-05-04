@@ -1,13 +1,32 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { X, Plus } from 'lucide-react';
-import { CoMapeoField, OptionType } from '@shared/schema';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import type { CoMapeoField, OptionType } from '@shared/schema';
+import { Plus, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface FieldDialogProps {
   field: CoMapeoField | null;
@@ -23,9 +42,9 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
     type: 'text',
     universal: false,
     helperText: '',
-    options: []
+    options: [],
   });
-  
+
   const [newOptionLabel, setNewOptionLabel] = useState('');
   const [newOptionValue, setNewOptionValue] = useState('');
   const [showOptions, setShowOptions] = useState(false);
@@ -37,27 +56,27 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
     }
   }, [field]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
   };
 
   const handleTypeChange = (value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      type: value
+      type: value,
     }));
-    
+
     setShowOptions(value === 'selectOne' || value === 'selectMany');
   };
 
   const handleUniversalChange = (checked: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      universal: checked
+      universal: checked,
     }));
   };
 
@@ -65,36 +84,39 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
     if (newOptionLabel && newOptionValue) {
       const newOption: OptionType = {
         label: newOptionLabel,
-        value: newOptionValue
+        value: newOptionValue,
       };
-      
-      setFormData(prev => ({
+
+      setFormData((prev) => ({
         ...prev,
-        options: [...(prev.options || []), newOption]
+        options: [...(prev.options || []), newOption],
       }));
-      
+
       setNewOptionLabel('');
       setNewOptionValue('');
     }
   };
 
   const handleOptionRemove = (value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      options: prev.options?.filter(opt => opt.value !== value) || []
+      options: prev.options?.filter((opt) => opt.value !== value) || [],
     }));
   };
 
   const handleSubmit = () => {
     // Ensure options exist if it's a select type field
     const updatedField = { ...formData };
-    
-    if (['selectOne', 'selectMany'].includes(updatedField.type) && (!updatedField.options || updatedField.options.length === 0)) {
+
+    if (
+      ['selectOne', 'selectMany'].includes(updatedField.type) &&
+      (!updatedField.options || updatedField.options.length === 0)
+    ) {
       updatedField.options = [];
     } else if (!['selectOne', 'selectMany'].includes(updatedField.type)) {
-      delete updatedField.options;
+      updatedField.options = undefined;
     }
-    
+
     onSave(updatedField);
   };
 
@@ -104,38 +126,30 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
         <DialogHeader>
           <DialogTitle>{field ? 'Edit Field' : 'Add Field'}</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="name">Field Name</Label>
-              <Input 
-                id="name" 
-                value={formData.name} 
-                onChange={handleChange} 
-                className="w-full"
-              />
+              <Input id="name" value={formData.name} onChange={handleChange} className="w-full" />
             </div>
-            
+
             <div>
               <Label htmlFor="tagKey">Tag Key</Label>
-              <Input 
-                id="tagKey" 
-                value={formData.tagKey} 
-                onChange={handleChange} 
+              <Input
+                id="tagKey"
+                value={formData.tagKey}
+                onChange={handleChange}
                 className="w-full"
               />
               <p className="mt-1 text-xs text-gray-500">CoMapeo: tagKey, Mapeo: key</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="type">Field Type</Label>
-              <Select
-                value={formData.type}
-                onValueChange={handleTypeChange}
-              >
+              <Select value={formData.type} onValueChange={handleTypeChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select field type" />
                 </SelectTrigger>
@@ -150,34 +164,32 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
               </Select>
               <p className="mt-1 text-xs text-gray-500">CoMapeo: selectOne, Mapeo: select_one</p>
             </div>
-            
+
             <div>
               <div className="flex items-center space-x-2 mt-8">
-                <Checkbox 
-                  id="universal" 
-                  checked={formData.universal} 
-                  onCheckedChange={handleUniversalChange} 
+                <Checkbox
+                  id="universal"
+                  checked={formData.universal}
+                  onCheckedChange={handleUniversalChange}
                 />
-                <Label htmlFor="universal">
-                  Universal (can be used with any preset)
-                </Label>
+                <Label htmlFor="universal">Universal (can be used with any preset)</Label>
               </div>
               <p className="mt-1 text-xs text-gray-500">CoMapeo specific property</p>
             </div>
           </div>
-          
+
           <div>
             <Label htmlFor="helperText">Helper Text</Label>
-            <Input 
-              id="helperText" 
-              value={formData.helperText || ''} 
-              onChange={handleChange} 
+            <Input
+              id="helperText"
+              value={formData.helperText || ''}
+              onChange={handleChange}
               className="w-full"
               placeholder="Instructions or hint for the user"
             />
             <p className="mt-1 text-xs text-gray-500">CoMapeo: helperText, Mapeo: placeholder</p>
           </div>
-          
+
           {showOptions && (
             <div>
               <Label>Options</Label>
@@ -204,9 +216,9 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
                             <TableCell>{option.label}</TableCell>
                             <TableCell className="text-gray-500">{option.value}</TableCell>
                             <TableCell>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
+                              <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleOptionRemove(option.value)}
                                 className="text-red-500 hover:text-red-700"
                               >
@@ -220,21 +232,21 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
                   </Table>
                 </div>
                 <div className="mt-2 pt-2 border-t border-gray-200 flex">
-                  <Input 
-                    placeholder="Label" 
+                  <Input
+                    placeholder="Label"
                     value={newOptionLabel}
                     onChange={(e) => setNewOptionLabel(e.target.value)}
                     className="flex-1 rounded-r-none"
                   />
-                  <Input 
-                    placeholder="Value" 
+                  <Input
+                    placeholder="Value"
                     value={newOptionValue}
                     onChange={(e) => setNewOptionValue(e.target.value)}
                     className="flex-1 rounded-l-none border-l-0"
                   />
-                  <Button 
-                    size="icon" 
-                    variant="default" 
+                  <Button
+                    size="icon"
+                    variant="default"
                     onClick={handleOptionAdd}
                     className="ml-2"
                     disabled={!newOptionLabel || !newOptionValue}
@@ -242,19 +254,19 @@ export function FieldDialog({ field, onSave, onCancel }: FieldDialogProps) {
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="mt-2 text-xs text-gray-500">CoMapeo: Array of {"{label, value}"}, Mapeo: Array of strings</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  CoMapeo: Array of {'{label, value}'}, Mapeo: Array of strings
+                </p>
               </div>
             </div>
           )}
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
-            Save Changes
-          </Button>
+          <Button onClick={handleSubmit}>Save Changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

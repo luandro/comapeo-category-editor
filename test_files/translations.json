@@ -1,926 +1,926 @@
 {
-    "es": {
-        "presets": {
-            "terrestrial-animal": {
-                "name": "Animal terrestre"
-            },
-            "water-animal": {
-                "name": "Animales acuáticos "
-            },
-            "bird": {
-                "name": "Aves"
-            },
-            "beehive": {
-                "name": "Colmena "
-            },
-            "animal-route": {
-                "name": "Rutas de animales "
-            },
-            "endangered-specie": {
-                "name": "Especies en peligro de extinción "
-            },
-            "invasive-specie": {
-                "name": "Especies invasoras "
-            },
-            "plant": {
-                "name": "Plantas "
-            },
-            "medicinal-plant": {
-                "name": "Plantas medicinales "
-            },
-            "plant-for-construction": {
-                "name": "Plantas para la construccion"
-            },
-            "plant-for-crafts": {
-                "name": "Plantas para artesanías"
-            },
-            "edible-plant": {
-                "name": "Plantas comestibles"
-            },
-            "fungi": {
-                "name": "Hongos "
-            },
-            "tree": {
-                "name": "Árboles"
-            },
-            "beach": {
-                "name": "Playa"
-            },
-            "river": {
-                "name": "Río "
-            },
-            "lake": {
-                "name": "Lago "
-            },
-            "waterfall": {
-                "name": "Cascada"
-            },
-            "water-source": {
-                "name": "Fuente de agua "
-            },
-            "cave": {
-                "name": "Cueva "
-            },
-            "salt-lick-site": {
-                "name": "Sitio para lamer sal "
-            },
-            "soil-regeneration": {
-                "name": "Regeneración del suelo "
-            },
-            "mountain": {
-                "name": "Montaña"
-            },
-            "testing-site": {
-                "name": "Sitio de testeo"
-            },
-            "camera-trap": {
-                "name": "Trampa de cámara"
-            }
-        },
-        "fields": {
-            "animal-type": {
-                "label": "Tipo de animal",
-                "placeholder": "Tipo de animal"
-            },
-            "bird-species": {
-                "label": "Especies de aves",
-                "placeholder": "Especies de aves"
-            },
-            "plant-species": {
-                "label": "Especies de plantas",
-                "placeholder": "Especies de plantas",
-                "options": {
-                    "tree": {
-                        "label": "Árbol",
-                        "value": "tree"
-                    },
-                    "shrub": {
-                        "label": "Arbusto",
-                        "value": "shrub"
-                    },
-                    "vine": {
-                        "label": "Vid",
-                        "value": "vine"
-                    },
-                    "herb": {
-                        "label": "Hierba",
-                        "value": "herb"
-                    },
-                    "grass": {
-                        "label": "Hierba",
-                        "value": "grass"
-                    },
-                    "fern": {
-                        "label": "Helecho",
-                        "value": "fern"
-                    },
-                    "moss": {
-                        "label": "Musgo",
-                        "value": "moss"
-                    },
-                    "succulent": {
-                        "label": "Suculenta",
-                        "value": "succulent"
-                    },
-                    "palm": {
-                        "label": "Palma",
-                        "value": "palm"
-                    },
-                    "ground-cover-plant": {
-                        "label": "Planta de cobertura del suelo",
-                        "value": "ground-cover-plant"
-                    },
-                    "epiphyte": {
-                        "label": "Epífita",
-                        "value": "epiphyte"
-                    },
-                    "aquatic-plant": {
-                        "label": "Planta acuática",
-                        "value": "aquatic-plant"
-                    },
-                    "bamboo": {
-                        "label": "Bambú",
-                        "value": "bamboo"
-                    },
-                    "cactus": {
-                        "label": "Cactus",
-                        "value": "cactus"
-                    }
-                }
-            },
-            "tree-species": {
-                "label": "Especies de árboles ",
-                "placeholder": "Especies de árboles "
-            },
-            "plant-uses": {
-                "label": "Usos de las plantas",
-                "placeholder": "Usos de las plantas"
-            },
-            "fungi-species": {
-                "label": "Especies de hongos",
-                "placeholder": "Especies de hongos"
-            },
-            "edible": {
-                "label": "Comestible",
-                "placeholder": "Comestible",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "fungi-uses": {
-                "label": "Usos de los hongos",
-                "placeholder": "Usos de los hongos"
-            },
-            "drinkable-water-source": {
-                "label": "Fuente de agua potable",
-                "placeholder": "Fuente de agua potable",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "name": {
-                "label": "Nombre",
-                "placeholder": "Nombre"
-            },
-            "pollution": {
-                "label": "Contaminación",
-                "placeholder": "Contaminación",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "soil-stage": {
-                "label": "Etapa del suelo",
-                "placeholder": "Etapa del suelo",
-                "options": {
-                    "bare-soil": {
-                        "label": "Suelo desnudo",
-                        "value": "bare-soil"
-                    },
-                    "initial-vegetation-growth": {
-                        "label": "Crecimiento inicial de la vegetación",
-                        "value": "initial-vegetation-growth"
-                    },
-                    "grass-cover": {
-                        "label": "Cobertura de pasto",
-                        "value": "grass-cover"
-                    },
-                    "herbaceous-plants": {
-                        "label": "Plantas herbáceas",
-                        "value": "herbaceous-plants"
-                    },
-                    "shrub-establishment": {
-                        "label": "Establecimiento de arbustos",
-                        "value": "shrub-establishment"
-                    },
-                    "young-tree-growth": {
-                        "label": "Crecimiento de árboles jóvenes",
-                        "value": "young-tree-growth"
-                    },
-                    "tree-canopy-formation": {
-                        "label": "Formación de copas de árboles",
-                        "value": "tree-canopy-formation"
-                    },
-                    "soil-nutrient-enrichment": {
-                        "label": "Enriquecimiento de nutrientes del suelo",
-                        "value": "soil-nutrient-enrichment"
-                    },
-                    "root-system-expansion": {
-                        "label": "Expansión del sistema de raíces",
-                        "value": "root-system-expansion"
-                    },
-                    "biodiversity-increase": {
-                        "label": "Aumento de la biodiversidad",
-                        "value": "biodiversity-increase"
-                    },
-                    "full-vegetation-cover": {
-                        "label": "Cobertura vegetal completa",
-                        "value": "full-vegetation-cover"
-                    },
-                    "ecosystem-stabilization": {
-                        "label": "Estabilización del ecosistema",
-                        "value": "ecosystem-stabilization"
-                    },
-                    "organic-matter-buildup": {
-                        "label": "Acumulación de materia orgánica",
-                        "value": "organic-matter-buildup"
-                    },
-                    "erosion-control": {
-                        "label": "Control de la erosión",
-                        "value": "erosion-control"
-                    },
-                    "mature-forest-development": {
-                        "label": "Maduro desarrollo forestal",
-                        "value": "mature-forest-development"
-                    }
-                }
-            },
-            "amount": {
-                "label": "Cantidad",
-                "placeholder": "Cantidad"
-            },
-            "nesting-stage": {
-                "label": "Etapa de anidación",
-                "placeholder": "Etapa de anidación",
-                "options": {
-                    "nest-buildng": {
-                        "label": "Construcción de nidos",
-                        "value": "nest-buildng"
-                    },
-                    "incubation": {
-                        "label": "incubación",
-                        "value": "incubation"
-                    },
-                    "empty": {
-                        "label": "vacío",
-                        "value": "empty"
-                    }
-                }
-            },
-            "description": {
-                "label": "Descripción",
-                "placeholder": "Descripción"
-            },
-            "presence-of-animals": {
-                "label": "Presencia de animales",
-                "placeholder": "Presencia de animales",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "water-levels": {
-                "label": "Niveles de agua",
-                "placeholder": "Niveles de agua",
-                "options": {
-                    "high": {
-                        "label": "Alto",
-                        "value": "high"
-                    },
-                    "average": {
-                        "label": "Promedio",
-                        "value": "average"
-                    },
-                    "low": {
-                        "label": "Bajo",
-                        "value": "low"
-                    }
-                }
-            },
-            "type-of-specie": {
-                "label": "Tipo de especie",
-                "placeholder": "Tipo de especie",
-                "options": {
-                    "animal": {
-                        "label": "Animales",
-                        "value": "animal"
-                    },
-                    "plant": {
-                        "label": "Planta",
-                        "value": "plant"
-                    },
-                    "fungi": {
-                        "label": "Hongos",
-                        "value": "fungi"
-                    }
-                }
-            },
-            "type-of-saltlick-site": {
-                "label": "Tipo de sitio para lamer sal",
-                "placeholder": "Tipo de sitio para lamer sal",
-                "options": {
-                    "natural": {
-                        "label": "Natural",
-                        "value": "natural"
-                    }
-                }
-            },
-            "activity": {
-                "label": "Actividad",
-                "placeholder": "Actividad",
-                "options": {
-                    "human": {
-                        "label": "Humano",
-                        "value": "human"
-                    },
-                    "animal": {
-                        "label": "animal",
-                        "value": "animal"
-                    }
-                }
-            },
-            "human-activity": {
-                "label": "Actividad humana",
-                "placeholder": "Actividad humana",
-                "options": {
-                    "lega": {
-                        "label": "Liga",
-                        "value": "lega"
-                    },
-                    "illegal": {
-                        "label": "ilegal",
-                        "value": "illegal"
-                    }
-                }
-            },
-            "testing": {
-                "label": "Pruebas",
-                "placeholder": "Pruebas"
-            },
-            "testing-type": {
-                "label": "Tipo de prueba",
-                "placeholder": "Tipo de prueba",
-                "options": {
-                    "water-quality-monitoring-station": {
-                        "label": "Estación de monitoreo de la calidad del agua",
-                        "value": "water-quality-monitoring-station"
-                    },
-                    "mercury-testing-site": {
-                        "label": "Sitio de pruebas de mercurio",
-                        "value": "mercury-testing-site"
-                    },
-                    "contamination-analysis-site": {
-                        "label": "Sitio de análisis de contaminación",
-                        "value": "contamination-analysis-site"
-                    },
-                    "spill-detection-point": {
-                        "label": "Punto de detección de derrames",
-                        "value": "spill-detection-point"
-                    },
-                    "pollution-sampling-site": {
-                        "label": "Sitio de muestreo de contaminación",
-                        "value": "pollution-sampling-site"
-                    },
-                    "chemical-testing-site": {
-                        "label": "Sitio de pruebas químicas",
-                        "value": "chemical-testing-site"
-                    },
-                    "aquatic-toxicity-testing-site": {
-                        "label": "Sitio de pruebas de toxicidad acuática",
-                        "value": "aquatic-toxicity-testing-site"
-                    },
-                    "heavy-metal-testing-zone": {
-                        "label": "Zona de pruebas de metales pesados",
-                        "value": "heavy-metal-testing-zone"
-                    },
-                    "sediment-sampling-station": {
-                        "label": "Estación de muestreo de sedimentos",
-                        "value": "sediment-sampling-station"
-                    },
-                    "surface-water-testing-site": {
-                        "label": "Sitio de pruebas de aguas superficiales",
-                        "value": "surface-water-testing-site"
-                    },
-                    "groundwater-monitoring-site": {
-                        "label": "Sitio de monitoreo de aguas subterráneas",
-                        "value": "groundwater-monitoring-site"
-                    },
-                    "effluent-testing-site": {
-                        "label": "Pruebas de efluentes sitio",
-                        "value": "effluent-testing-site"
-                    },
-                    "drinking-water": {
-                        "label": "Agua potable",
-                        "value": "drinking-water"
-                    },
-                    "runoff-sampling-area": {
-                        "label": "Área de muestreo de escorrentía",
-                        "value": "runoff-sampling-area"
-                    }
-                }
-            },
-            "site-type": {
-                "label": "Tipo de sitio",
-                "placeholder": "Tipo de sitio",
-                "options": {
-                    "mating-site": {
-                        "label": "Sitio de apareamiento",
-                        "value": "mating-site"
-                    },
-                    "nesting-site": {
-                        "label": "Sitio de anidación",
-                        "value": "nesting-site"
-                    },
-                    "sprawning-site": {
-                        "label": "Sitio de desove",
-                        "value": "sprawning-site"
-                    }
-                }
-            }
-        },
-        "categories": {}
+  "es": {
+    "presets": {
+      "terrestrial-animal": {
+        "name": "Animal terrestre"
+      },
+      "water-animal": {
+        "name": "Animales acuáticos "
+      },
+      "bird": {
+        "name": "Aves"
+      },
+      "beehive": {
+        "name": "Colmena "
+      },
+      "animal-route": {
+        "name": "Rutas de animales "
+      },
+      "endangered-specie": {
+        "name": "Especies en peligro de extinción "
+      },
+      "invasive-specie": {
+        "name": "Especies invasoras "
+      },
+      "plant": {
+        "name": "Plantas "
+      },
+      "medicinal-plant": {
+        "name": "Plantas medicinales "
+      },
+      "plant-for-construction": {
+        "name": "Plantas para la construccion"
+      },
+      "plant-for-crafts": {
+        "name": "Plantas para artesanías"
+      },
+      "edible-plant": {
+        "name": "Plantas comestibles"
+      },
+      "fungi": {
+        "name": "Hongos "
+      },
+      "tree": {
+        "name": "Árboles"
+      },
+      "beach": {
+        "name": "Playa"
+      },
+      "river": {
+        "name": "Río "
+      },
+      "lake": {
+        "name": "Lago "
+      },
+      "waterfall": {
+        "name": "Cascada"
+      },
+      "water-source": {
+        "name": "Fuente de agua "
+      },
+      "cave": {
+        "name": "Cueva "
+      },
+      "salt-lick-site": {
+        "name": "Sitio para lamer sal "
+      },
+      "soil-regeneration": {
+        "name": "Regeneración del suelo "
+      },
+      "mountain": {
+        "name": "Montaña"
+      },
+      "testing-site": {
+        "name": "Sitio de testeo"
+      },
+      "camera-trap": {
+        "name": "Trampa de cámara"
+      }
     },
-    "pt": {
-        "presets": {
-            "terrestrial-animal": {
-                "name": "Animal terrestre"
-            },
-            "water-animal": {
-                "name": "Animal aquático "
-            },
-            "bird": {
-                "name": "Pássaro "
-            },
-            "beehive": {
-                "name": "Colméia "
-            },
-            "animal-route": {
-                "name": "Rotas de animais "
-            },
-            "endangered-specie": {
-                "name": "Espécies ameaçadas "
-            },
-            "invasive-specie": {
-                "name": "Espécies invasoras "
-            },
-            "plant": {
-                "name": "Plantas "
-            },
-            "medicinal-plant": {
-                "name": "Plantas medicinais "
-            },
-            "plant-for-construction": {
-                "name": "Plantas para construção"
-            },
-            "plant-for-crafts": {
-                "name": "Plantas para artesanato"
-            },
-            "edible-plant": {
-                "name": "Plantas comestíveis"
-            },
-            "fungi": {
-                "name": "Fungos "
-            },
-            "tree": {
-                "name": "Árvores"
-            },
-            "beach": {
-                "name": "Praia"
-            },
-            "river": {
-                "name": "Rio "
-            },
-            "lake": {
-                "name": "Lago "
-            },
-            "waterfall": {
-                "name": "Cachoeira"
-            },
-            "water-source": {
-                "name": "Fonte de água "
-            },
-            "cave": {
-                "name": "Caverna "
-            },
-            "salt-lick-site": {
-                "name": "Local para lamber sal "
-            },
-            "soil-regeneration": {
-                "name": "Regeneração do solo "
-            },
-            "mountain": {
-                "name": "Montanha"
-            },
-            "testing-site": {
-                "name": "Local de teste"
-            },
-            "camera-trap": {
-                "name": "Armadilha fotográfica"
-            }
-        },
-        "fields": {
-            "animal-type": {
-                "label": "Tipo de animal",
-                "placeholder": "Tipo de animal"
-            },
-            "bird-species": {
-                "label": "Espécies de pássaros",
-                "placeholder": "Espécies de pássaros"
-            },
-            "plant-species": {
-                "label": "Espécies de plantas",
-                "placeholder": "Espécies de plantas",
-                "options": {
-                    "tree": {
-                        "label": "Árbol",
-                        "value": "tree"
-                    },
-                    "shrub": {
-                        "label": "Arbusto",
-                        "value": "shrub"
-                    },
-                    "vine": {
-                        "label": "Vid",
-                        "value": "vine"
-                    },
-                    "herb": {
-                        "label": "Hierba",
-                        "value": "herb"
-                    },
-                    "grass": {
-                        "label": "Hierba",
-                        "value": "grass"
-                    },
-                    "fern": {
-                        "label": "Helecho",
-                        "value": "fern"
-                    },
-                    "moss": {
-                        "label": "Musgo",
-                        "value": "moss"
-                    },
-                    "succulent": {
-                        "label": "Suculenta",
-                        "value": "succulent"
-                    },
-                    "palm": {
-                        "label": "Palma",
-                        "value": "palm"
-                    },
-                    "ground-cover-plant": {
-                        "label": "Planta de cobertura del suelo",
-                        "value": "ground-cover-plant"
-                    },
-                    "epiphyte": {
-                        "label": "Epífita",
-                        "value": "epiphyte"
-                    },
-                    "aquatic-plant": {
-                        "label": "Planta acuática",
-                        "value": "aquatic-plant"
-                    },
-                    "bamboo": {
-                        "label": "Bambú",
-                        "value": "bamboo"
-                    },
-                    "cactus": {
-                        "label": "Cactus",
-                        "value": "cactus"
-                    }
-                }
-            },
-            "tree-species": {
-                "label": "Espécies de árvores ",
-                "placeholder": "Espécies de árvores "
-            },
-            "plant-uses": {
-                "label": "Usos de plantas",
-                "placeholder": "Usos de plantas"
-            },
-            "fungi-species": {
-                "label": "Espécies de fungos",
-                "placeholder": "Espécies de fungos"
-            },
-            "edible": {
-                "label": "Comestível",
-                "placeholder": "Comestível",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "fungi-uses": {
-                "label": "Usos de fungos",
-                "placeholder": "Usos de fungos"
-            },
-            "drinkable-water-source": {
-                "label": "Fonte de água potável",
-                "placeholder": "Fonte de água potável",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "name": {
-                "label": "Nome",
-                "placeholder": "Nome"
-            },
-            "pollution": {
-                "label": "Poluição",
-                "placeholder": "Poluição",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "soil-stage": {
-                "label": "Estágio do solo",
-                "placeholder": "Estágio do solo",
-                "options": {
-                    "bare-soil": {
-                        "label": "Suelo desnudo",
-                        "value": "bare-soil"
-                    },
-                    "initial-vegetation-growth": {
-                        "label": "Crecimiento inicial de la vegetación",
-                        "value": "initial-vegetation-growth"
-                    },
-                    "grass-cover": {
-                        "label": "Cobertura de pasto",
-                        "value": "grass-cover"
-                    },
-                    "herbaceous-plants": {
-                        "label": "Plantas herbáceas",
-                        "value": "herbaceous-plants"
-                    },
-                    "shrub-establishment": {
-                        "label": "Establecimiento de arbustos",
-                        "value": "shrub-establishment"
-                    },
-                    "young-tree-growth": {
-                        "label": "Crecimiento de árboles jóvenes",
-                        "value": "young-tree-growth"
-                    },
-                    "tree-canopy-formation": {
-                        "label": "Formación de copas de árboles",
-                        "value": "tree-canopy-formation"
-                    },
-                    "soil-nutrient-enrichment": {
-                        "label": "Enriquecimiento de nutrientes del suelo",
-                        "value": "soil-nutrient-enrichment"
-                    },
-                    "root-system-expansion": {
-                        "label": "Expansión del sistema de raíces",
-                        "value": "root-system-expansion"
-                    },
-                    "biodiversity-increase": {
-                        "label": "Aumento de la biodiversidad",
-                        "value": "biodiversity-increase"
-                    },
-                    "full-vegetation-cover": {
-                        "label": "Cobertura vegetal completa",
-                        "value": "full-vegetation-cover"
-                    },
-                    "ecosystem-stabilization": {
-                        "label": "Estabilización del ecosistema",
-                        "value": "ecosystem-stabilization"
-                    },
-                    "organic-matter-buildup": {
-                        "label": "Acumulación de materia orgánica",
-                        "value": "organic-matter-buildup"
-                    },
-                    "erosion-control": {
-                        "label": "Control de la erosión",
-                        "value": "erosion-control"
-                    },
-                    "mature-forest-development": {
-                        "label": "Maduro desarrollo forestal",
-                        "value": "mature-forest-development"
-                    }
-                }
-            },
-            "amount": {
-                "label": "Quantia",
-                "placeholder": "Quantia"
-            },
-            "nesting-stage": {
-                "label": "Fase do ninho",
-                "placeholder": "Fase do ninho",
-                "options": {
-                    "nest-buildng": {
-                        "label": "Construcción de nidos",
-                        "value": "nest-buildng"
-                    },
-                    "incubation": {
-                        "label": "incubación",
-                        "value": "incubation"
-                    },
-                    "empty": {
-                        "label": "vacío",
-                        "value": "empty"
-                    }
-                }
-            },
-            "description": {
-                "label": "Descrição",
-                "placeholder": "Descrição"
-            },
-            "presence-of-animals": {
-                "label": "Presença de animais",
-                "placeholder": "Presença de animais",
-                "options": {
-                    "yes": {
-                        "label": "Si no",
-                        "value": "yes"
-                    }
-                }
-            },
-            "water-levels": {
-                "label": "Níveis de água",
-                "placeholder": "Níveis de água",
-                "options": {
-                    "high": {
-                        "label": "Alto",
-                        "value": "high"
-                    },
-                    "average": {
-                        "label": "Promedio",
-                        "value": "average"
-                    },
-                    "low": {
-                        "label": "Bajo",
-                        "value": "low"
-                    }
-                }
-            },
-            "type-of-specie": {
-                "label": "Tipo de espécie",
-                "placeholder": "Tipo de espécie",
-                "options": {
-                    "animal": {
-                        "label": "Animales",
-                        "value": "animal"
-                    },
-                    "plant": {
-                        "label": "Planta",
-                        "value": "plant"
-                    },
-                    "fungi": {
-                        "label": "Hongos",
-                        "value": "fungi"
-                    }
-                }
-            },
-            "type-of-saltlick-site": {
-                "label": "Tipo de salina",
-                "placeholder": "Tipo de salina",
-                "options": {
-                    "natural": {
-                        "label": "Natural",
-                        "value": "natural"
-                    }
-                }
-            },
-            "activity": {
-                "label": "Atividade",
-                "placeholder": "Atividade",
-                "options": {
-                    "human": {
-                        "label": "Humano",
-                        "value": "human"
-                    },
-                    "animal": {
-                        "label": "animal",
-                        "value": "animal"
-                    }
-                }
-            },
-            "human-activity": {
-                "label": "Atividade humana",
-                "placeholder": "Atividade humana",
-                "options": {
-                    "lega": {
-                        "label": "Liga",
-                        "value": "lega"
-                    },
-                    "illegal": {
-                        "label": "ilegal",
-                        "value": "illegal"
-                    }
-                }
-            },
-            "testing": {
-                "label": "Teste",
-                "placeholder": "Teste"
-            },
-            "testing-type": {
-                "label": "Tipo de teste",
-                "placeholder": "Tipo de teste",
-                "options": {
-                    "water-quality-monitoring-station": {
-                        "label": "Estación de monitoreo de la calidad del agua",
-                        "value": "water-quality-monitoring-station"
-                    },
-                    "mercury-testing-site": {
-                        "label": "Sitio de pruebas de mercurio",
-                        "value": "mercury-testing-site"
-                    },
-                    "contamination-analysis-site": {
-                        "label": "Sitio de análisis de contaminación",
-                        "value": "contamination-analysis-site"
-                    },
-                    "spill-detection-point": {
-                        "label": "Punto de detección de derrames",
-                        "value": "spill-detection-point"
-                    },
-                    "pollution-sampling-site": {
-                        "label": "Sitio de muestreo de contaminación",
-                        "value": "pollution-sampling-site"
-                    },
-                    "chemical-testing-site": {
-                        "label": "Sitio de pruebas químicas",
-                        "value": "chemical-testing-site"
-                    },
-                    "aquatic-toxicity-testing-site": {
-                        "label": "Sitio de pruebas de toxicidad acuática",
-                        "value": "aquatic-toxicity-testing-site"
-                    },
-                    "heavy-metal-testing-zone": {
-                        "label": "Zona de pruebas de metales pesados",
-                        "value": "heavy-metal-testing-zone"
-                    },
-                    "sediment-sampling-station": {
-                        "label": "Estación de muestreo de sedimentos",
-                        "value": "sediment-sampling-station"
-                    },
-                    "surface-water-testing-site": {
-                        "label": "Sitio de pruebas de aguas superficiales",
-                        "value": "surface-water-testing-site"
-                    },
-                    "groundwater-monitoring-site": {
-                        "label": "Sitio de monitoreo de aguas subterráneas",
-                        "value": "groundwater-monitoring-site"
-                    },
-                    "effluent-testing-site": {
-                        "label": "Pruebas de efluentes sitio",
-                        "value": "effluent-testing-site"
-                    },
-                    "drinking-water": {
-                        "label": "Agua potable",
-                        "value": "drinking-water"
-                    },
-                    "runoff-sampling-area": {
-                        "label": "Área de muestreo de escorrentía",
-                        "value": "runoff-sampling-area"
-                    }
-                }
-            },
-            "site-type": {
-                "label": "Tipo de lugar",
-                "placeholder": "Tipo de lugar",
-                "options": {
-                    "mating-site": {
-                        "label": "Sitio de apareamiento",
-                        "value": "mating-site"
-                    },
-                    "nesting-site": {
-                        "label": "Sitio de anidación",
-                        "value": "nesting-site"
-                    },
-                    "sprawning-site": {
-                        "label": "Sitio de desove",
-                        "value": "sprawning-site"
-                    }
-                }
-            }
-        },
-        "categories": {}
-    }
+    "fields": {
+      "animal-type": {
+        "label": "Tipo de animal",
+        "placeholder": "Tipo de animal"
+      },
+      "bird-species": {
+        "label": "Especies de aves",
+        "placeholder": "Especies de aves"
+      },
+      "plant-species": {
+        "label": "Especies de plantas",
+        "placeholder": "Especies de plantas",
+        "options": {
+          "tree": {
+            "label": "Árbol",
+            "value": "tree"
+          },
+          "shrub": {
+            "label": "Arbusto",
+            "value": "shrub"
+          },
+          "vine": {
+            "label": "Vid",
+            "value": "vine"
+          },
+          "herb": {
+            "label": "Hierba",
+            "value": "herb"
+          },
+          "grass": {
+            "label": "Hierba",
+            "value": "grass"
+          },
+          "fern": {
+            "label": "Helecho",
+            "value": "fern"
+          },
+          "moss": {
+            "label": "Musgo",
+            "value": "moss"
+          },
+          "succulent": {
+            "label": "Suculenta",
+            "value": "succulent"
+          },
+          "palm": {
+            "label": "Palma",
+            "value": "palm"
+          },
+          "ground-cover-plant": {
+            "label": "Planta de cobertura del suelo",
+            "value": "ground-cover-plant"
+          },
+          "epiphyte": {
+            "label": "Epífita",
+            "value": "epiphyte"
+          },
+          "aquatic-plant": {
+            "label": "Planta acuática",
+            "value": "aquatic-plant"
+          },
+          "bamboo": {
+            "label": "Bambú",
+            "value": "bamboo"
+          },
+          "cactus": {
+            "label": "Cactus",
+            "value": "cactus"
+          }
+        }
+      },
+      "tree-species": {
+        "label": "Especies de árboles ",
+        "placeholder": "Especies de árboles "
+      },
+      "plant-uses": {
+        "label": "Usos de las plantas",
+        "placeholder": "Usos de las plantas"
+      },
+      "fungi-species": {
+        "label": "Especies de hongos",
+        "placeholder": "Especies de hongos"
+      },
+      "edible": {
+        "label": "Comestible",
+        "placeholder": "Comestible",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "fungi-uses": {
+        "label": "Usos de los hongos",
+        "placeholder": "Usos de los hongos"
+      },
+      "drinkable-water-source": {
+        "label": "Fuente de agua potable",
+        "placeholder": "Fuente de agua potable",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "name": {
+        "label": "Nombre",
+        "placeholder": "Nombre"
+      },
+      "pollution": {
+        "label": "Contaminación",
+        "placeholder": "Contaminación",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "soil-stage": {
+        "label": "Etapa del suelo",
+        "placeholder": "Etapa del suelo",
+        "options": {
+          "bare-soil": {
+            "label": "Suelo desnudo",
+            "value": "bare-soil"
+          },
+          "initial-vegetation-growth": {
+            "label": "Crecimiento inicial de la vegetación",
+            "value": "initial-vegetation-growth"
+          },
+          "grass-cover": {
+            "label": "Cobertura de pasto",
+            "value": "grass-cover"
+          },
+          "herbaceous-plants": {
+            "label": "Plantas herbáceas",
+            "value": "herbaceous-plants"
+          },
+          "shrub-establishment": {
+            "label": "Establecimiento de arbustos",
+            "value": "shrub-establishment"
+          },
+          "young-tree-growth": {
+            "label": "Crecimiento de árboles jóvenes",
+            "value": "young-tree-growth"
+          },
+          "tree-canopy-formation": {
+            "label": "Formación de copas de árboles",
+            "value": "tree-canopy-formation"
+          },
+          "soil-nutrient-enrichment": {
+            "label": "Enriquecimiento de nutrientes del suelo",
+            "value": "soil-nutrient-enrichment"
+          },
+          "root-system-expansion": {
+            "label": "Expansión del sistema de raíces",
+            "value": "root-system-expansion"
+          },
+          "biodiversity-increase": {
+            "label": "Aumento de la biodiversidad",
+            "value": "biodiversity-increase"
+          },
+          "full-vegetation-cover": {
+            "label": "Cobertura vegetal completa",
+            "value": "full-vegetation-cover"
+          },
+          "ecosystem-stabilization": {
+            "label": "Estabilización del ecosistema",
+            "value": "ecosystem-stabilization"
+          },
+          "organic-matter-buildup": {
+            "label": "Acumulación de materia orgánica",
+            "value": "organic-matter-buildup"
+          },
+          "erosion-control": {
+            "label": "Control de la erosión",
+            "value": "erosion-control"
+          },
+          "mature-forest-development": {
+            "label": "Maduro desarrollo forestal",
+            "value": "mature-forest-development"
+          }
+        }
+      },
+      "amount": {
+        "label": "Cantidad",
+        "placeholder": "Cantidad"
+      },
+      "nesting-stage": {
+        "label": "Etapa de anidación",
+        "placeholder": "Etapa de anidación",
+        "options": {
+          "nest-buildng": {
+            "label": "Construcción de nidos",
+            "value": "nest-buildng"
+          },
+          "incubation": {
+            "label": "incubación",
+            "value": "incubation"
+          },
+          "empty": {
+            "label": "vacío",
+            "value": "empty"
+          }
+        }
+      },
+      "description": {
+        "label": "Descripción",
+        "placeholder": "Descripción"
+      },
+      "presence-of-animals": {
+        "label": "Presencia de animales",
+        "placeholder": "Presencia de animales",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "water-levels": {
+        "label": "Niveles de agua",
+        "placeholder": "Niveles de agua",
+        "options": {
+          "high": {
+            "label": "Alto",
+            "value": "high"
+          },
+          "average": {
+            "label": "Promedio",
+            "value": "average"
+          },
+          "low": {
+            "label": "Bajo",
+            "value": "low"
+          }
+        }
+      },
+      "type-of-specie": {
+        "label": "Tipo de especie",
+        "placeholder": "Tipo de especie",
+        "options": {
+          "animal": {
+            "label": "Animales",
+            "value": "animal"
+          },
+          "plant": {
+            "label": "Planta",
+            "value": "plant"
+          },
+          "fungi": {
+            "label": "Hongos",
+            "value": "fungi"
+          }
+        }
+      },
+      "type-of-saltlick-site": {
+        "label": "Tipo de sitio para lamer sal",
+        "placeholder": "Tipo de sitio para lamer sal",
+        "options": {
+          "natural": {
+            "label": "Natural",
+            "value": "natural"
+          }
+        }
+      },
+      "activity": {
+        "label": "Actividad",
+        "placeholder": "Actividad",
+        "options": {
+          "human": {
+            "label": "Humano",
+            "value": "human"
+          },
+          "animal": {
+            "label": "animal",
+            "value": "animal"
+          }
+        }
+      },
+      "human-activity": {
+        "label": "Actividad humana",
+        "placeholder": "Actividad humana",
+        "options": {
+          "lega": {
+            "label": "Liga",
+            "value": "lega"
+          },
+          "illegal": {
+            "label": "ilegal",
+            "value": "illegal"
+          }
+        }
+      },
+      "testing": {
+        "label": "Pruebas",
+        "placeholder": "Pruebas"
+      },
+      "testing-type": {
+        "label": "Tipo de prueba",
+        "placeholder": "Tipo de prueba",
+        "options": {
+          "water-quality-monitoring-station": {
+            "label": "Estación de monitoreo de la calidad del agua",
+            "value": "water-quality-monitoring-station"
+          },
+          "mercury-testing-site": {
+            "label": "Sitio de pruebas de mercurio",
+            "value": "mercury-testing-site"
+          },
+          "contamination-analysis-site": {
+            "label": "Sitio de análisis de contaminación",
+            "value": "contamination-analysis-site"
+          },
+          "spill-detection-point": {
+            "label": "Punto de detección de derrames",
+            "value": "spill-detection-point"
+          },
+          "pollution-sampling-site": {
+            "label": "Sitio de muestreo de contaminación",
+            "value": "pollution-sampling-site"
+          },
+          "chemical-testing-site": {
+            "label": "Sitio de pruebas químicas",
+            "value": "chemical-testing-site"
+          },
+          "aquatic-toxicity-testing-site": {
+            "label": "Sitio de pruebas de toxicidad acuática",
+            "value": "aquatic-toxicity-testing-site"
+          },
+          "heavy-metal-testing-zone": {
+            "label": "Zona de pruebas de metales pesados",
+            "value": "heavy-metal-testing-zone"
+          },
+          "sediment-sampling-station": {
+            "label": "Estación de muestreo de sedimentos",
+            "value": "sediment-sampling-station"
+          },
+          "surface-water-testing-site": {
+            "label": "Sitio de pruebas de aguas superficiales",
+            "value": "surface-water-testing-site"
+          },
+          "groundwater-monitoring-site": {
+            "label": "Sitio de monitoreo de aguas subterráneas",
+            "value": "groundwater-monitoring-site"
+          },
+          "effluent-testing-site": {
+            "label": "Pruebas de efluentes sitio",
+            "value": "effluent-testing-site"
+          },
+          "drinking-water": {
+            "label": "Agua potable",
+            "value": "drinking-water"
+          },
+          "runoff-sampling-area": {
+            "label": "Área de muestreo de escorrentía",
+            "value": "runoff-sampling-area"
+          }
+        }
+      },
+      "site-type": {
+        "label": "Tipo de sitio",
+        "placeholder": "Tipo de sitio",
+        "options": {
+          "mating-site": {
+            "label": "Sitio de apareamiento",
+            "value": "mating-site"
+          },
+          "nesting-site": {
+            "label": "Sitio de anidación",
+            "value": "nesting-site"
+          },
+          "sprawning-site": {
+            "label": "Sitio de desove",
+            "value": "sprawning-site"
+          }
+        }
+      }
+    },
+    "categories": {}
+  },
+  "pt": {
+    "presets": {
+      "terrestrial-animal": {
+        "name": "Animal terrestre"
+      },
+      "water-animal": {
+        "name": "Animal aquático "
+      },
+      "bird": {
+        "name": "Pássaro "
+      },
+      "beehive": {
+        "name": "Colméia "
+      },
+      "animal-route": {
+        "name": "Rotas de animais "
+      },
+      "endangered-specie": {
+        "name": "Espécies ameaçadas "
+      },
+      "invasive-specie": {
+        "name": "Espécies invasoras "
+      },
+      "plant": {
+        "name": "Plantas "
+      },
+      "medicinal-plant": {
+        "name": "Plantas medicinais "
+      },
+      "plant-for-construction": {
+        "name": "Plantas para construção"
+      },
+      "plant-for-crafts": {
+        "name": "Plantas para artesanato"
+      },
+      "edible-plant": {
+        "name": "Plantas comestíveis"
+      },
+      "fungi": {
+        "name": "Fungos "
+      },
+      "tree": {
+        "name": "Árvores"
+      },
+      "beach": {
+        "name": "Praia"
+      },
+      "river": {
+        "name": "Rio "
+      },
+      "lake": {
+        "name": "Lago "
+      },
+      "waterfall": {
+        "name": "Cachoeira"
+      },
+      "water-source": {
+        "name": "Fonte de água "
+      },
+      "cave": {
+        "name": "Caverna "
+      },
+      "salt-lick-site": {
+        "name": "Local para lamber sal "
+      },
+      "soil-regeneration": {
+        "name": "Regeneração do solo "
+      },
+      "mountain": {
+        "name": "Montanha"
+      },
+      "testing-site": {
+        "name": "Local de teste"
+      },
+      "camera-trap": {
+        "name": "Armadilha fotográfica"
+      }
+    },
+    "fields": {
+      "animal-type": {
+        "label": "Tipo de animal",
+        "placeholder": "Tipo de animal"
+      },
+      "bird-species": {
+        "label": "Espécies de pássaros",
+        "placeholder": "Espécies de pássaros"
+      },
+      "plant-species": {
+        "label": "Espécies de plantas",
+        "placeholder": "Espécies de plantas",
+        "options": {
+          "tree": {
+            "label": "Árbol",
+            "value": "tree"
+          },
+          "shrub": {
+            "label": "Arbusto",
+            "value": "shrub"
+          },
+          "vine": {
+            "label": "Vid",
+            "value": "vine"
+          },
+          "herb": {
+            "label": "Hierba",
+            "value": "herb"
+          },
+          "grass": {
+            "label": "Hierba",
+            "value": "grass"
+          },
+          "fern": {
+            "label": "Helecho",
+            "value": "fern"
+          },
+          "moss": {
+            "label": "Musgo",
+            "value": "moss"
+          },
+          "succulent": {
+            "label": "Suculenta",
+            "value": "succulent"
+          },
+          "palm": {
+            "label": "Palma",
+            "value": "palm"
+          },
+          "ground-cover-plant": {
+            "label": "Planta de cobertura del suelo",
+            "value": "ground-cover-plant"
+          },
+          "epiphyte": {
+            "label": "Epífita",
+            "value": "epiphyte"
+          },
+          "aquatic-plant": {
+            "label": "Planta acuática",
+            "value": "aquatic-plant"
+          },
+          "bamboo": {
+            "label": "Bambú",
+            "value": "bamboo"
+          },
+          "cactus": {
+            "label": "Cactus",
+            "value": "cactus"
+          }
+        }
+      },
+      "tree-species": {
+        "label": "Espécies de árvores ",
+        "placeholder": "Espécies de árvores "
+      },
+      "plant-uses": {
+        "label": "Usos de plantas",
+        "placeholder": "Usos de plantas"
+      },
+      "fungi-species": {
+        "label": "Espécies de fungos",
+        "placeholder": "Espécies de fungos"
+      },
+      "edible": {
+        "label": "Comestível",
+        "placeholder": "Comestível",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "fungi-uses": {
+        "label": "Usos de fungos",
+        "placeholder": "Usos de fungos"
+      },
+      "drinkable-water-source": {
+        "label": "Fonte de água potável",
+        "placeholder": "Fonte de água potável",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "name": {
+        "label": "Nome",
+        "placeholder": "Nome"
+      },
+      "pollution": {
+        "label": "Poluição",
+        "placeholder": "Poluição",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "soil-stage": {
+        "label": "Estágio do solo",
+        "placeholder": "Estágio do solo",
+        "options": {
+          "bare-soil": {
+            "label": "Suelo desnudo",
+            "value": "bare-soil"
+          },
+          "initial-vegetation-growth": {
+            "label": "Crecimiento inicial de la vegetación",
+            "value": "initial-vegetation-growth"
+          },
+          "grass-cover": {
+            "label": "Cobertura de pasto",
+            "value": "grass-cover"
+          },
+          "herbaceous-plants": {
+            "label": "Plantas herbáceas",
+            "value": "herbaceous-plants"
+          },
+          "shrub-establishment": {
+            "label": "Establecimiento de arbustos",
+            "value": "shrub-establishment"
+          },
+          "young-tree-growth": {
+            "label": "Crecimiento de árboles jóvenes",
+            "value": "young-tree-growth"
+          },
+          "tree-canopy-formation": {
+            "label": "Formación de copas de árboles",
+            "value": "tree-canopy-formation"
+          },
+          "soil-nutrient-enrichment": {
+            "label": "Enriquecimiento de nutrientes del suelo",
+            "value": "soil-nutrient-enrichment"
+          },
+          "root-system-expansion": {
+            "label": "Expansión del sistema de raíces",
+            "value": "root-system-expansion"
+          },
+          "biodiversity-increase": {
+            "label": "Aumento de la biodiversidad",
+            "value": "biodiversity-increase"
+          },
+          "full-vegetation-cover": {
+            "label": "Cobertura vegetal completa",
+            "value": "full-vegetation-cover"
+          },
+          "ecosystem-stabilization": {
+            "label": "Estabilización del ecosistema",
+            "value": "ecosystem-stabilization"
+          },
+          "organic-matter-buildup": {
+            "label": "Acumulación de materia orgánica",
+            "value": "organic-matter-buildup"
+          },
+          "erosion-control": {
+            "label": "Control de la erosión",
+            "value": "erosion-control"
+          },
+          "mature-forest-development": {
+            "label": "Maduro desarrollo forestal",
+            "value": "mature-forest-development"
+          }
+        }
+      },
+      "amount": {
+        "label": "Quantia",
+        "placeholder": "Quantia"
+      },
+      "nesting-stage": {
+        "label": "Fase do ninho",
+        "placeholder": "Fase do ninho",
+        "options": {
+          "nest-buildng": {
+            "label": "Construcción de nidos",
+            "value": "nest-buildng"
+          },
+          "incubation": {
+            "label": "incubación",
+            "value": "incubation"
+          },
+          "empty": {
+            "label": "vacío",
+            "value": "empty"
+          }
+        }
+      },
+      "description": {
+        "label": "Descrição",
+        "placeholder": "Descrição"
+      },
+      "presence-of-animals": {
+        "label": "Presença de animais",
+        "placeholder": "Presença de animais",
+        "options": {
+          "yes": {
+            "label": "Si no",
+            "value": "yes"
+          }
+        }
+      },
+      "water-levels": {
+        "label": "Níveis de água",
+        "placeholder": "Níveis de água",
+        "options": {
+          "high": {
+            "label": "Alto",
+            "value": "high"
+          },
+          "average": {
+            "label": "Promedio",
+            "value": "average"
+          },
+          "low": {
+            "label": "Bajo",
+            "value": "low"
+          }
+        }
+      },
+      "type-of-specie": {
+        "label": "Tipo de espécie",
+        "placeholder": "Tipo de espécie",
+        "options": {
+          "animal": {
+            "label": "Animales",
+            "value": "animal"
+          },
+          "plant": {
+            "label": "Planta",
+            "value": "plant"
+          },
+          "fungi": {
+            "label": "Hongos",
+            "value": "fungi"
+          }
+        }
+      },
+      "type-of-saltlick-site": {
+        "label": "Tipo de salina",
+        "placeholder": "Tipo de salina",
+        "options": {
+          "natural": {
+            "label": "Natural",
+            "value": "natural"
+          }
+        }
+      },
+      "activity": {
+        "label": "Atividade",
+        "placeholder": "Atividade",
+        "options": {
+          "human": {
+            "label": "Humano",
+            "value": "human"
+          },
+          "animal": {
+            "label": "animal",
+            "value": "animal"
+          }
+        }
+      },
+      "human-activity": {
+        "label": "Atividade humana",
+        "placeholder": "Atividade humana",
+        "options": {
+          "lega": {
+            "label": "Liga",
+            "value": "lega"
+          },
+          "illegal": {
+            "label": "ilegal",
+            "value": "illegal"
+          }
+        }
+      },
+      "testing": {
+        "label": "Teste",
+        "placeholder": "Teste"
+      },
+      "testing-type": {
+        "label": "Tipo de teste",
+        "placeholder": "Tipo de teste",
+        "options": {
+          "water-quality-monitoring-station": {
+            "label": "Estación de monitoreo de la calidad del agua",
+            "value": "water-quality-monitoring-station"
+          },
+          "mercury-testing-site": {
+            "label": "Sitio de pruebas de mercurio",
+            "value": "mercury-testing-site"
+          },
+          "contamination-analysis-site": {
+            "label": "Sitio de análisis de contaminación",
+            "value": "contamination-analysis-site"
+          },
+          "spill-detection-point": {
+            "label": "Punto de detección de derrames",
+            "value": "spill-detection-point"
+          },
+          "pollution-sampling-site": {
+            "label": "Sitio de muestreo de contaminación",
+            "value": "pollution-sampling-site"
+          },
+          "chemical-testing-site": {
+            "label": "Sitio de pruebas químicas",
+            "value": "chemical-testing-site"
+          },
+          "aquatic-toxicity-testing-site": {
+            "label": "Sitio de pruebas de toxicidad acuática",
+            "value": "aquatic-toxicity-testing-site"
+          },
+          "heavy-metal-testing-zone": {
+            "label": "Zona de pruebas de metales pesados",
+            "value": "heavy-metal-testing-zone"
+          },
+          "sediment-sampling-station": {
+            "label": "Estación de muestreo de sedimentos",
+            "value": "sediment-sampling-station"
+          },
+          "surface-water-testing-site": {
+            "label": "Sitio de pruebas de aguas superficiales",
+            "value": "surface-water-testing-site"
+          },
+          "groundwater-monitoring-site": {
+            "label": "Sitio de monitoreo de aguas subterráneas",
+            "value": "groundwater-monitoring-site"
+          },
+          "effluent-testing-site": {
+            "label": "Pruebas de efluentes sitio",
+            "value": "effluent-testing-site"
+          },
+          "drinking-water": {
+            "label": "Agua potable",
+            "value": "drinking-water"
+          },
+          "runoff-sampling-area": {
+            "label": "Área de muestreo de escorrentía",
+            "value": "runoff-sampling-area"
+          }
+        }
+      },
+      "site-type": {
+        "label": "Tipo de lugar",
+        "placeholder": "Tipo de lugar",
+        "options": {
+          "mating-site": {
+            "label": "Sitio de apareamiento",
+            "value": "mating-site"
+          },
+          "nesting-site": {
+            "label": "Sitio de anidación",
+            "value": "nesting-site"
+          },
+          "sprawning-site": {
+            "label": "Sitio de desove",
+            "value": "sprawning-site"
+          }
+        }
+      }
+    },
+    "categories": {}
+  }
 }

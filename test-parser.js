@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import JSZip from 'jszip';
 
 // Get the current directory
@@ -132,7 +132,7 @@ async function analyzeComapeoCat(filePath) {
               // Show the first preset as an example
               if (Array.isArray(data) && data.length > 0) {
                 const preset = data[0];
-                console.log(`  - Sample preset:`);
+                console.log("  - Sample preset:");
                 console.log(`    id: ${preset.id}`);
                 console.log(`    name: ${preset.name}`);
                 console.log(`    geometry: ${preset.geometry?.join(', ') || 'N/A'}`);
@@ -157,7 +157,7 @@ async function analyzeComapeoCat(filePath) {
               // Show the first field as an example
               if (Array.isArray(data) && data.length > 0) {
                 const field = data[0];
-                console.log(`  - Sample field:`);
+                console.log("  - Sample field:");
                 console.log(`    id: ${field.id}`);
                 console.log(`    key: ${field.key || field.tagKey}`);
                 console.log(`    type: ${field.type}`);

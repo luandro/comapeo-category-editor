@@ -1,19 +1,24 @@
-
-import { useState, useEffect } from 'react';
-import { useConfigStore } from '@/lib/store';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { X, ArrowLeft, Circle } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useConfigStore } from '@/lib/store';
 import { sanitizeSvgForReact } from '@/lib/svg-utils';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, Circle, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function PreviewTab() {
   const { config, rawFiles } = useConfigStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [presetsByCategory, setPresetsByCategory] = useState<{[key: string]: any[]}>({});
-  const [iconMap, setIconMap] = useState<{[key: string]: string}>({});
+  const [_categories, setCategories] = useState<string[]>([]);
+  const [presetsByCategory, setPresetsByCategory] = useState<{ [key: string]: any[] }>({});
+  const [iconMap, setIconMap] = useState<{ [key: string]: string }>({});
   const [selectedPreset, setSelectedPreset] = useState<any | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedField, setSelectedField] = useState<any | null>(null);
@@ -22,7 +27,7 @@ export default function PreviewTab() {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
 
   // Function to normalize options to array format - borrowed from field-dialog.tsx approach
-  const normalizeOptions = (options: any): Array<{label: string, value: string}> => {
+  const normalizeOptions = (options: any): Array<{ label: string; value: string }> => {
     if (!options) return [];
 
     console.log('Options before normalization:', options);
@@ -33,29 +38,31 @@ export default function PreviewTab() {
         if (typeof opt === 'string') {
           return {
             label: opt,
-            value: opt.toLowerCase().replace(/\s+/g, '_')
+            value: opt.toLowerCase().replace(/\s+/g, '_'),
           };
-        } else if (opt && typeof opt === 'object') {
+        }
+        if (opt && typeof opt === 'object') {
           // Handle object with label/value properties
           if (typeof opt.label === 'string') {
             return {
               label: opt.label,
-              value: typeof opt.value === 'string' ? opt.value : opt.label.toLowerCase().replace(/\s+/g, '_')
-            };
-          } else {
-            // Try to extract a meaningful string representation
-            const label = String(Object.values(opt)[0] || `Option ${idx + 1}`);
-            return {
-              label,
-              value: `option_${idx}`
+              value:
+                typeof opt.value === 'string'
+                  ? opt.value
+                  : opt.label.toLowerCase().replace(/\s+/g, '_'),
             };
           }
-        } else {
+          // Try to extract a meaningful string representation
+          const label = String(Object.values(opt)[0] || `Option ${idx + 1}`);
           return {
-            label: `Option ${idx + 1}`,
-            value: `option_${idx}`
+            label,
+            value: `option_${idx}`,
           };
         }
+        return {
+          label: `Option ${idx + 1}`,
+          value: `option_${idx}`,
+        };
       });
       console.log('Normalized array options:', normalized);
       return normalized;
@@ -67,28 +74,27 @@ export default function PreviewTab() {
         if (typeof value === 'string') {
           return {
             label: value,
-            value: key
+            value: key,
           };
-        } else if (value && typeof value === 'object') {
+        }
+        if (value && typeof value === 'object') {
           // Handle nested objects with label property
           if ('label' in value && typeof value.label === 'string') {
             return {
               label: value.label,
-              value: key
-            };
-          } else {
-            // Try to extract a meaningful string representation
-            return {
-              label: key,
-              value: key
+              value: key,
             };
           }
-        } else {
+          // Try to extract a meaningful string representation
           return {
             label: key,
-            value: key
+            value: key,
           };
         }
+        return {
+          label: key,
+          value: key,
+        };
       });
       console.log('Normalized object options:', normalized);
       return normalized;
@@ -116,7 +122,7 @@ export default function PreviewTab() {
       id: field.id,
       name: field.name,
       type: field.type,
-      hasOptions: !!field.options
+      hasOptions: !!field.options,
     });
 
     if (isSelectField(field) && field.options) {
@@ -137,7 +143,13 @@ export default function PreviewTab() {
   };
 
   // Function to get translated text based on the selected language
-  const getTranslatedText = (defaultText: string, section: string, id: string, field: string, language: string): string => {
+  const getTranslatedText = (
+    defaultText: string,
+    section: string,
+    id: string,
+    field: string,
+    language: string
+  ): string => {
     if (!config || !config.translations || !language || language === 'en') {
       return defaultText || '';
     }
@@ -149,15 +161,10 @@ export default function PreviewTab() {
       // Handle nested paths like 'options.value1'
       if (field.includes('.')) {
         const [parent, child] = field.split('.');
-        if (langTranslations[section] &&
-            langTranslations[section][id] &&
-            langTranslations[section][id][parent] &&
-            langTranslations[section][id][parent][child]) {
+        if (langTranslations[section]?.[id]?.[parent]?.[child]) {
           return langTranslations[section][id][parent][child];
         }
-      } else if (langTranslations[section] &&
-                 langTranslations[section][id] &&
-                 langTranslations[section][id][field]) {
+      } else if (langTranslations[section]?.[id]?.[field]) {
         return langTranslations[section][id][field];
       }
     } catch (error) {
@@ -175,7 +182,7 @@ export default function PreviewTab() {
 
     // Get all categories from presets
     const allCategories = new Set<string>();
-    presets.forEach(preset => {
+    presets.forEach((preset) => {
       const category = preset.tags?.category || 'uncategorized';
       allCategories.add(category);
     });
@@ -185,8 +192,8 @@ export default function PreviewTab() {
     setCategories(sortedCategories);
 
     // Group presets by category
-    const grouped: {[key: string]: any[]} = {};
-    presets.forEach(preset => {
+    const grouped: { [key: string]: any[] } = {};
+    presets.forEach((preset) => {
       const category = preset.tags?.category || 'uncategorized';
       if (!grouped[category]) {
         grouped[category] = [];
@@ -195,15 +202,15 @@ export default function PreviewTab() {
     });
 
     // Sort presets within each category by name
-    Object.keys(grouped).forEach(category => {
+    Object.keys(grouped).forEach((category) => {
       grouped[category].sort((a, b) => a.name.localeCompare(b.name));
     });
 
     setPresetsByCategory(grouped);
 
     // Extract icon SVGs from raw files
-    const extractedIcons: {[key: string]: string} = {};
-    rawFiles.forEach(file => {
+    const extractedIcons: { [key: string]: string } = {};
+    rawFiles.forEach((file) => {
       if (file.path.startsWith('icons/') && file.path.endsWith('.svg')) {
         const iconName = file.path.split('/').pop()?.replace('.svg', '') || '';
         if (typeof file.content === 'string') {
@@ -219,10 +226,10 @@ export default function PreviewTab() {
   const filterPresets = () => {
     if (!searchQuery.trim()) return presetsByCategory;
 
-    const filtered: {[key: string]: any[]} = {};
+    const filtered: { [key: string]: any[] } = {};
 
-    Object.keys(presetsByCategory).forEach(category => {
-      const matchingPresets = presetsByCategory[category].filter(preset =>
+    Object.keys(presetsByCategory).forEach((category) => {
+      const matchingPresets = presetsByCategory[category].filter((preset) =>
         preset.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
@@ -241,12 +248,13 @@ export default function PreviewTab() {
     // Find appropriate icon file - check for PNG files first
     const findMatchingIconFile = (iconName: string) => {
       // Looking for medium size icons as they fit best in our design
-      const mediumSizePattern = `-medium@`;
-      const preferredFiles = rawFiles.filter(file =>
-        file.path.startsWith('icons/') &&
-        file.path.includes(iconName) &&
-        file.path.includes(mediumSizePattern) &&
-        file.path.endsWith('.png')
+      const mediumSizePattern = '-medium@';
+      const preferredFiles = rawFiles.filter(
+        (file) =>
+          file.path.startsWith('icons/') &&
+          file.path.includes(iconName) &&
+          file.path.includes(mediumSizePattern) &&
+          file.path.endsWith('.png')
       );
 
       // If medium size exists, use the first one (usually @1x)
@@ -255,10 +263,11 @@ export default function PreviewTab() {
       }
 
       // Otherwise look for any PNG with this icon name
-      const anyPngFiles = rawFiles.filter(file =>
-        file.path.startsWith('icons/') &&
-        file.path.includes(iconName) &&
-        file.path.endsWith('.png')
+      const anyPngFiles = rawFiles.filter(
+        (file) =>
+          file.path.startsWith('icons/') &&
+          file.path.includes(iconName) &&
+          file.path.endsWith('.png')
       );
 
       return anyPngFiles.length > 0 ? anyPngFiles[0] : null;
@@ -308,7 +317,7 @@ export default function PreviewTab() {
             </div>
           );
         } catch (error) {
-          console.error("Error displaying icon:", error);
+          console.error('Error displaying icon:', error);
           // Fallback display if image fails to load
           return (
             <div className="w-full h-full flex items-center justify-center">
@@ -335,7 +344,7 @@ export default function PreviewTab() {
             </div>
           );
         } catch (error) {
-          console.error("Error displaying SVG icon:", error);
+          console.error('Error displaying SVG icon:', error);
           // Fallback display if SVG fails to load
           return (
             <div className="w-full h-full flex items-center justify-center">
@@ -352,38 +361,35 @@ export default function PreviewTab() {
             className="material-icons"
             style={{
               color: preset.color || '#000',
-              fontSize: '24px'
+              fontSize: '24px',
             }}
           >
             {typeof iconName === 'string' ? iconName : 'category'}
           </span>
         </div>
       );
-    } else {
-      // If no icon, use first letter of preset name as fallback
-      let firstLetter = 'A';
-      try {
-        if (typeof preset.name === 'string') {
-          firstLetter = preset.name.charAt(0).toUpperCase();
-        } else if (preset.name && typeof preset.name === 'object') {
-          // Handle case where name might be an object
-          firstLetter = 'P';
-        }
-      } catch (error) {
-        console.error("Error getting preset name:", error);
-      }
-
-      return (
-        <div
-          className="w-full h-full rounded-full flex items-center justify-center"
-          style={{ backgroundColor: preset.color || '#808080' }}
-        >
-          <span className="text-white text-sm font-bold">
-            {firstLetter}
-          </span>
-        </div>
-      );
     }
+    // If no icon, use first letter of preset name as fallback
+    let firstLetter = 'A';
+    try {
+      if (typeof preset.name === 'string') {
+        firstLetter = preset.name.charAt(0).toUpperCase();
+      } else if (preset.name && typeof preset.name === 'object') {
+        // Handle case where name might be an object
+        firstLetter = 'P';
+      }
+    } catch (error) {
+      console.error('Error getting preset name:', error);
+    }
+
+    return (
+      <div
+        className="w-full h-full rounded-full flex items-center justify-center"
+        style={{ backgroundColor: preset.color || '#808080' }}
+      >
+        <span className="text-white text-sm font-bold">{firstLetter}</span>
+      </div>
+    );
   };
 
   if (!config) return null;
@@ -400,10 +406,7 @@ export default function PreviewTab() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="max-w-sm"
               />
-              <Select
-                value={selectedLanguage}
-                onValueChange={setSelectedLanguage}
-              >
+              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Language" />
                 </SelectTrigger>
@@ -411,42 +414,54 @@ export default function PreviewTab() {
                   <SelectItem value="en">English</SelectItem>
                   <SelectItem value="es">Español</SelectItem>
                   <SelectItem value="pt">Português</SelectItem>
-                  {config && config.translations &&
+                  {config?.translations &&
                     Object.keys(config.translations)
-                      .filter(lang => !['en', 'es', 'pt'].includes(lang))
-                      .map(lang => (
-                        <SelectItem key={lang} value={lang}>{lang}</SelectItem>
-                      ))
-                  }
+                      .filter((lang) => !['en', 'es', 'pt'].includes(lang))
+                      .map((lang) => (
+                        <SelectItem key={lang} value={lang}>
+                          {lang}
+                        </SelectItem>
+                      ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <div className="mx-auto max-w-[375px]">
+          <div className="mx-auto max-w-[375px] min-h-[300px]">
             <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
               {/* Mobile-like header */}
               <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                 {showFieldDetails ? (
                   <>
                     <div className="flex items-center">
-                      <Button variant="ghost" size="icon" onClick={() => {
-                        setShowFieldDetails(false);
-                        setSelectedField(null);
-                      }} className="mr-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setShowFieldDetails(false);
+                          setSelectedField(null);
+                        }}
+                        className="mr-2"
+                      >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
-                      <div className="text-xl font-semibold">Question {selectedField?.questionNumber || 1} of {selectedPreset?.fieldRefs?.length || 1}</div>
+                      <div className="text-xl font-semibold">
+                        Question {selectedField?.questionNumber || 1} of{' '}
+                        {selectedPreset?.fieldRefs?.length || 1}
+                      </div>
                     </div>
                     <div
                       className="text-blue-500 font-medium cursor-pointer"
                       onClick={() => {
                         // If there are more fields, go to the next one
-                        if (selectedPreset?.fieldRefs && currentFieldIndex < selectedPreset.fieldRefs.length - 1) {
+                        if (
+                          selectedPreset?.fieldRefs &&
+                          currentFieldIndex < selectedPreset.fieldRefs.length - 1
+                        ) {
                           const nextIndex = currentFieldIndex + 1;
                           setCurrentFieldIndex(nextIndex);
                           const nextFieldId = selectedPreset.fieldRefs[nextIndex];
-                          const nextField = config?.fields.find(f => f.id === nextFieldId);
+                          const nextField = config?.fields.find((f) => f.id === nextFieldId);
                           if (nextField) {
                             setSelectedField({ ...nextField, questionNumber: nextIndex + 1 });
                           }
@@ -464,7 +479,12 @@ export default function PreviewTab() {
                 ) : showDetails ? (
                   <>
                     <div className="flex items-center">
-                      <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} className="mr-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowDetails(false)}
+                        className="mr-2"
+                      >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                       <div className="text-xl font-semibold">Details</div>
@@ -472,7 +492,7 @@ export default function PreviewTab() {
                   </>
                 ) : (
                   <>
-                    <X className="h-6 w-6 mr-3" />
+                    <X className="h-6 w-6 mr-2" />
                     <div className="text-xl font-semibold">Choose what is happening</div>
                   </>
                 )}
@@ -482,8 +502,24 @@ export default function PreviewTab() {
                 <div className="p-4 overflow-y-auto max-h-[70vh]">
                   {/* Field details view */}
                   <div className="border-b pb-4 mb-4">
-                    <h2 className="text-xl font-bold mb-1">{getTranslatedText(selectedField.name, 'fields', selectedField.id, 'label', selectedLanguage)}</h2>
-                    <p className="text-gray-700">{getTranslatedText(selectedField.helperText, 'fields', selectedField.id, 'helperText', selectedLanguage)}</p>
+                    <h2 className="text-xl font-bold mb-1">
+                      {getTranslatedText(
+                        selectedField.name,
+                        'fields',
+                        selectedField.id,
+                        'label',
+                        selectedLanguage
+                      )}
+                    </h2>
+                    <p className="text-gray-700">
+                      {getTranslatedText(
+                        selectedField.helperText,
+                        'fields',
+                        selectedField.id,
+                        'helperText',
+                        selectedLanguage
+                      )}
+                    </p>
                   </div>
 
                   {/* Field input */}
@@ -501,7 +537,13 @@ export default function PreviewTab() {
                           <div className="space-y-4">
                             {normalizedOptions.length > 0 ? (
                               normalizedOptions.map((option, idx) => {
-                                const optionLabel = getTranslatedText(option.label, 'fields', selectedField.id, `options.${option.value}`, selectedLanguage);
+                                const optionLabel = getTranslatedText(
+                                  option.label,
+                                  'fields',
+                                  selectedField.id,
+                                  `options.${option.value}`,
+                                  selectedLanguage
+                                );
 
                                 return (
                                   <div key={idx} className="flex items-center">
@@ -522,28 +564,36 @@ export default function PreviewTab() {
                       // Handle text input
                       if (fieldType === 'text') {
                         return (
-                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Text input</div>
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">
+                            Text input
+                          </div>
                         );
                       }
 
                       // Handle textarea
                       if (fieldType === 'textarea') {
                         return (
-                          <div className="h-24 border border-gray-300 rounded-md p-3 text-gray-400">Text area</div>
+                          <div className="h-24 border border-gray-300 rounded-md p-3 text-gray-400">
+                            Text area
+                          </div>
                         );
                       }
 
                       // Handle number input
                       if (fieldType === 'number') {
                         return (
-                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Number input</div>
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">
+                            Number input
+                          </div>
                         );
                       }
 
                       // Handle date input
                       if (fieldType === 'date') {
                         return (
-                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">Date input</div>
+                          <div className="h-12 border border-gray-300 rounded-md px-3 flex items-center text-gray-400">
+                            Date input
+                          </div>
                         );
                       }
 
@@ -564,8 +614,18 @@ export default function PreviewTab() {
                       {renderPresetIcon(selectedPreset)}
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold">{getTranslatedText(selectedPreset.name, 'presets', selectedPreset.id, 'name', selectedLanguage)}</h2>
-                      <p className="text-gray-500 text-sm capitalize">{selectedPreset.tags?.category || 'uncategorized'}</p>
+                      <h2 className="text-xl font-semibold">
+                        {getTranslatedText(
+                          selectedPreset.name,
+                          'presets',
+                          selectedPreset.id,
+                          'name',
+                          selectedLanguage
+                        )}
+                      </h2>
+                      <p className="text-gray-500 text-sm capitalize">
+                        {selectedPreset.tags?.category || 'uncategorized'}
+                      </p>
                     </div>
                   </div>
 
@@ -574,7 +634,7 @@ export default function PreviewTab() {
                     <div className="space-y-4">
                       {config && selectedPreset.fieldRefs && selectedPreset.fieldRefs.length > 0 ? (
                         selectedPreset.fieldRefs.map((fieldId: string, index: number) => {
-                          const field = config.fields.find(f => f.id === fieldId);
+                          const field = config.fields.find((f) => f.id === fieldId);
                           if (!field) return null;
 
                           // Debug field structure
@@ -593,10 +653,24 @@ export default function PreviewTab() {
                                 setCurrentFieldIndex(index);
                               }}
                             >
-                              <h4 className="font-medium">{getTranslatedText(field.name, 'fields', field.id, 'label', selectedLanguage)}</h4>
+                              <h4 className="font-medium">
+                                {getTranslatedText(
+                                  field.name,
+                                  'fields',
+                                  field.id,
+                                  'label',
+                                  selectedLanguage
+                                )}
+                              </h4>
                               {field.helperText && (
                                 <p className="text-sm text-gray-500 mt-1">
-                                  {getTranslatedText(field.helperText, 'fields', field.id, 'helperText', selectedLanguage)}
+                                  {getTranslatedText(
+                                    field.helperText,
+                                    'fields',
+                                    field.id,
+                                    'helperText',
+                                    selectedLanguage
+                                  )}
                                 </p>
                               )}
 
@@ -616,12 +690,23 @@ export default function PreviewTab() {
                                       <div className="flex flex-wrap gap-1">
                                         {normalizedOptions.length > 0 ? (
                                           normalizedOptions.map((option, optIdx) => (
-                                            <span key={optIdx} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                              {getTranslatedText(option.label, 'fields', field.id, `options.${option.value}`, selectedLanguage)}
+                                            <span
+                                              key={optIdx}
+                                              className="text-xs bg-gray-100 px-2 py-1 rounded"
+                                            >
+                                              {getTranslatedText(
+                                                option.label,
+                                                'fields',
+                                                field.id,
+                                                `options.${option.value}`,
+                                                selectedLanguage
+                                              )}
                                             </span>
                                           ))
                                         ) : (
-                                          <span className="text-xs text-gray-500">No options available</span>
+                                          <span className="text-xs text-gray-500">
+                                            No options available
+                                          </span>
                                         )}
                                       </div>
                                     </div>
@@ -656,7 +741,9 @@ export default function PreviewTab() {
                                 // If the preset has fields, show the first field directly
                                 if (preset.fieldRefs && preset.fieldRefs.length > 0 && config) {
                                   const firstFieldId = preset.fieldRefs[0];
-                                  const firstField = config.fields.find(f => f.id === firstFieldId);
+                                  const firstField = config.fields.find(
+                                    (f) => f.id === firstFieldId
+                                  );
                                   if (firstField) {
                                     // Debug field structure
                                     debugField(firstField);
@@ -674,7 +761,15 @@ export default function PreviewTab() {
                               <div className="w-16 h-16 bg-white rounded-full shadow-md mb-2 overflow-hidden border border-gray-100 p-2">
                                 {renderPresetIcon(preset)}
                               </div>
-                              <span className="text-sm text-center">{getTranslatedText(preset.name, 'presets', preset.id, 'name', selectedLanguage)}</span>
+                              <span className="text-sm text-center">
+                                {getTranslatedText(
+                                  preset.name,
+                                  'presets',
+                                  preset.id,
+                                  'name',
+                                  selectedLanguage
+                                )}
+                              </span>
                             </div>
                           ))}
                         </div>

@@ -1,16 +1,35 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { X, Plus, Search, Loader2, Palette } from 'lucide-react';
-import { CoMapeoPreset, CoMapeoField, ConfigFile } from '@shared/schema';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useConfigStore } from '@/lib/store';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
+import { useConfigStore } from '@/lib/store';
 import { sanitizeSvgForReact } from '@/lib/svg-utils';
+import type { CoMapeoField, CoMapeoPreset, ConfigFile } from '@shared/schema';
+import { Loader2, Palette, Plus, Search, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface PresetDialogProps {
   preset: CoMapeoPreset | null;
@@ -29,7 +48,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
     color: '#EA5545',
     icon: 'place',
     fieldRefs: [],
-    geometry: ['point']
+    geometry: ['point'],
   });
 
   const [newTagKey, setNewTagKey] = useState('');
@@ -57,22 +76,23 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
   };
 
   // State to hold the icon map
-  const [iconMap, setIconMap] = useState<{[key: string]: ConfigFile}>({});
+  const [iconMap, setIconMap] = useState<{ [key: string]: ConfigFile }>({});
 
   // Build icon map from raw files
   useEffect(() => {
     const buildIconMap = () => {
-      const newIconMap: {[key: string]: ConfigFile} = {};
+      const newIconMap: { [key: string]: ConfigFile } = {};
 
       // Group icons by base name and select the best resolution
-      const allIconFiles = rawFiles.filter(file =>
-        file.path.startsWith('icons/') &&
-        (file.path.endsWith('.svg') || file.path.endsWith('.png'))
+      const allIconFiles = rawFiles.filter(
+        (file) =>
+          file.path.startsWith('icons/') &&
+          (file.path.endsWith('.svg') || file.path.endsWith('.png'))
       );
 
       // Group by base name
       const iconGroups: Record<string, ConfigFile[]> = {};
-      allIconFiles.forEach(file => {
+      allIconFiles.forEach((file) => {
         const baseName = getIconBaseName(file.path);
         if (!iconGroups[baseName]) {
           iconGroups[baseName] = [];
@@ -83,15 +103,15 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
       // Select best resolution from each group
       Object.entries(iconGroups).forEach(([baseName, group]) => {
         // Prefer SVG files if available
-        const svgFile = group.find(file => file.path.endsWith('.svg'));
+        const svgFile = group.find((file) => file.path.endsWith('.svg'));
         if (svgFile) {
           newIconMap[baseName] = svgFile;
           return;
         }
 
         // Otherwise, look for medium size PNG
-        const mediumFile = group.find(file =>
-          file.path.includes('-medium@') && file.path.endsWith('.png')
+        const mediumFile = group.find(
+          (file) => file.path.includes('-medium@') && file.path.endsWith('.png')
         );
         if (mediumFile) {
           newIconMap[baseName] = mediumFile;
@@ -99,7 +119,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
         }
 
         // Fall back to any PNG
-        const pngFile = group.find(file => file.path.endsWith('.png'));
+        const pngFile = group.find((file) => file.path.endsWith('.png'));
         if (pngFile) {
           newIconMap[baseName] = pngFile;
         }
@@ -122,27 +142,27 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
   };
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+  const _handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
       ...prev,
-      color: e.target.value
+      color: e.target.value,
     }));
   };
 
   const handleTagAdd = () => {
     if (newTagKey && newTagValue) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         tags: {
           ...prev.tags,
-          [newTagKey]: newTagValue
-        }
+          [newTagKey]: newTagValue,
+        },
       }));
       setNewTagKey('');
       setNewTagValue('');
@@ -153,29 +173,29 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
     const newTags = { ...formData.tags };
     delete newTags[key];
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: newTags
+      tags: newTags,
     }));
   };
 
   const handleFieldAdd = (fieldId: string) => {
     if (!formData.fieldRefs.includes(fieldId)) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        fieldRefs: [...prev.fieldRefs, fieldId]
+        fieldRefs: [...prev.fieldRefs, fieldId],
       }));
     }
   };
 
   const handleFieldRemove = (fieldId: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fieldRefs: prev.fieldRefs.filter(id => id !== fieldId)
+      fieldRefs: prev.fieldRefs.filter((id) => id !== fieldId),
     }));
   };
 
-  const searchIcons = async (term: string, page: number = 1, language: string = 'en', append: boolean = false) => {
+  const searchIcons = async (term: string, page = 1, language = 'en', append = false) => {
     if (!term.trim()) {
       setIconSearchResults([]);
       return;
@@ -183,7 +203,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
 
     setIsSearchingIcons(true);
     try {
-      const response = await fetch(`https://icons.earthdefenderstoolkit.com/api/search?s=${encodeURIComponent(term)}&l=${language}&p=${page}`);
+      const response = await fetch(
+        `https://icons.earthdefenderstoolkit.com/api/search?s=${encodeURIComponent(term)}&l=${language}&p=${page}`
+      );
       if (!response.ok) throw new Error('Failed to fetch icons');
 
       const icons = await response.json();
@@ -194,7 +216,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
         setHasMoreIcons(true);
       }
 
-      setIconSearchResults(prev => append ? [...prev, ...icons] : icons);
+      setIconSearchResults((prev) => (append ? [...prev, ...icons] : icons));
       setIconSearchPage(page);
     } catch (error) {
       console.error('Error searching icons:', error);
@@ -228,7 +250,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
       // Ensure color is a valid hex color with # prefix
       let colorHex = color;
       if (!colorHex.startsWith('#')) {
-        colorHex = '#' + colorHex;
+        colorHex = `#${colorHex}`;
       }
 
       // Remove the # for the API call
@@ -237,7 +259,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
       console.log(`Generating icon with URL: ${iconUrl} and color: ${apiColorHex}`);
 
       // Call the API to generate a colored icon
-      const response = await fetch(`https://icons.earthdefenderstoolkit.com/api/generate?image=${encodeURIComponent(iconUrl)}&color=${apiColorHex}`);
+      const response = await fetch(
+        `https://icons.earthdefenderstoolkit.com/api/generate?image=${encodeURIComponent(iconUrl)}&color=${apiColorHex}`
+      );
 
       if (!response.ok) {
         throw new Error('Failed to generate colored icon');
@@ -278,7 +302,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
           svgContent = sanitizeSvgForReact(svgContent);
 
           // Log the SVG content for debugging
-          console.log('Processed SVG content:', svgContent.substring(0, 100) + '...');
+          console.log('Processed SVG content:', `${svgContent.substring(0, 100)}...`);
         } catch (error) {
           console.error('Error processing SVG content:', error);
           throw new Error('Failed to process SVG content');
@@ -300,15 +324,15 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
         addIcon(iconName, svgContent, 'svg');
 
         // Update the form data with the new icon name and color
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           icon: iconName,
-          color: colorHex // Ensure the color in the form matches what was used
+          color: colorHex, // Ensure the color in the form matches what was used
         }));
 
         toast({
-          title: "Icon generated",
-          description: `${iconName}.svg has been colored and added to your configuration.`
+          title: 'Icon generated',
+          description: `${iconName}.svg has been colored and added to your configuration.`,
         });
 
         // Close the picker after successful generation
@@ -319,9 +343,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
     } catch (error) {
       console.error('Error generating colored icon:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate colored icon. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to generate colored icon. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsGeneratingIcon(false);
@@ -361,15 +385,8 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full"
-              />
+              <Input id="name" value={formData.name} onChange={handleChange} className="w-full" />
             </div>
-
-
           </div>
 
           <div>
@@ -382,9 +399,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                 onChange={(e) => {
                   const newColor = e.target.value;
                   // Update form data first
-                  setFormData(prev => ({
+                  setFormData((prev) => ({
                     ...prev,
-                    color: newColor
+                    color: newColor,
                   }));
                 }}
                 className="h-10 w-12 rounded cursor-pointer"
@@ -395,9 +412,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                 onChange={(e) => {
                   const newColor = e.target.value;
                   // Update form data
-                  setFormData(prev => ({
+                  setFormData((prev) => ({
                     ...prev,
-                    color: newColor
+                    color: newColor,
                   }));
                 }}
                 className="w-32"
@@ -440,7 +457,12 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                     {typeof iconMap[formData.icon].content === 'string' ? (
                       iconMap[formData.icon].content.trim().startsWith('<svg') ? (
                         <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-3/4 h-3/4" dangerouslySetInnerHTML={{ __html: sanitizeSvgForReact(iconMap[formData.icon].content as string) }} />
+                          <div
+                            className="w-3/4 h-3/4"
+                            dangerouslySetInnerHTML={{
+                              __html: sanitizeSvgForReact(iconMap[formData.icon].content as string),
+                            }}
+                          />
                         </div>
                       ) : (
                         <img
@@ -451,7 +473,11 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                       )
                     ) : iconMap[formData.icon].content instanceof ArrayBuffer ? (
                       <img
-                        src={URL.createObjectURL(new Blob([iconMap[formData.icon].content as ArrayBuffer], { type: 'image/png' }))}
+                        src={URL.createObjectURL(
+                          new Blob([iconMap[formData.icon].content as ArrayBuffer], {
+                            type: 'image/png',
+                          })
+                        )}
                         alt={formData.name}
                         className="w-full h-full object-contain"
                         onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
@@ -461,7 +487,9 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                     )}
                   </div>
                 ) : (
-                  <span className="material-icons" style={{ color: formData.color }}>{formData.icon}</span>
+                  <span className="material-icons" style={{ color: formData.color }}>
+                    {formData.icon}
+                  </span>
                 )}
               </div>
               <div className="flex-1 flex space-x-2">
@@ -487,10 +515,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                           onChange={(e) => handleIconSearch(e.target.value)}
                           className="flex-1"
                         />
-                        <Select
-                          value={iconSearchLanguage}
-                          onValueChange={setIconSearchLanguage}
-                        >
+                        <Select value={iconSearchLanguage} onValueChange={setIconSearchLanguage}>
                           <SelectTrigger className="w-20">
                             <SelectValue placeholder="Lang" />
                           </SelectTrigger>
@@ -530,7 +555,8 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                                 alt="icon"
                                 className="w-8 h-8 object-contain"
                                 onError={(e) => {
-                                  e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+                                  e.currentTarget.src =
+                                    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
                                 }}
                               />
                             </div>
@@ -570,8 +596,13 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
             <div className="p-3 border border-gray-300 rounded-md">
               <div className="flex flex-wrap gap-2 mb-2">
                 {Object.entries(formData.tags).map(([key, value]) => (
-                  <div key={key} className="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center">
-                    <span className="mr-1">{key}={value}</span>
+                  <div
+                    key={key}
+                    className="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center"
+                  >
+                    <span className="mr-1">
+                      {key}={value}
+                    </span>
                     <button
                       className="text-gray-500 hover:text-red-500"
                       onClick={() => handleTagRemove(key)}
@@ -628,11 +659,13 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                       </TableRow>
                     ) : (
                       formData.fieldRefs.map((fieldId) => {
-                        const field = fields.find(f => f.id === fieldId);
+                        const field = fields.find((f) => f.id === fieldId);
                         return (
                           <TableRow key={fieldId}>
                             <TableCell>{field?.name || fieldId}</TableCell>
-                            <TableCell className="text-gray-500">{field?.tagKey || fieldId}</TableCell>
+                            <TableCell className="text-gray-500">
+                              {field?.tagKey || fieldId}
+                            </TableCell>
                             <TableCell>
                               <Button
                                 variant="ghost"
@@ -651,21 +684,18 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
                 </Table>
               </div>
               <div className="mt-2 pt-2 border-t border-gray-200">
-                <Select
-                  onValueChange={handleFieldAdd}
-                >
+                <Select onValueChange={handleFieldAdd}>
                   <SelectTrigger>
                     <SelectValue placeholder="Add Field" />
                   </SelectTrigger>
                   <SelectContent>
                     {fields
-                      .filter(field => !formData.fieldRefs.includes(field.id))
-                      .map(field => (
+                      .filter((field) => !formData.fieldRefs.includes(field.id))
+                      .map((field) => (
                         <SelectItem key={field.id} value={field.id}>
                           {field.name} ({field.tagKey})
                         </SelectItem>
-                      ))
-                    }
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -677,9 +707,7 @@ export function PresetDialog({ preset, fields, onSave, onCancel }: PresetDialogP
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
-            Save Changes
-          </Button>
+          <Button onClick={handleSubmit}>Save Changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
